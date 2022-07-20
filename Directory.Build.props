@@ -1,0 +1,23 @@
+<Project>
+
+  <PropertyGroup>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <AnalysisLevel>latest-all</AnalysisLevel>
+    <NoWarn>CS1591,CS8618,CS8620</NoWarn>
+    <VersionPrefix>0.1</VersionPrefix>
+    <Product>interlis-model-browser</Product>
+    <Authors>GeoWerkstatt GmbH</Authors>
+    <Company>GeoWerkstatt GmbH</Company>
+    <PackageOutputPath>$(MSBuildThisFileDirectory)/artifacts</PackageOutputPath>
+    <PackageProjectUrl>https://github.com/GeoWerkstatt/interlis-model-browser</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/GeoWerkstatt/interlis-model-browser.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+  </PropertyGroup>
+
+  <ItemGroup Condition=" '$(MSBuildProjectExtension)' != '.dcproj' ">
+    <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.435">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+</Project>
