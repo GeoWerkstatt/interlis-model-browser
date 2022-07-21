@@ -1,0 +1,19 @@
+version: '3.4'
+
+services:
+  db:
+    image: postgres:14
+    restart: always
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_PASSWORD: ARKBONES
+  pgadmin:
+    image: dpage/pgadmin4
+    ports:
+      - 3001:80
+    environment:
+      PGADMIN_DEFAULT_EMAIL: pgadmin@example.com
+      PGADMIN_DEFAULT_PASSWORD: FIREGOAT
+    volumes:
+      - ./config/pgadmin4-servers.json:/pgadmin4/servers.json
