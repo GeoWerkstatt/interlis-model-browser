@@ -1,3 +1,6 @@
+[![CI](https://github.com/GeoWerkstatt/interlis-model-browser/actions/workflows/ci.yml/badge.svg)](https://github.com/GeoWerkstatt/interlis-model-browser/actions/workflows/ci.yml)
+[![Release](https://github.com/GeoWerkstatt/interlis-model-browser/actions/workflows/release.yml/badge.svg)](https://github.com/GeoWerkstatt/interlis-model-browser/actions/workflows/release.yml)
+
 # INTERLIS Modellablage-Suche («Model-Repo-Browser»)
 
 Webapplikation zur Suche von INTERLIS-Modellen in öffentlichen Repositories mittels Eigenschaften wie Name, Dateiname, publizierende Stelle/Kanton oder Modell-Version.
