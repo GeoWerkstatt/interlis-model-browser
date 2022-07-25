@@ -12,10 +12,10 @@
 
         public string Owner { get; set; }
 
-        public IDictionary<string, string> Files { get; set; }
+        //public IDictionary<string, string> Files { get; set; }
 
-        public IDictionary<string, string> Title { get; set; }
+        //public IDictionary<string, string> Title { get; set; }
 
-        public ISet<string> ReferencedModels { get; set; }
+        //public ISet<string> ReferencedModels { get; set; }
     }
 }

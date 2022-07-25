@@ -1,6 +1,12 @@
-﻿var builder = WebApplication.CreateBuilder(args);
+﻿using Microsoft.EntityFrameworkCore;
+using ModelRepoBrowser;
+
+var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
+
+var connectionString = builder.Configuration.GetConnectionString("RepoBrowserContext");
+builder.Services.AddNpgsql<RepoBrowserContext>(connectionString);
 
 var app = builder.Build();
 

@@ -1,7 +1,12 @@
-﻿namespace ModelRepoBrowser.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace ModelRepoBrowser.Models
 {
     public class Repository
     {
+        [Key]
+        public string HostNameId { get; set; }
+
         public Uri? Uri { get; set; }
 
         public string? Name { get; set; }
