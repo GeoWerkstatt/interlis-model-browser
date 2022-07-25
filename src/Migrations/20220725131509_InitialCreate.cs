@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
@@ -21,7 +19,7 @@ namespace ModelRepoBrowser.Migrations
                     Title = table.Column<string>(type: "text", nullable: true),
                     ShortDescription = table.Column<string>(type: "text", nullable: true),
                     Owner = table.Column<string>(type: "text", nullable: true),
-                    TechnicalContact = table.Column<string>(type: "text", nullable: true)
+                    TechnicalContact = table.Column<string>(type: "text", nullable: true),
                 },
                 constraints: table =>
                 {
@@ -40,7 +38,7 @@ namespace ModelRepoBrowser.Migrations
                     File = table.Column<List<string>>(type: "text[]", nullable: false),
                     Title = table.Column<string>(type: "text", nullable: true),
                     ReferencedModels = table.Column<string>(type: "text", nullable: true),
-                    RepositoryHostNameId = table.Column<string>(type: "text", nullable: true)
+                    RepositoryHostNameId = table.Column<string>(type: "text", nullable: true),
                 },
                 constraints: table =>
                 {
@@ -70,7 +68,7 @@ namespace ModelRepoBrowser.Migrations
                     Issuer = table.Column<string>(type: "text", nullable: true),
                     TechnicalContact = table.Column<string>(type: "text", nullable: true),
                     FurtherInformation = table.Column<string>(type: "text", nullable: true),
-                    ModelRepositoryHostNameId = table.Column<string>(type: "text", nullable: false)
+                    ModelRepositoryHostNameId = table.Column<string>(type: "text", nullable: false),
                 },
                 constraints: table =>
                 {
@@ -88,7 +86,7 @@ namespace ModelRepoBrowser.Migrations
                 columns: table => new
                 {
                     ParentSitesHostNameId = table.Column<string>(type: "text", nullable: false),
-                    SubsidiarySitesHostNameId = table.Column<string>(type: "text", nullable: false)
+                    SubsidiarySitesHostNameId = table.Column<string>(type: "text", nullable: false),
                 },
                 constraints: table =>
                 {
