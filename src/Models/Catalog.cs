@@ -6,16 +6,16 @@
 
         public string Version { get; set; }
 
-        public string PrecursorVersion { get; set; }
+        public string? PrecursorVersion { get; set; }
 
-        public DateTime PublishingDate { get; set; }
+        public DateTime? PublishingDate { get; set; }
 
-        public string Owner { get; set; }
+        public string? Owner { get; set; }
 
-        //public IDictionary<string, string> Files { get; set; }
+        public List<string> File { get; set; }
 
-        //public IDictionary<string, string> Title { get; set; }
+        public string? Title { get; set; }
 
-        //public ISet<string> ReferencedModels { get; set; }
+        public string? ReferencedModels { get; set; }
     }
 }

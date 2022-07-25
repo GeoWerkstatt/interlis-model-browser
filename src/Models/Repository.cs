@@ -7,9 +7,9 @@ namespace ModelRepoBrowser.Models
         [Key]
         public string HostNameId { get; set; }
 
-        public Uri? Uri { get; set; }
+        public Uri Uri { get; set; }
 
-        public string? Name { get; set; }
+        public string Name { get; set; }
 
         public string? Title { get; set; }
 

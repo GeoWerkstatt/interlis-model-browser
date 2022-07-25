@@ -4,21 +4,23 @@ namespace ModelRepoBrowser.Models
 {
     public class Model
     {
-        [Key]
+        public int Id { get; set; }
+
         public string? MD5 { get; set; }
-        public string? Name { get; set; }
 
-        public string? SchemaLanguage { get; set; }
+        public string Name { get; set; }
 
-        public string? File { get; set; }
+        public string SchemaLanguage { get; set; }
 
-        public string? Version { get; set; }
+        public string File { get; set; }
 
-        public DateTime PublishingDate { get; set; }
+        public string Version { get; set; }
 
-        //public ISet<string> DependsOnModel { get; set; } = new HashSet<string>();
+        public DateTime? PublishingDate { get; set; }
 
-        //public ISet<string> Tags { get; set; } = new HashSet<string>();
+        public List<string> DependsOnModel { get; set; }
+
+        public List<string> Tags { get; set; }
 
         public string? ShortDescription { get; set; }
 
@@ -28,8 +30,7 @@ namespace ModelRepoBrowser.Models
 
         public string? FurtherInformation { get; set; }
 
-
-        public Repository? ModelRepository { get; set; }
+        public Repository ModelRepository { get; set; }
 
         public Uri? Uri => ModelRepository.Uri is null ? null : new Uri(ModelRepository.Uri, File ?? string.Empty);
     }
