@@ -1,8 +1,8 @@
-﻿using System.Xml.Serialization;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Xml.Serialization;
 
 namespace ModelRepoBrowser.Crawler.XmlModels
 {
-
     [Serializable]
     [XmlType(AnonymousType = true)]
     [XmlRoot("DATASECTION")]
@@ -16,7 +16,6 @@ namespace ModelRepoBrowser.Crawler.XmlModels
     [XmlType(AnonymousType = true)]
     public class DataIndex
     {
-
         [XmlElement("DatasetIdx16.DataIndex.DatasetMetadata")]
         public DatasetMetadata[] DatasetMetadata { get; set; }
     }
@@ -52,7 +51,6 @@ namespace ModelRepoBrowser.Crawler.XmlModels
         public DataFile[] files { get; set; }
     }
 
-
     [Serializable]
     [XmlType(AnonymousType = true)]
     public class FollowUpData
@@ -85,7 +83,6 @@ namespace ModelRepoBrowser.Crawler.XmlModels
         public LocalisedText[] LocalisedTexts { get; set; }
     }
 
-
     [Serializable]
     [XmlType(AnonymousType = true)]
     public class LocalisedText
@@ -94,14 +91,12 @@ namespace ModelRepoBrowser.Crawler.XmlModels
         public string Text { get; set; }
     }
 
-
     [Serializable]
     [XmlType(AnonymousType = true)]
     public class CategoryCodesCode
     {
         public string value { get; set; }
     }
-
 
     [Serializable]
     [XmlType(AnonymousType = true)]

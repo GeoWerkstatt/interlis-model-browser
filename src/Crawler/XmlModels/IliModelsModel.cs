@@ -20,8 +20,13 @@ namespace ModelRepoBrowser.Crawler.XmlModels
         public ModelMetadata[] ModelMetadata { get; set; } = Array.Empty<ModelMetadata>();
     }
 
-    public class RepositoryIndex09 : RepositoryIndex { }
-    public class RepositoryIndex20 : RepositoryIndex { }
+    public class RepositoryIndex09 : RepositoryIndex
+    {
+    }
+
+    public class RepositoryIndex20 : RepositoryIndex
+    {
+    }
 
     [Serializable]
     [XmlType(AnonymousType = true)]
@@ -56,8 +61,13 @@ namespace ModelRepoBrowser.Crawler.XmlModels
         public string? md5 { get; set; }
     }
 
-    public class ModelMetadata09 : ModelMetadata { }
-    public class ModelMetadata20 : ModelMetadata { }
+    public class ModelMetadata09 : ModelMetadata
+    {
+    }
+
+    public class ModelMetadata20 : ModelMetadata
+    {
+    }
 
     [Serializable]
     [XmlType(AnonymousType = true)]
@@ -66,6 +76,11 @@ namespace ModelRepoBrowser.Crawler.XmlModels
         public string? value { get; set; }
     }
 
-    public class DependsOnModel20 : DependsOnModel { }
-    public class DependsOnModel09 : DependsOnModel { }
+    public class DependsOnModel20 : DependsOnModel
+    {
+    }
+
+    public class DependsOnModel09 : DependsOnModel
+    {
+    }
 }

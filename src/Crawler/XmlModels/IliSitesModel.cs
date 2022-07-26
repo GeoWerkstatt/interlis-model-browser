@@ -43,7 +43,6 @@ namespace ModelRepoBrowser.Crawler.XmlModels
         public SiteLocation[]? subsidiarySites { get; set; }
     }
 
-
     [Serializable]
     public class SiteLocation
     {
