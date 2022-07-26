@@ -41,8 +41,9 @@ namespace ModelRepoBrowser.Migrations
                     b.Property<DateTime?>("PublishingDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("ReferencedModels")
-                        .HasColumnType("text");
+                    b.Property<List<string>>("ReferencedModels")
+                        .IsRequired()
+                        .HasColumnType("text[]");
 
                     b.Property<string>("RepositoryHostNameId")
                         .HasColumnType("text");

@@ -13,7 +13,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ModelRepoBrowser.Migrations
 {
     [DbContext(typeof(RepoBrowserContext))]
-    [Migration("20220725131509_InitialCreate")]
+    [Migration("20220726123456_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -43,8 +43,9 @@ namespace ModelRepoBrowser.Migrations
                     b.Property<DateTime?>("PublishingDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("ReferencedModels")
-                        .HasColumnType("text");
+                    b.Property<List<string>>("ReferencedModels")
+                        .IsRequired()
+                        .HasColumnType("text[]");
 
                     b.Property<string>("RepositoryHostNameId")
                         .HasColumnType("text");

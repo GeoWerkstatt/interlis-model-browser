@@ -37,7 +37,7 @@ namespace ModelRepoBrowser.Migrations
                     Owner = table.Column<string>(type: "text", nullable: true),
                     File = table.Column<List<string>>(type: "text[]", nullable: false),
                     Title = table.Column<string>(type: "text", nullable: true),
-                    ReferencedModels = table.Column<string>(type: "text", nullable: true),
+                    ReferencedModels = table.Column<List<string>>(type: "text[]", nullable: false),
                     RepositoryHostNameId = table.Column<string>(type: "text", nullable: true),
                 },
                 constraints: table =>
