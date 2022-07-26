@@ -16,6 +16,6 @@
 
         public string? Title { get; set; }
 
-        public string? ReferencedModels { get; set; }
+        public List<string> ReferencedModels { get; set; }
     }
 }
