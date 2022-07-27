@@ -69,6 +69,7 @@ namespace ModelRepoBrowser.Crawler
 
                 var repository = new Repository
                 {
+                    HostNameId = repositoryUri.Host,
                     Uri = repositoryUri,
                     Name = ilisite.Name ?? repositoryUri.Host,
                     Title = ilisite.Title,
@@ -115,9 +116,9 @@ namespace ModelRepoBrowser.Crawler
                     return RepositoryFilesDeserializer.ParseIliData(ilidataStream)
                         .Select(m => new Catalog
                         {
-                            Id = m.id,
+                            Identifier = m.id,
                             Version = m.version,
-                            PublishingDate = m.publishingDate,
+                            PublishingDate = m.publishingDate.ToUniversalTime(),
                             PrecursorVersion = m.precursorVersion,
                             Owner = m.owner,
                             Title = m.GetTitle(),
@@ -149,7 +150,7 @@ namespace ModelRepoBrowser.Crawler
                             SchemaLanguage = model.SchemaLanguage,
                             File = model.File,
                             Version = model.Version,
-                            PublishingDate = model.publishingDate,
+                            PublishingDate = model.publishingDate.ToUniversalTime(),
                             DependsOnModel = model.dependsOnModel.Select(m => m.value ?? string.Empty).Where(s => !string.IsNullOrEmpty(s)).ToList(),
                             ShortDescription = model.shortDescription,
                             Issuer = model.Issuer,
