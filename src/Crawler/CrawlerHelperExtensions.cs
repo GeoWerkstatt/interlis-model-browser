@@ -4,10 +4,12 @@ namespace ModelRepoBrowser.Crawler
 {
     internal static class CrawlerHelperExtensions
     {
-        internal static bool IsCatalog(DatasetMetadata dataset)
-            => dataset.categories?.Any(c => c.value.Equals("http://codes.interlis.ch/type/referenceData", StringComparison.Ordinal)) ?? false;
-
         private const string ModelCode = "http://codes.interlis.ch/model/";
+        private const string CatalogCode = "http://codes.interlis.ch/type/referenceData";
+
+        internal static bool IsCatalog(DatasetMetadata dataset)
+            => dataset.categories?.Any(c => CatalogCode.Equals(c.value, StringComparison.Ordinal)) ?? false;
+
         internal static List<string> GetReferencedModels(this DatasetMetadata data)
             => data.categories?
             .Select(c => c.value)
