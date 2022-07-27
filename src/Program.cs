@@ -9,6 +9,7 @@ builder.Services.AddControllersWithViews();
 var connectionString = builder.Configuration.GetConnectionString("RepoBrowserContext");
 builder.Services.AddNpgsql<RepoBrowserContext>(connectionString);
 
+builder.Services.AddTransient<IRepositoryCrawler, RepositoryCrawler>().AddHttpClient();
 var app = builder.Build();
 
 if (!app.Environment.IsDevelopment())
@@ -31,7 +32,7 @@ using (var scope = app.Services.CreateScope())
     var context = scope.ServiceProvider.GetRequiredService<RepoBrowserContext>();
     context.Database.EnsureCreated();
 
-    var crawler = new RepositoryCrawler();
+    var crawler = scope.ServiceProvider.GetRequiredService<IRepositoryCrawler>();
     var repositories = crawler.CrawlModelRepositories(new Uri("https://models.interlis.ch")).Result;
 
     context.Database.BeginTransaction();

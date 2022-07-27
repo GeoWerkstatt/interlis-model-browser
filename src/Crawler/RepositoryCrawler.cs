@@ -4,10 +4,17 @@ using System.Collections.Concurrent;
 
 namespace ModelRepoBrowser.Crawler
 {
-    public class RepositoryCrawler
+    public class RepositoryCrawler : IRepositoryCrawler
     {
-        private static readonly HttpClient client = new();
+        private readonly ILogger<RepositoryCrawler> logger;
+        private readonly HttpClient httpClient;
         private IDictionary<string, Repository> modelRepositories = new ConcurrentDictionary<string, Repository>();
+
+        public RepositoryCrawler(ILogger<RepositoryCrawler> logger, IHttpClientFactory httpClientFactory)
+        {
+            this.logger = logger;
+            httpClient = httpClientFactory.CreateClient();
+        }
 
         /// <summary>
         /// Parse the Repository tree from the root repository following subsidiary links.
@@ -53,7 +60,7 @@ namespace ModelRepoBrowser.Crawler
             return root;
         }
 
-        internal async Task<(Repository? Repository, IEnumerable<Uri> SubsidiaryRepositories)> AnalyseRepository(Uri repositoryUri, Repository? parent = null)
+        private async Task<(Repository? Repository, IEnumerable<Uri> SubsidiaryRepositories)> AnalyseRepository(Uri repositoryUri, Repository? parent = null)
         {
             try
             {
@@ -92,7 +99,7 @@ namespace ModelRepoBrowser.Crawler
 
                 var subsidiaryRepositories = ilisite.subsidiarySites?
                         .Where(location => location?.value is not null)
-                        .Select(location => new Uri(location?.value ?? string.Empty))
+                        .Select(location => new Uri(location?.value))
                         .ToArray() ?? Array.Empty<Uri>();
 
                 return (repository, subsidiaryRepositories);
@@ -179,15 +186,15 @@ namespace ModelRepoBrowser.Crawler
         /// Get the resource from the specified <paramref name="url"/> as a <see cref="Stream"/>.
         /// </summary>
         /// <exception cref="HttpRequestException">The request was not successful.</exception>
-        internal async Task<Stream> GetStreamFromUrl(Uri url)
+        private async Task<Stream> GetStreamFromUrl(Uri url)
         {
-            var response = await client.GetAsync(url).ConfigureAwait(false);
+            var response = await httpClient.GetAsync(url).ConfigureAwait(false);
             response.EnsureSuccessStatusCode();
             var content = response.Content;
             return await content.ReadAsStreamAsync().ConfigureAwait(false);
         }
 
-        internal async Task<Uri> PreferHttpsIfAvailable(Uri uri)
+        private async Task<Uri> PreferHttpsIfAvailable(Uri uri)
         {
             if (Uri.UriSchemeHttps.Equals(uri.Scheme, StringComparison.OrdinalIgnoreCase))
                 return uri;
@@ -195,15 +202,15 @@ namespace ModelRepoBrowser.Crawler
             var httpsUri = new Uri(uri.OriginalString.Replace(Uri.UriSchemeHttp, Uri.UriSchemeHttps, StringComparison.OrdinalIgnoreCase));
             using (var request = new HttpRequestMessage(HttpMethod.Head, httpsUri))
             {
-                var response = await client.SendAsync(request).ConfigureAwait(false);
+                var response = await httpClient.SendAsync(request).ConfigureAwait(false);
                 return response.IsSuccessStatusCode ? httpsUri : uri;
             }
         }
 
-        internal static Uri GetIlisiteUrl(Uri baseUri) => baseUri.Append("/ilisite.xml");
+        private static Uri GetIlisiteUrl(Uri baseUri) => baseUri.Append("/ilisite.xml");
 
-        internal static Uri GetIlimodelsUrl(Uri baseUri) => baseUri.Append("/ilimodels.xml");
+        private static Uri GetIlimodelsUrl(Uri baseUri) => baseUri.Append("/ilimodels.xml");
 
-        internal static Uri GetIlidataUrl(Uri baseUri) => baseUri.Append("/ilidata.xml");
+        private static Uri GetIlidataUrl(Uri baseUri) => baseUri.Append("/ilidata.xml");
     }
 }
