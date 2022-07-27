@@ -200,10 +200,10 @@ namespace ModelRepoBrowser.Crawler
             }
         }
 
-        internal static Uri GetIlisiteUrl(Uri baseUri) => new Uri(baseUri, "/ilisite.xml");
+        internal static Uri GetIlisiteUrl(Uri baseUri) => baseUri.Append("/ilisite.xml");
 
-        internal static Uri GetIlimodelsUrl(Uri baseUri) => new Uri(baseUri, "/ilimodels.xml");
+        internal static Uri GetIlimodelsUrl(Uri baseUri) => baseUri.Append("/ilimodels.xml");
 
-        internal static Uri GetIlidataUrl(Uri baseUri) => new Uri(baseUri, "/ilidata.xml");
+        internal static Uri GetIlidataUrl(Uri baseUri) => baseUri.Append("/ilidata.xml");
     }
 }

@@ -26,5 +26,12 @@ namespace ModelRepoBrowser.Crawler
                 .Select(f => f.path)
                 .ToList()
             ?? new List<string>();
+
+        public static Uri Append(this Uri baseUri, string relativePath)
+        {
+            string a = baseUri.AbsoluteUri.TrimEnd('/');
+            string b = relativePath.TrimStart('/');
+            return new Uri($"{a}/{b}");
+        }
     }
 }
