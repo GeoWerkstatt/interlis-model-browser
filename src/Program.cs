@@ -45,4 +45,6 @@ using (var scope = app.Services.CreateScope())
     context.Database.CommitTransaction();
 }
 
+new CrawlerScheduler(TimeOnly.FromDateTime(DateTime.Now.AddSeconds(30)));
+
 app.Run();
