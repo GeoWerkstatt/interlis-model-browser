@@ -10,7 +10,13 @@ namespace ModelRepoBrowser.Crawler
 
         private static T? DeserializeDatasection<T>(Stream stream)
         {
-            var serializer = serializers.GetValueOrDefault(typeof(T), new XmlSerializer(typeof(T)));
+            XmlSerializer? serializer;
+            if (!serializers.TryGetValue(typeof(T), out serializer))
+            {
+                serializer = new XmlSerializer(typeof(T));
+                serializers.Add(typeof(T), serializer);
+            }
+
             using (var xmlReader = new XmlTextReader(stream))
             {
                 xmlReader.Namespaces = false;
