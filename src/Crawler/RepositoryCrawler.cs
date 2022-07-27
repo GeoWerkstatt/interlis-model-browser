@@ -100,12 +100,11 @@ namespace ModelRepoBrowser.Crawler
                 var subsidiaryRepositories = ilisite.subsidiarySites?
                         .Where(location => location?.value is not null)
                         .Select(location => new Uri(location.value!))
-                        .ToArray() ?? Array.Empty<Uri>();
+                        .ToList() ?? new List<Uri>();
 
                 return (repository, subsidiaryRepositories);
             }
-            catch (Exception ex) when (ex is HttpRequestException
-                                    || ex is InvalidOperationException)
+            catch (Exception ex) when (ex is HttpRequestException || ex is InvalidOperationException)
             {
                 logger.LogError(ex, "Analysis of {Repository} failed.", repositoryUri);
                 return (null, Enumerable.Empty<Uri>());
@@ -148,9 +147,7 @@ namespace ModelRepoBrowser.Crawler
             using (var ilimodelsStream = await GetStreamFromUrl(ilimodelsUri).ConfigureAwait(false))
             {
                 return RepositoryFilesDeserializer.ParseIliModels(ilimodelsStream)
-                    .Select(model =>
-                    {
-                        var interlisModelMetadata = new Model
+                    .Select(model => new Model
                         {
                             Name = model.Name,
                             SchemaLanguage = model.SchemaLanguage,
@@ -164,10 +161,7 @@ namespace ModelRepoBrowser.Crawler
                             FurtherInformation = model.furtherInformation,
                             MD5 = model.md5,
                             Tags = model.Tags?.Split(',').Distinct().ToList() ?? new List<string>(),
-                        };
-
-                        return interlisModelMetadata;
-                    })
+                        })
                     .ToHashSet();
             }
         }

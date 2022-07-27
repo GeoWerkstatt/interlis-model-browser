@@ -49,7 +49,7 @@ namespace ModelRepoBrowser.Crawler
         {
             var dataSection = DeserializeDatasection<IliModelsDatasection>(xmlStream);
             var result = dataSection?.Items
-                                .Where(x => x is not null && x.ModelMetadata is not null)
+                                .Where(x => x?.ModelMetadata is not null)
                                 .SelectMany(x => x.ModelMetadata);
 
             return result ?? Enumerable.Empty<ModelMetadata>();
@@ -66,7 +66,7 @@ namespace ModelRepoBrowser.Crawler
             var dataSection = DeserializeDatasection<IliDataDatasection>(xmlStream);
 
             var result = dataSection?.DatasetIdx16DataIndex?
-                                .Where(x => x is not null && x.DatasetMetadata is not null)
+                                .Where(x => x?.DatasetMetadata is not null)
                                 .SelectMany(x => x.DatasetMetadata)
                                 .Where(CrawlerHelperExtensions.IsCatalog);
 
