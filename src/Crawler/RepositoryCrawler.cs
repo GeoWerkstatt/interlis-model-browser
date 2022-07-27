@@ -157,7 +157,7 @@ namespace ModelRepoBrowser.Crawler
                             File = model.File,
                             Version = model.Version,
                             PublishingDate = model.publishingDate.ToUniversalTime(),
-                            DependsOnModel = model.dependsOnModel.Select(m => m.value ?? string.Empty).Where(s => !string.IsNullOrEmpty(s)).ToList(),
+                            DependsOnModel = model.dependsOnModel.Where(s => !string.IsNullOrEmpty(s?.value)).Select(m => m.value!).ToList(),
                             ShortDescription = model.shortDescription,
                             Issuer = model.Issuer,
                             TechnicalContact = model.technicalContact,
