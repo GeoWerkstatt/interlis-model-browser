@@ -62,7 +62,7 @@ namespace ModelRepoBrowser.Crawler
             var result = dataSection?.DatasetIdx16DataIndex?
                                 .Where(x => x is not null && x.DatasetMetadata is not null)
                                 .SelectMany(x => x.DatasetMetadata)
-                                .Where(CrawlerFilterExtensions.IsCatalog);
+                                .Where(CrawlerHelperExtensions.IsCatalog);
 
             return result ?? Enumerable.Empty<DatasetMetadata>();
         }

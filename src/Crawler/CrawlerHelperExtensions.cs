@@ -2,7 +2,7 @@
 
 namespace ModelRepoBrowser.Crawler
 {
-    internal static class CrawlerFilterExtensions
+    internal static class CrawlerHelperExtensions
     {
         internal static bool IsCatalog(DatasetMetadata dataset)
             => dataset.categories?.Any(c => c.value.Equals("http://codes.interlis.ch/type/referenceData", StringComparison.Ordinal)) ?? false;
