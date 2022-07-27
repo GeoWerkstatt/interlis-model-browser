@@ -16,11 +16,7 @@ namespace ModelRepoBrowser.Crawler
             httpClient = httpClientFactory.CreateClient();
         }
 
-        /// <summary>
-        /// Parse the Repository tree from the root repository following subsidiary links.
-        /// </summary>
-        /// <param name="rootRepositoryUri">The <see cref="Uri"/> of the repository at the root of the model repository tree.</param>
-        /// <returns></returns>
+        /// <inheritdoc />
         public async Task<IDictionary<string, Repository>> CrawlModelRepositories(Uri rootRepositoryUri)
         {
             await CrawlRepositories(rootRepositoryUri, null).ConfigureAwait(false);
@@ -175,10 +171,6 @@ namespace ModelRepoBrowser.Crawler
             }
         }
 
-        /// <summary>
-        /// Get the resource from the specified <paramref name="url"/> as a <see cref="Stream"/>.
-        /// </summary>
-        /// <exception cref="HttpRequestException">The request was not successful.</exception>
         private async Task<Stream> GetStreamFromUrl(Uri url)
         {
             var response = await httpClient.GetAsync(url).ConfigureAwait(false);
