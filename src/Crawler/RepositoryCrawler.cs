@@ -99,7 +99,7 @@ namespace ModelRepoBrowser.Crawler
 
                 var subsidiaryRepositories = ilisite.subsidiarySites?
                         .Where(location => location?.value is not null)
-                        .Select(location => new Uri(location?.value))
+                        .Select(location => new Uri(location.value!))
                         .ToArray() ?? Array.Empty<Uri>();
 
                 return (repository, subsidiaryRepositories);
@@ -107,8 +107,7 @@ namespace ModelRepoBrowser.Crawler
             catch (Exception ex) when (ex is HttpRequestException
                                     || ex is InvalidOperationException)
             {
-                Console.WriteLine($"Analysis of {repositoryUri} failed! ({ex.Message})");
-                Console.WriteLine(ex);
+                logger.LogError(ex, "Analysis of {Repository} failed.", repositoryUri);
                 return (null, Enumerable.Empty<Uri>());
             }
         }
@@ -137,7 +136,7 @@ namespace ModelRepoBrowser.Crawler
             }
             catch (HttpRequestException ex)
             {
-                Console.WriteLine($"Could not analyse ilidata.xml of {repositoryUri} ({ex.Message})");
+                logger.LogWarning(ex, "Could not analyse {IliDataUri}.", ilidataUri);
             }
 
             return new HashSet<Catalog>();
