@@ -25,9 +25,19 @@
 
   <ItemGroup>
     <Folder Include="Testdata\models.interlis.ch\" />
+    <Folder Include="Testdata\models.geo.admin.ch\" />
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="Testdata\models.geo.admin.ch\ilidata.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Testdata\models.geo.admin.ch\ilimodels.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Testdata\models.geo.admin.ch\ilisite.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="Testdata\models.interlis.ch\ilimodels.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
