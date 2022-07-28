@@ -123,7 +123,7 @@ namespace ModelRepoBrowser.Crawler
                             PrecursorVersion = m.precursorVersion,
                             Owner = m.owner,
                             Title = m.GetTitle(),
-                            File = m.GetFiles(),
+                            File = m.GetFiles().Select(f => repositoryUri.Append(f).AbsoluteUri).ToList(),
                             ReferencedModels = m.GetReferencedModels(),
                         })
                         .ToHashSet();
