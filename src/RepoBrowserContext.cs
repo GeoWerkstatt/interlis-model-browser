@@ -22,5 +22,9 @@ public class RepoBrowserContext : DbContext
         modelBuilder.Entity<Model>()
             .Property(p => p.SearchVector)
             .HasComputedColumnSql(@"to_tsvector('simple', coalesce(""Name"", '') || ' ' || coalesce(""Version"", '') || ' ' || coalesce(""File"", '')) || array_to_tsvector(""Tags"")", stored: true);
+
+        modelBuilder.Entity<Model>()
+            .HasIndex(p => p.SearchVector)
+            .HasMethod("GIN");
     }
 }
