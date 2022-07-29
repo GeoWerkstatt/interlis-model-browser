@@ -117,7 +117,7 @@ public class RepositoryCrawlerTest
         Assert.AreEqual("ch.admin.geo.models.bearbeitungsstatus_kataloge_20140701", catalog.Identifier);
         Assert.AreEqual("2014-07-01", catalog.Version);
         Assert.AreEqual(null, catalog.PrecursorVersion);
-        Assert.AreEqual(new DateTime(2014, 06, 30, 22, 00, 00, DateTimeKind.Utc), catalog.PublishingDate);
+        Assert.AreEqual(new DateTime(2014, 7, 1, 0, 0, 0, DateTimeKind.Utc), catalog.PublishingDate);
         Assert.AreEqual("mailto:models@geo.admin.ch", catalog.Owner);
         Assert.AreEqual(string.Empty, catalog.Title);
         catalog.File.AssertContains("https://models.geo.admin.ch/BLW/bearbeitungsstatus_kataloge_20140701.xml").AssertCount(1);

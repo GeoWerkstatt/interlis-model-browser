@@ -119,7 +119,7 @@ public class RepositoryCrawler : IRepositoryCrawler
                     {
                         Identifier = m.id,
                         Version = m.version,
-                        PublishingDate = m.publishingDate.ToUniversalTime(),
+                        PublishingDate = DateTime.SpecifyKind(m.publishingDate.Date, DateTimeKind.Utc),
                         PrecursorVersion = m.precursorVersion,
                         Owner = m.owner,
                         Title = m.GetTitle(),
