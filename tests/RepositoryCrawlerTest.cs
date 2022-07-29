@@ -57,6 +57,7 @@ public class RepositoryCrawlerTest
     {
         var result = await repositoryCrawler.CrawlModelRepositories(new Uri("https://models.interlis.ch"));
         Assert.IsNotNull(result);
+        result.AssertAllNotNull();
         result
             .AssertSingleItem("models.interlis.ch", AssertModelsInterlisCh)
             .AssertSingleItem("models.geo.admin.ch", AssertModelsGeoAdminCh)
@@ -89,8 +90,8 @@ public class RepositoryCrawlerTest
         Assert.AreEqual("mailto:info@interlis.ch", repository.TechnicalContact);
         repository.SubsidiarySites.AssertCount(1).AssertSingleItem(AssertModelsGeoAdminCh);
         repository.ParentSites.AssertCount(0);
-        repository.Models.AssertCount(76);
-        repository.Catalogs.AssertCount(0);
+        repository.Models.AssertCount(76).AssertAllNotNull();
+        repository.Catalogs.AssertCount(0).AssertAllNotNull();
     }
 
     private void AssertModelsGeoAdminCh(Repository repository)
@@ -103,8 +104,8 @@ public class RepositoryCrawlerTest
         Assert.AreEqual("http://www.geo.admin.ch", repository.Owner);
         Assert.AreEqual("mailto:models@geo.admin.ch", repository.TechnicalContact);
         repository.SubsidiarySites.AssertCount(0);
-        repository.ParentSites.AssertCount(1);
-        repository.Models.AssertCount(1258);
+        repository.ParentSites.AssertCount(1).AssertAllNotNull();
+        repository.Models.AssertCount(1258).AssertAllNotNull();
         repository.Catalogs.AssertCount(170)
             .AssertSingleItem(
             c => "ch.admin.geo.models.bearbeitungsstatus_kataloge_20140701".Equals(c.Identifier, StringComparison.Ordinal),
@@ -120,7 +121,7 @@ public class RepositoryCrawlerTest
         Assert.AreEqual("mailto:models@geo.admin.ch", catalog.Owner);
         Assert.AreEqual(string.Empty, catalog.Title);
         catalog.File.AssertContains("https://models.geo.admin.ch/BLW/bearbeitungsstatus_kataloge_20140701.xml").AssertCount(1);
-        catalog.ReferencedModels.AssertContains("Biodiversitaetsfoerderflaechen_Qualitaetsstufe_II_und_Vernetzung_LV95_V1_3").AssertCount(22);
+        catalog.ReferencedModels.AssertContains("Biodiversitaetsfoerderflaechen_Qualitaetsstufe_II_und_Vernetzung_LV95_V1_3").AssertCount(22).AssertAllNotNull();
     }
 
     [TestMethod]

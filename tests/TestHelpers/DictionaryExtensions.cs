@@ -1,6 +1,6 @@
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Geowerkstatt.TestTools
 {
@@ -64,7 +64,7 @@ namespace Geowerkstatt.TestTools
                 throw new AssertFailedException(
                     MessageHelper.CombineDefaultAndCustomMessage(
                         "The item with the key <{0}> was not in the dictionary.",
-                        new object[] { key },
+                        new string[] { key?.ToString() ?? string.Empty },
                         message,
                         parameters));
             }
@@ -77,56 +77,6 @@ namespace Geowerkstatt.TestTools
             {
                 MessageHelper.Assert(() => asserter(item), message, parameters);
             }
-
-            return dictionary;
-        }
-
-        /// <summary>
-        /// Verifies a single, specific element in a sequence.
-        /// If the item cannot be found, the verification fails.
-        /// </summary>
-        /// <typeparam name="TKey">The type of keys in the dictionary.</typeparam>
-        /// <typeparam name="TValue">The type of values in the dictionary.</typeparam>
-        /// <param name="dictionary">The dictionary to test.</param>
-        /// <param name="key">The key to assert the presence.</param>
-        /// <param name="expected">The value that the unit test expects for the specified <paramref name="key"/>.</param>
-        /// <returns><paramref name="dictionary"/>.</returns>
-        /// <exception cref="AssertFailedException">
-        /// There is no value with the specified <paramref name="key"/>,
-        /// the found value is not equal to <paramref name="expected"/>,
-        /// or <paramref name="dictionary"/> is <c>null</c>.
-        /// </exception>
-        public static IDictionary<TKey, TValue> AssertSingleItem<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, TKey key, TValue expected)
-        {
-            return AssertSingleItem(dictionary, key, expected, null);
-        }
-
-        /// <summary>
-        /// Verifies a single, specific element in a sequence.
-        /// If the item cannot be found, the verification fails.
-        /// </summary>
-        /// <typeparam name="TKey">The type of keys in the dictionary.</typeparam>
-        /// <typeparam name="TValue">The type of values in the dictionary.</typeparam>
-        /// <param name="dictionary">The dictionary to test.</param>
-        /// <param name="key">The key to assert the presence.</param>
-        /// <param name="expected">The value that the unit test expects for the specified <paramref name="key"/>.</param>
-        /// <param name="message">The message to describe the assertion in case of failure.</param>
-        /// <param name="parameters">Parameters for the <paramref name="message"/>.</param>
-        /// <returns><paramref name="dictionary"/>.</returns>
-        /// <exception cref="AssertFailedException">
-        /// There is no value with the specified <paramref name="key"/>,
-        /// the found value is not equal to <paramref name="expected"/>,
-        /// or <paramref name="dictionary"/> is <c>null</c>.
-        /// </exception>
-        public static IDictionary<TKey, TValue> AssertSingleItem<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, TKey key, TValue expected, string message, params object[] parameters)
-        {
-            var failMessage = MessageHelper.CombineDefaultAndCustomMessage(
-                "Value for dictionary key <{0}>.",
-                new object[] { key },
-                message,
-                parameters);
-
-            dictionary.AssertSingleItem(key, v => Assert.AreEqual(expected, v, failMessage));
 
             return dictionary;
         }
