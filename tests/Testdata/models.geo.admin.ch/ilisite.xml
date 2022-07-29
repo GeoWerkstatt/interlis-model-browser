@@ -18,12 +18,11 @@
         <value>http://models.interlis.ch/</value>
       </IliSite09.RepositoryLocation_>
     </parentSite>
-    <!--hier werden Verweise auf weitere Repositories erfasst-->
-    <!--<subsidiarySite>
+    <subsidiarySite>
       <IliSite09.RepositoryLocation_>
-        <value>http://models.tld/</value>
+        <value>https://models.multiparent.ch</value>
       </IliSite09.RepositoryLocation_>
-    </subsidiarySite>-->
+    </subsidiarySite>
     </IliSite09.SiteMetadata.Site>
   </IliSite09.SiteMetadata>
 </DATASECTION>

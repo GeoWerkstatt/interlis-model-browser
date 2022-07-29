@@ -48,7 +48,7 @@ public static class RepositoryFilesDeserializer
     internal static IEnumerable<ModelMetadata> ParseIliModels(Stream xmlStream)
     {
         var dataSection = DeserializeDatasection<IliModelsDatasection>(xmlStream);
-        var result = dataSection?.Items
+        var result = dataSection?.Items?
                             .Where(x => x?.ModelMetadata is not null)
                             .SelectMany(x => x.ModelMetadata);
 

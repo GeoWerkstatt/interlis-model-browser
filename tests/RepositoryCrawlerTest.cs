@@ -1,6 +1,5 @@
 ﻿using Geowerkstatt.TestTools;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ModelRepoBrowser.Crawler;
 using ModelRepoBrowser.Models;
@@ -61,7 +60,7 @@ public class RepositoryCrawlerTest
         result
             .AssertSingleItem("models.interlis.ch", AssertModelsInterlisCh)
             .AssertSingleItem("models.geo.admin.ch", AssertModelsGeoAdminCh)
-            .AssertCount(2);
+            .AssertCount(3);
     }
 
     [TestMethod]
@@ -88,7 +87,9 @@ public class RepositoryCrawlerTest
         Assert.AreEqual("Modell-Ablage des INTERLIS-Kernteams", repository.ShortDescription);
         Assert.AreEqual("http://www.interlis.ch", repository.Owner);
         Assert.AreEqual("mailto:info@interlis.ch", repository.TechnicalContact);
-        repository.SubsidiarySites.AssertCount(1).AssertSingleItem(AssertModelsGeoAdminCh);
+        repository.SubsidiarySites
+            .AssertSingleItem(ss => "models.geo.admin.ch".Equals(ss.Name, StringComparison.OrdinalIgnoreCase), AssertModelsGeoAdminCh)
+            .AssertCount(2);
         repository.ParentSites.AssertCount(0);
         repository.Models.AssertCount(76).AssertAllNotNull();
         repository.Catalogs.AssertCount(0).AssertAllNotNull();
@@ -103,7 +104,7 @@ public class RepositoryCrawlerTest
         Assert.AreEqual("Modell-Ablage fuer Datenmodelle der Geobasisdaten des Bundesrechts", repository.ShortDescription);
         Assert.AreEqual("http://www.geo.admin.ch", repository.Owner);
         Assert.AreEqual("mailto:models@geo.admin.ch", repository.TechnicalContact);
-        repository.SubsidiarySites.AssertCount(0);
+        repository.SubsidiarySites.AssertCount(1);
         repository.ParentSites.AssertCount(1).AssertAllNotNull();
         repository.Models.AssertCount(1258).AssertAllNotNull();
         repository.Catalogs.AssertCount(170)
@@ -154,5 +155,33 @@ public class RepositoryCrawlerTest
 
         result.AssertCount(0);
         mockHttp.VerifyNoOutstandingExpectation();
+    }
+
+    [TestMethod]
+    public async Task CrawlerSkipsMultipleOccurences()
+    {
+        var result = await repositoryCrawler.CrawlModelRepositories(new Uri("https://models.interlis.ch"));
+        result.AssertAllNotNull();
+        result
+            .AssertSingleItem("models.multiparent.ch", AssertModelsMultiparentCh)
+            .AssertCount(3);
+    }
+
+    private void AssertModelsMultiparentCh(Repository repository)
+    {
+        Assert.AreEqual("models.multiparent.ch", repository.HostNameId);
+        Assert.AreEqual(new Uri("https://models.multiparent.ch/"), repository.Uri);
+        Assert.AreEqual("Minimal Multi Parent Repo", repository.Name);
+        Assert.IsNull(repository.Title);
+        Assert.IsNull(repository.ShortDescription);
+        Assert.IsNull(repository.Owner);
+        Assert.IsNull(repository.TechnicalContact);
+        repository.SubsidiarySites.AssertCount(0);
+        repository.ParentSites
+            .AssertSingleItem(ps => "models.interlis.ch".Equals(ps.HostNameId, StringComparison.OrdinalIgnoreCase), AssertModelsInterlisCh)
+            .AssertSingleItem(ps => "models.geo.admin.ch".Equals(ps.HostNameId, StringComparison.OrdinalIgnoreCase), AssertModelsGeoAdminCh)
+            .AssertCount(2);
+        repository.Models.AssertCount(0).AssertAllNotNull();
+        repository.Catalogs.AssertCount(0).AssertAllNotNull();
     }
 }

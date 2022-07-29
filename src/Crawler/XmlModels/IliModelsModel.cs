@@ -9,7 +9,7 @@ public class IliModelsDatasection
 {
     [XmlElement("IliRepository09.RepositoryIndex", typeof(RepositoryIndex09))]
     [XmlElement("IliRepository20.RepositoryIndex", typeof(RepositoryIndex20))]
-    public RepositoryIndex[] Items { get; set; } = Array.Empty<RepositoryIndex>();
+    public RepositoryIndex[]? Items { get; set; } = Array.Empty<RepositoryIndex>();
 }
 
 [Serializable]
