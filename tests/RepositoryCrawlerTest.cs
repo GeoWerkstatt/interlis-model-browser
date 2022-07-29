@@ -7,6 +7,7 @@ using ModelRepoBrowser.TestHelpers;
 using Moq;
 using RichardSzalay.MockHttp;
 using System.Net;
+using System.Text;
 
 namespace ModelRepoBrowser;
 
@@ -22,6 +23,13 @@ public class RepositoryCrawlerTest
     public void Initialize()
     {
         mockHttp = new MockHttpMessageHandler();
+        SetupHttpMockFiles();
+
+        SetupRepositoryCrawlerInstance(mockHttp.ToHttpClient());
+    }
+
+    private void SetupHttpMockFiles()
+    {
         foreach (var dir in Directory.GetDirectories("./Testdata"))
         {
             foreach (var file in Directory.GetFiles(dir))
@@ -32,8 +40,6 @@ public class RepositoryCrawlerTest
                 mockHttp.When(HttpMethod.Head, $"https://{Path.GetFileName(dir)}/").Respond(HttpStatusCode.OK);
             }
         }
-
-        SetupRepositoryCrawlerInstance(mockHttp.ToHttpClient());
     }
 
     private void SetupRepositoryCrawlerInstance(HttpClient httpClient)
@@ -183,5 +189,27 @@ public class RepositoryCrawlerTest
             .AssertCount(2);
         repository.Models.AssertCount(0).AssertAllNotNull();
         repository.Catalogs.AssertCount(0).AssertAllNotNull();
+    }
+
+    [TestMethod]
+    public async Task CrawlerDoesSupportBadFormattedXml()
+    {
+        mockHttp = new MockHttpMessageHandler();
+        mockHttp
+            .When($"https://models.interlis.ch/ilidata.xml")
+            .Respond("application/xml", new MemoryStream(Encoding.UTF8.GetBytes("Bad Formatted xml stream")));
+        mockHttp
+            .When($"https://models.geo.admin.ch/ilimodels.xml")
+            .Respond("application/xml", new MemoryStream(Encoding.UTF8.GetBytes("Bad Formatted xml stream")));
+        mockHttp
+            .When($"https://models.multiparent.ch/ilisite.xml")
+            .Respond("application/xml", new MemoryStream(Encoding.UTF8.GetBytes("Bad Formatted xml stream")));
+
+        SetupHttpMockFiles();
+        SetupRepositoryCrawlerInstance(mockHttp.ToHttpClient());
+
+        var result = await repositoryCrawler.CrawlModelRepositories(new Uri("https://models.interlis.ch"));
+        result.AssertAllNotNull();
+        result.AssertCount(2);
     }
 }

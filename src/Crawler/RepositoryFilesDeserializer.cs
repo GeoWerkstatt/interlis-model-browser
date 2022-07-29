@@ -10,6 +10,8 @@ public static class RepositoryFilesDeserializer
 
     private static T? DeserializeDatasection<T>(Stream stream)
     {
+        if (stream is null) return default(T);
+
         XmlSerializer? serializer;
         if (!serializers.TryGetValue(typeof(T), out serializer))
         {
@@ -17,13 +19,18 @@ public static class RepositoryFilesDeserializer
             serializers.Add(typeof(T), serializer);
         }
 
-        using (var xmlReader = new XmlTextReader(stream))
+        try
         {
+            using var xmlReader = new XmlTextReader(stream);
             xmlReader.Namespaces = false;
             xmlReader.ReadToDescendant("DATASECTION");
             var subtree = xmlReader.ReadSubtree();
 
             return (T?)serializer.Deserialize(subtree);
+        }
+        catch (Exception ex) when (ex is XmlException || ex is InvalidOperationException)
+        {
+            return default(T);
         }
     }
 
