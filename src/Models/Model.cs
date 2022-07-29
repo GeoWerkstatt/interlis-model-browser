@@ -1,5 +1,4 @@
 ﻿using ModelRepoBrowser.Crawler;
-using NpgsqlTypes;
 
 namespace ModelRepoBrowser.Models;
 
@@ -34,6 +33,4 @@ public class Model
     public Repository ModelRepository { get; set; }
 
     public Uri? Uri => string.IsNullOrEmpty(File) ? null : ModelRepository.Uri.Append(File);
-
-    public NpgsqlTsVector SearchVector { get; private set; }
 }

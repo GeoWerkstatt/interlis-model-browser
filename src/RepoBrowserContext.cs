@@ -16,15 +16,4 @@ public class RepoBrowserContext : DbContext
     public DbSet<Repository> Repositories { get; set; }
     public DbSet<Model> Models { get; set; }
     public DbSet<Catalog> Catalogs { get; set; }
-
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
-    {
-        modelBuilder.Entity<Model>()
-            .Property(p => p.SearchVector)
-            .HasComputedColumnSql(@"to_tsvector('simple', coalesce(""Name"", '') || ' ' || coalesce(""Version"", '') || ' ' || coalesce(""File"", '')) || array_to_tsvector(""Tags"")", stored: true);
-
-        modelBuilder.Entity<Model>()
-            .HasIndex(p => p.SearchVector)
-            .HasMethod("GIN");
-    }
 }

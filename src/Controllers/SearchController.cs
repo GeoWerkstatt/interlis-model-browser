@@ -22,8 +22,13 @@ public class SearchController : ControllerBase
     {
         logger.LogInformation("Search with query <{SearchQuery}>", q);
 
+        var searchPattern = $"%{q}%";
         var models = context.Models
-            .Where(p => p.SearchVector.Matches(EF.Functions.WebSearchToTsQuery("simple", q)))
+            .Where(m =>
+                EF.Functions.ILike(m.Name, searchPattern)
+                || EF.Functions.ILike(m.Version, searchPattern)
+                || EF.Functions.ILike(m.File, searchPattern)
+                || m.Tags.Contains(q))
             .Select(m => $"{m.Name}, {m.Version}, {m.File}, {{{string.Join(", ", m.Tags)}}}")
             .ToList();
 
