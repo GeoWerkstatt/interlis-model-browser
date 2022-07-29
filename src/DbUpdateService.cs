@@ -23,7 +23,7 @@ public class DbUpdateService : BackgroundService
 
     private async Task UpdateModelRepoDatabase()
     {
-        logger.LogInformation("Update ModelRepoDatabase");
+        logger.LogInformation("Updating ModelRepoDatabase...");
         try
         {
             using (var scope = scopeFactory.CreateScope())
@@ -43,6 +43,7 @@ public class DbUpdateService : BackgroundService
                 context.SaveChanges();
 
                 context.Database.CommitTransaction();
+                logger.LogInformation("Updating ModelRepoDatabase complete");
             }
         }
         catch (DbUpdateException ex)
