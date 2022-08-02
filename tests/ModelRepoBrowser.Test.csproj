@@ -24,30 +24,30 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Testdata\models.interlis.ch\" />
-    <Folder Include="Testdata\models.geo.admin.ch\" />
+    <Folder Include="Testdata\models.interlis.testdata\" />
+    <Folder Include="Testdata\models.geo.admin.testdata\" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Testdata\models.geo.admin.ch\ilidata.xml">
+    <None Update="Testdata\models.geo.admin.testdata\ilidata.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Testdata\models.geo.admin.ch\ilimodels.xml">
+    <None Update="Testdata\models.geo.admin.testdata\ilimodels.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Testdata\models.geo.admin.ch\ilisite.xml">
+    <None Update="Testdata\models.geo.admin.testdata\ilisite.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Testdata\models.interlis.ch\ilimodels.xml">
+    <None Update="Testdata\models.interlis.testdata\ilimodels.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Testdata\models.interlis.ch\ilisite.xml">
+    <None Update="Testdata\models.interlis.testdata\ilisite.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Testdata\models.multiparent.ch\ilimodels.xml">
+    <None Update="Testdata\models.multiparent.testdata\ilimodels.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Testdata\models.multiparent.ch\ilisite.xml">
+    <None Update="Testdata\models.multiparent.testdata\ilisite.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

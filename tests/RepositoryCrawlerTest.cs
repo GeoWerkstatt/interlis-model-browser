@@ -64,11 +64,11 @@ public class RepositoryCrawlerTest
     [TestMethod]
     public async Task CrawlerFindsAllRepositoriesInTree()
     {
-        var result = await repositoryCrawler.CrawlModelRepositories(new Uri("https://models.interlis.ch"));
+        var result = await repositoryCrawler.CrawlModelRepositories(new Uri("https://models.interlis.testdata"));
         Assert.IsNotNull(result);
         result
-            .AssertSingleItem("models.interlis.ch", AssertModelsInterlisCh)
-            .AssertSingleItem("models.geo.admin.ch", AssertModelsGeoAdminCh)
+            .AssertSingleItem("models.interlis.testdata", AssertModelsInterlisCh)
+            .AssertSingleItem("models.geo.admin.testdata", AssertModelsGeoAdminCh)
             .AssertAllNotNull()
             .AssertCount(3);
     }
@@ -76,37 +76,37 @@ public class RepositoryCrawlerTest
     [TestMethod]
     public async Task CrawlerProducesErrorLogsIfIlisiteXmlIsNotFound()
     {
-        var result = await repositoryCrawler.CrawlModelRepositories(new Uri("https://undefined.models.ch"));
+        var result = await repositoryCrawler.CrawlModelRepositories(new Uri("https://undefined.models.testdata"));
         Assert.IsNotNull(result);
         result.AssertCount(0);
-        loggerMock.Verify(LogLevel.Error, "Analysis of https://undefined.models.ch/ failed.", Times.Once());
-        loggerMock.Verify(LogLevel.Warning, "Could not analyse https://undefined.models.ch/ilidata.xml", Times.Once());
+        loggerMock.Verify(LogLevel.Error, "Analysis of https://undefined.models.testdata/ failed.", Times.Once());
+        loggerMock.Verify(LogLevel.Warning, "Could not analyse https://undefined.models.testdata/ilidata.xml", Times.Once());
     }
 
     [TestMethod]
     public async Task CrawlerProducesWarningLogsIfIlidataXmlIsNotFound()
     {
-        var result = await repositoryCrawler.CrawlModelRepositories(new Uri("https://models.interlis.ch"));
+        var result = await repositoryCrawler.CrawlModelRepositories(new Uri("https://models.interlis.testdata"));
         Assert.IsNotNull(result);
         result.Keys
-            .AssertContains("models.interlis.ch")
-            .AssertContains("models.multiparent.ch")
-            .AssertContains("models.geo.admin.ch")
+            .AssertContains("models.interlis.testdata")
+            .AssertContains("models.multiparent.testdata")
+            .AssertContains("models.geo.admin.testdata")
             .AssertCount(3);
-        loggerMock.Verify(LogLevel.Warning,  "Could not analyse https://models.interlis.ch/ilidata.xml.", Times.Once());
+        loggerMock.Verify(LogLevel.Warning,  "Could not analyse https://models.interlis.testdata/ilidata.xml.", Times.Once());
     }
 
     private void AssertModelsInterlisCh(Repository repository)
     {
-        Assert.AreEqual("models.interlis.ch", repository.HostNameId);
-        Assert.AreEqual(new Uri("https://models.interlis.ch/"), repository.Uri);
+        Assert.AreEqual("models.interlis.testdata", repository.HostNameId);
+        Assert.AreEqual(new Uri("https://models.interlis.testdata/"), repository.Uri);
         Assert.AreEqual("interlis.ch", repository.Name);
         Assert.AreEqual("Allgemeine technische INTERLIS-Modelle", repository.Title);
         Assert.AreEqual("Modell-Ablage des INTERLIS-Kernteams", repository.ShortDescription);
         Assert.AreEqual("http://www.interlis.ch", repository.Owner);
         Assert.AreEqual("mailto:info@interlis.ch", repository.TechnicalContact);
         repository.SubsidiarySites
-            .AssertSingleItem(ss => "models.geo.admin.ch".Equals(ss.Name, StringComparison.OrdinalIgnoreCase), AssertModelsGeoAdminCh)
+            .AssertSingleItem(ss => "models.geo.admin.testdata".Equals(ss.HostNameId, StringComparison.OrdinalIgnoreCase), AssertModelsGeoAdminCh)
             .AssertCount(2);
         repository.ParentSites.AssertCount(0);
         repository.Models
@@ -118,8 +118,8 @@ public class RepositoryCrawlerTest
 
     private void AssertModelsGeoAdminCh(Repository repository)
     {
-        Assert.AreEqual("models.geo.admin.ch", repository.HostNameId);
-        Assert.AreEqual(new Uri("https://models.geo.admin.ch/"), repository.Uri);
+        Assert.AreEqual("models.geo.admin.testdata", repository.HostNameId);
+        Assert.AreEqual(new Uri("https://models.geo.admin.testdata/"), repository.Uri);
         Assert.AreEqual("models.geo.admin.ch", repository.Name);
         Assert.AreEqual("Geobasisdaten-Modell-Ablage", repository.Title);
         Assert.AreEqual("Modell-Ablage fuer Datenmodelle der Geobasisdaten des Bundesrechts", repository.ShortDescription);
@@ -150,7 +150,7 @@ public class RepositoryCrawlerTest
         Assert.AreEqual("mailto:models@geo.admin.ch", catalog.Owner);
         Assert.AreEqual(string.Empty, catalog.Title);
         catalog.File
-            .AssertContains("https://models.geo.admin.ch/BLW/bearbeitungsstatus_kataloge_20140701.xml")
+            .AssertContains("https://models.geo.admin.testdata/BLW/bearbeitungsstatus_kataloge_20140701.xml")
             .AssertCount(1);
         catalog.ReferencedModels
             .AssertContains("Biodiversitaetsfoerderflaechen_Qualitaetsstufe_II_und_Vernetzung_LV95_V1_3")
@@ -163,20 +163,20 @@ public class RepositoryCrawlerTest
     {
         var mockHttp = new MockHttpMessageHandler();
         mockHttp
-            .Expect(HttpMethod.Head, "https://models.interlis.ch")
+            .Expect(HttpMethod.Head, "https://models.interlis.testdata")
             .Respond(HttpStatusCode.OK);
         mockHttp
-            .Expect("https://models.interlis.ch/ilisite.xml")
+            .Expect("https://models.interlis.testdata/ilisite.xml")
             .Respond(HttpStatusCode.NotFound);
         mockHttp
-            .Expect("https://models.interlis.ch/ilimodels.xml")
+            .Expect("https://models.interlis.testdata/ilimodels.xml")
             .Respond(HttpStatusCode.NotFound);
         mockHttp
-            .Expect("https://models.interlis.ch/ilidata.xml")
+            .Expect("https://models.interlis.testdata/ilidata.xml")
             .Respond(HttpStatusCode.NotFound);
 
         SetupRepositoryCrawlerInstance(mockHttp.ToHttpClient());
-        var result = await repositoryCrawler.CrawlModelRepositories(new Uri("http://models.interlis.ch"));
+        var result = await repositoryCrawler.CrawlModelRepositories(new Uri("http://models.interlis.testdata"));
 
         result.AssertCount(0);
         mockHttp.VerifyNoOutstandingExpectation();
@@ -187,20 +187,20 @@ public class RepositoryCrawlerTest
     {
         var mockHttp = new MockHttpMessageHandler();
         mockHttp
-            .Expect(HttpMethod.Head, "https://models.interlis.ch")
+            .Expect(HttpMethod.Head, "https://models.interlis.testdata")
             .Respond(HttpStatusCode.HttpVersionNotSupported);
         mockHttp
-            .Expect("http://models.interlis.ch/ilisite.xml")
+            .Expect("http://models.interlis.testdata/ilisite.xml")
             .Respond(HttpStatusCode.NotFound);
         mockHttp
-            .Expect("http://models.interlis.ch/ilimodels.xml")
+            .Expect("http://models.interlis.testdata/ilimodels.xml")
             .Respond(HttpStatusCode.NotFound);
         mockHttp
-            .Expect("http://models.interlis.ch/ilidata.xml")
+            .Expect("http://models.interlis.testdata/ilidata.xml")
             .Respond(HttpStatusCode.NotFound);
 
         SetupRepositoryCrawlerInstance(mockHttp.ToHttpClient());
-        var result = await repositoryCrawler.CrawlModelRepositories(new Uri("http://models.interlis.ch"));
+        var result = await repositoryCrawler.CrawlModelRepositories(new Uri("http://models.interlis.testdata"));
 
         result.AssertCount(0);
         mockHttp.VerifyNoOutstandingExpectation();
@@ -209,17 +209,17 @@ public class RepositoryCrawlerTest
     [TestMethod]
     public async Task CrawlerSkipsMultipleOccurences()
     {
-        var result = await repositoryCrawler.CrawlModelRepositories(new Uri("https://models.interlis.ch"));
+        var result = await repositoryCrawler.CrawlModelRepositories(new Uri("https://models.interlis.testdata"));
         result
-            .AssertSingleItem("models.multiparent.ch", AssertModelsMultiparentCh)
+            .AssertSingleItem("models.multiparent.testdata", AssertModelsMultiparentCh)
             .AssertCount(3)
             .AssertAllNotNull();
     }
 
     private void AssertModelsMultiparentCh(Repository repository)
     {
-        Assert.AreEqual("models.multiparent.ch", repository.HostNameId);
-        Assert.AreEqual(new Uri("https://models.multiparent.ch/"), repository.Uri);
+        Assert.AreEqual("models.multiparent.testdata", repository.HostNameId);
+        Assert.AreEqual(new Uri("https://models.multiparent.testdata/"), repository.Uri);
         Assert.AreEqual("Minimal Multi Parent Repo", repository.Name);
         Assert.IsNull(repository.Title);
         Assert.IsNull(repository.ShortDescription);
@@ -228,8 +228,8 @@ public class RepositoryCrawlerTest
         repository.SubsidiarySites
             .AssertCount(0);
         repository.ParentSites
-            .AssertSingleItem(ps => "models.interlis.ch".Equals(ps.HostNameId, StringComparison.OrdinalIgnoreCase), AssertModelsInterlisCh)
-            .AssertSingleItem(ps => "models.geo.admin.ch".Equals(ps.HostNameId, StringComparison.OrdinalIgnoreCase), AssertModelsGeoAdminCh)
+            .AssertSingleItem(ps => "models.interlis.testdata".Equals(ps.HostNameId, StringComparison.OrdinalIgnoreCase), AssertModelsInterlisCh)
+            .AssertSingleItem(ps => "models.geo.admin.testdata".Equals(ps.HostNameId, StringComparison.OrdinalIgnoreCase), AssertModelsGeoAdminCh)
             .AssertCount(2);
         repository.Models
             .AssertCount(0);
@@ -242,19 +242,19 @@ public class RepositoryCrawlerTest
     {
         mockHttp = new MockHttpMessageHandler();
         mockHttp
-            .When($"https://models.interlis.ch/ilidata.xml")
+            .When($"https://models.interlis.testdata/ilidata.xml")
             .Respond("application/xml", new MemoryStream(Encoding.UTF8.GetBytes("Bad Formatted xml stream")));
         mockHttp
-            .When($"https://models.geo.admin.ch/ilimodels.xml")
+            .When($"https://models.geo.admin.testdata/ilimodels.xml")
             .Respond("application/xml", new MemoryStream(Encoding.UTF8.GetBytes("Bad Formatted xml stream")));
         mockHttp
-            .When($"https://models.multiparent.ch/ilisite.xml")
+            .When($"https://models.multiparent.testdata/ilisite.xml")
             .Respond("application/xml", new MemoryStream(Encoding.UTF8.GetBytes("Bad Formatted xml stream")));
 
         SetupHttpMockFiles();
         SetupRepositoryCrawlerInstance(mockHttp.ToHttpClient());
 
-        var result = await repositoryCrawler.CrawlModelRepositories(new Uri("https://models.interlis.ch"));
+        var result = await repositoryCrawler.CrawlModelRepositories(new Uri("https://models.interlis.testdata"));
         result
             .AssertCount(2)
             .AssertAllNotNull();

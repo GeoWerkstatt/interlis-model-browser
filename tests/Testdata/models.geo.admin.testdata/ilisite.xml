@@ -15,12 +15,12 @@
     <technicalContact>mailto:models@geo.admin.ch</technicalContact>
     <parentSite>
       <IliSite09.RepositoryLocation_>
-        <value>http://models.interlis.ch/</value>
+        <value>http://models.interlis.testdata/</value>
       </IliSite09.RepositoryLocation_>
     </parentSite>
     <subsidiarySite>
       <IliSite09.RepositoryLocation_>
-        <value>https://models.multiparent.ch</value>
+        <value>https://models.multiparent.testdata</value>
       </IliSite09.RepositoryLocation_>
     </subsidiarySite>
     </IliSite09.SiteMetadata.Site>

@@ -13,7 +13,7 @@
   <technicalContact>mailto:info@interlis.ch</technicalContact>
   <subsidiarySite>
     <IliSite09.RepositoryLocation_>
-      <value>http://models.geo.admin.ch</value>
+      <value>http://models.geo.admin.testdata</value>
     </IliSite09.RepositoryLocation_>
     <IliSite09.RepositoryLocation_>
       <value>http://models.geo.kgk-cgc.ch</value>
@@ -28,7 +28,7 @@
       <value>https://repositorio.proadmintierra.info</value>
     </IliSite09.RepositoryLocation_>
     <IliSite09.RepositoryLocation_>
-      <value>https://models.multiparent.ch/</value>
+      <value>https://models.multiparent.testdata/</value>
     </IliSite09.RepositoryLocation_>
   </subsidiarySite>
   </IliSite09.SiteMetadata.Site>
