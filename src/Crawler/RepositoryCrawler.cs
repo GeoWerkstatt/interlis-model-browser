@@ -8,7 +8,7 @@ public class RepositoryCrawler : IRepositoryCrawler
 {
     private readonly ILogger<RepositoryCrawler> logger;
     private readonly HttpClient httpClient;
-    private IDictionary<string, Repository> modelRepositories = new ConcurrentDictionary<string, Repository>();
+    private IDictionary<string, Repository> modelRepositories;
 
     public RepositoryCrawler(ILogger<RepositoryCrawler> logger, IHttpClientFactory httpClientFactory)
     {
@@ -19,6 +19,7 @@ public class RepositoryCrawler : IRepositoryCrawler
     /// <inheritdoc />
     public async Task<IDictionary<string, Repository>> CrawlModelRepositories(Uri rootRepositoryUri)
     {
+        modelRepositories = new ConcurrentDictionary<string, Repository>();
         await CrawlRepositories(rootRepositoryUri, null).ConfigureAwait(false);
         return modelRepositories;
     }
