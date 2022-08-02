@@ -33,10 +33,13 @@ public class RepositoryCrawlerTest
         {
             foreach (var file in Directory.GetFiles(dir))
             {
-                mockHttp.When($"https://{Path.GetFileName(dir)}/{Path.GetFileName(file)}")
+                mockHttp
+                    .When($"https://{Path.GetFileName(dir)}/{Path.GetFileName(file)}")
                     .Respond("application/xml", new FileStream(file, FileMode.Open, FileAccess.Read));
 
-                mockHttp.When(HttpMethod.Head, $"https://{Path.GetFileName(dir)}/").Respond(HttpStatusCode.OK);
+                mockHttp
+                    .When(HttpMethod.Head, $"https://{Path.GetFileName(dir)}/")
+                    .Respond(HttpStatusCode.OK);
             }
         }
     }
@@ -45,7 +48,9 @@ public class RepositoryCrawlerTest
     {
         loggerMock = new Mock<ILogger<RepositoryCrawler>>();
         httpClientFactory = new Mock<IHttpClientFactory>();
-        httpClientFactory.Setup(cf => cf.CreateClient("")).Returns(httpClient);
+        httpClientFactory
+            .Setup(cf => cf.CreateClient(""))
+            .Returns(httpClient);
         repositoryCrawler = new RepositoryCrawler(loggerMock.Object, httpClientFactory.Object);
     }
 
@@ -104,8 +109,11 @@ public class RepositoryCrawlerTest
             .AssertSingleItem(ss => "models.geo.admin.ch".Equals(ss.Name, StringComparison.OrdinalIgnoreCase), AssertModelsGeoAdminCh)
             .AssertCount(2);
         repository.ParentSites.AssertCount(0);
-        repository.Models.AssertCount(76).AssertAllNotNull();
-        repository.Catalogs.AssertCount(0).AssertAllNotNull();
+        repository.Models
+            .AssertCount(76)
+            .AssertAllNotNull();
+        repository.Catalogs
+            .AssertCount(0);
     }
 
     private void AssertModelsGeoAdminCh(Repository repository)
@@ -117,10 +125,17 @@ public class RepositoryCrawlerTest
         Assert.AreEqual("Modell-Ablage fuer Datenmodelle der Geobasisdaten des Bundesrechts", repository.ShortDescription);
         Assert.AreEqual("http://www.geo.admin.ch", repository.Owner);
         Assert.AreEqual("mailto:models@geo.admin.ch", repository.TechnicalContact);
-        repository.SubsidiarySites.AssertCount(1);
-        repository.ParentSites.AssertCount(1).AssertAllNotNull();
-        repository.Models.AssertCount(1258).AssertAllNotNull();
-        repository.Catalogs.AssertCount(170)
+        repository.SubsidiarySites
+            .AssertCount(1)
+            .AssertAllNotNull();
+        repository.ParentSites
+            .AssertCount(1)
+            .AssertAllNotNull();
+        repository.Models
+            .AssertCount(1258)
+            .AssertAllNotNull();
+        repository.Catalogs
+            .AssertCount(170)
             .AssertSingleItem(
             c => "ch.admin.geo.models.bearbeitungsstatus_kataloge_20140701".Equals(c.Identifier, StringComparison.Ordinal),
             AssertBearbeitungstatusCatalog);
@@ -134,18 +149,31 @@ public class RepositoryCrawlerTest
         Assert.AreEqual(new DateTime(2014, 7, 1, 0, 0, 0, DateTimeKind.Utc), catalog.PublishingDate);
         Assert.AreEqual("mailto:models@geo.admin.ch", catalog.Owner);
         Assert.AreEqual(string.Empty, catalog.Title);
-        catalog.File.AssertContains("https://models.geo.admin.ch/BLW/bearbeitungsstatus_kataloge_20140701.xml").AssertCount(1);
-        catalog.ReferencedModels.AssertContains("Biodiversitaetsfoerderflaechen_Qualitaetsstufe_II_und_Vernetzung_LV95_V1_3").AssertCount(22).AssertAllNotNull();
+        catalog.File
+            .AssertContains("https://models.geo.admin.ch/BLW/bearbeitungsstatus_kataloge_20140701.xml")
+            .AssertCount(1);
+        catalog.ReferencedModels
+            .AssertContains("Biodiversitaetsfoerderflaechen_Qualitaetsstufe_II_und_Vernetzung_LV95_V1_3")
+            .AssertCount(22)
+            .AssertAllNotNull();
     }
 
     [TestMethod]
     public async Task CrawlerPerformsHttpsUpgrade()
     {
         var mockHttp = new MockHttpMessageHandler();
-        mockHttp.Expect(HttpMethod.Head, "https://models.interlis.ch").Respond(HttpStatusCode.OK);
-        mockHttp.Expect("https://models.interlis.ch/ilisite.xml").Respond(HttpStatusCode.NotFound);
-        mockHttp.Expect("https://models.interlis.ch/ilimodels.xml").Respond(HttpStatusCode.NotFound);
-        mockHttp.Expect("https://models.interlis.ch/ilidata.xml").Respond(HttpStatusCode.NotFound);
+        mockHttp
+            .Expect(HttpMethod.Head, "https://models.interlis.ch")
+            .Respond(HttpStatusCode.OK);
+        mockHttp
+            .Expect("https://models.interlis.ch/ilisite.xml")
+            .Respond(HttpStatusCode.NotFound);
+        mockHttp
+            .Expect("https://models.interlis.ch/ilimodels.xml")
+            .Respond(HttpStatusCode.NotFound);
+        mockHttp
+            .Expect("https://models.interlis.ch/ilidata.xml")
+            .Respond(HttpStatusCode.NotFound);
 
         SetupRepositoryCrawlerInstance(mockHttp.ToHttpClient());
         var result = await repositoryCrawler.CrawlModelRepositories(new Uri("http://models.interlis.ch"));
@@ -158,10 +186,18 @@ public class RepositoryCrawlerTest
     public async Task CrawlerUsesFallbackUrlIfHttpsFails()
     {
         var mockHttp = new MockHttpMessageHandler();
-        mockHttp.Expect(HttpMethod.Head, "https://models.interlis.ch").Respond(HttpStatusCode.HttpVersionNotSupported);
-        mockHttp.Expect("http://models.interlis.ch/ilisite.xml").Respond(HttpStatusCode.NotFound);
-        mockHttp.Expect("http://models.interlis.ch/ilimodels.xml").Respond(HttpStatusCode.NotFound);
-        mockHttp.Expect("http://models.interlis.ch/ilidata.xml").Respond(HttpStatusCode.NotFound);
+        mockHttp
+            .Expect(HttpMethod.Head, "https://models.interlis.ch")
+            .Respond(HttpStatusCode.HttpVersionNotSupported);
+        mockHttp
+            .Expect("http://models.interlis.ch/ilisite.xml")
+            .Respond(HttpStatusCode.NotFound);
+        mockHttp
+            .Expect("http://models.interlis.ch/ilimodels.xml")
+            .Respond(HttpStatusCode.NotFound);
+        mockHttp
+            .Expect("http://models.interlis.ch/ilidata.xml")
+            .Respond(HttpStatusCode.NotFound);
 
         SetupRepositoryCrawlerInstance(mockHttp.ToHttpClient());
         var result = await repositoryCrawler.CrawlModelRepositories(new Uri("http://models.interlis.ch"));
@@ -174,10 +210,10 @@ public class RepositoryCrawlerTest
     public async Task CrawlerSkipsMultipleOccurences()
     {
         var result = await repositoryCrawler.CrawlModelRepositories(new Uri("https://models.interlis.ch"));
-        result.AssertAllNotNull();
         result
             .AssertSingleItem("models.multiparent.ch", AssertModelsMultiparentCh)
-            .AssertCount(3);
+            .AssertCount(3)
+            .AssertAllNotNull();
     }
 
     private void AssertModelsMultiparentCh(Repository repository)
@@ -189,13 +225,16 @@ public class RepositoryCrawlerTest
         Assert.IsNull(repository.ShortDescription);
         Assert.IsNull(repository.Owner);
         Assert.IsNull(repository.TechnicalContact);
-        repository.SubsidiarySites.AssertCount(0);
+        repository.SubsidiarySites
+            .AssertCount(0);
         repository.ParentSites
             .AssertSingleItem(ps => "models.interlis.ch".Equals(ps.HostNameId, StringComparison.OrdinalIgnoreCase), AssertModelsInterlisCh)
             .AssertSingleItem(ps => "models.geo.admin.ch".Equals(ps.HostNameId, StringComparison.OrdinalIgnoreCase), AssertModelsGeoAdminCh)
             .AssertCount(2);
-        repository.Models.AssertCount(0).AssertAllNotNull();
-        repository.Catalogs.AssertCount(0).AssertAllNotNull();
+        repository.Models
+            .AssertCount(0);
+        repository.Catalogs
+            .AssertCount(0);
     }
 
     [TestMethod]
@@ -216,7 +255,8 @@ public class RepositoryCrawlerTest
         SetupRepositoryCrawlerInstance(mockHttp.ToHttpClient());
 
         var result = await repositoryCrawler.CrawlModelRepositories(new Uri("https://models.interlis.ch"));
-        result.AssertAllNotNull();
-        result.AssertCount(2);
+        result
+            .AssertCount(2)
+            .AssertAllNotNull();
     }
 }
