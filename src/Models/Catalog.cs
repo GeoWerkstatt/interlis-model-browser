@@ -2,7 +2,9 @@
 
 public class Catalog
 {
-    public string Id { get; set; }
+    public int CatalogId { get; set; }
+
+    public string Identifier { get; set; }
 
     public string Version { get; set; }
 

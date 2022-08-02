@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using ModelRepoBrowser.Crawler;
 
 namespace ModelRepoBrowser.Models;
 
@@ -32,5 +32,5 @@ public class Model
 
     public Repository ModelRepository { get; set; }
 
-    public Uri? Uri => ModelRepository.Uri is null ? null : new Uri(ModelRepository.Uri, File ?? string.Empty);
+    public Uri? Uri => string.IsNullOrEmpty(File) ? null : ModelRepository.Uri.Append(File);
 }
