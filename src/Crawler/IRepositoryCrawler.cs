@@ -4,7 +4,7 @@ namespace ModelRepoBrowser.Crawler;
 
 /// <summary>
 /// Defines methods for reading INTERLIS repository tree with required ilisite.xml (following IliSite09 Model),
-/// optional ilimodels.xml (following IliRepository09 & IliRepository20 Models) and optional ilidata.xml (following DatasetIdx16 Model).
+/// optional ilimodels.xml (following IliRepository09 and IliRepository20 Models) and optional ilidata.xml (following DatasetIdx16 Model).
 /// </summary>
 public interface IRepositoryCrawler
 {
