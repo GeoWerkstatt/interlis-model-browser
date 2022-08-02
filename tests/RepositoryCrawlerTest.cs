@@ -61,17 +61,19 @@ public class RepositoryCrawlerTest
     {
         var result = await repositoryCrawler.CrawlModelRepositories(new Uri("https://models.interlis.ch"));
         Assert.IsNotNull(result);
-        result.AssertAllNotNull();
         result
             .AssertSingleItem("models.interlis.ch", AssertModelsInterlisCh)
             .AssertSingleItem("models.geo.admin.ch", AssertModelsGeoAdminCh)
+            .AssertAllNotNull()
             .AssertCount(3);
     }
 
     [TestMethod]
     public async Task CrawlerProducesErrorLogsIfIlisiteXmlIsNotFound()
     {
-        await repositoryCrawler.CrawlModelRepositories(new Uri("https://undefined.models.ch"));
+        var result = await repositoryCrawler.CrawlModelRepositories(new Uri("https://undefined.models.ch"));
+        Assert.IsNotNull(result);
+        result.AssertCount(0);
         loggerMock.Verify(LogLevel.Error, "Analysis of https://undefined.models.ch/ failed.", Times.Once());
         loggerMock.Verify(LogLevel.Warning, "Could not analyse https://undefined.models.ch/ilidata.xml", Times.Once());
     }
@@ -79,7 +81,13 @@ public class RepositoryCrawlerTest
     [TestMethod]
     public async Task CrawlerProducesWarningLogsIfIlidataXmlIsNotFound()
     {
-        await repositoryCrawler.CrawlModelRepositories(new Uri("https://models.interlis.ch"));
+        var result = await repositoryCrawler.CrawlModelRepositories(new Uri("https://models.interlis.ch"));
+        Assert.IsNotNull(result);
+        result.Keys
+            .AssertContains("models.interlis.ch")
+            .AssertContains("models.multiparent.ch")
+            .AssertContains("models.geo.admin.ch")
+            .AssertCount(3);
         loggerMock.Verify(LogLevel.Warning,  "Could not analyse https://models.interlis.ch/ilidata.xml.", Times.Once());
     }
 
