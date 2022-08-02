@@ -10,13 +10,15 @@ public class DbUpdateService : BackgroundService
 {
     private readonly IServiceScopeFactory scopeFactory;
     private readonly ILogger<DbUpdateService> logger;
+    private readonly IConfiguration configuration;
 
     public TimeOnly PreferedTime { get; set; }
 
-    public DbUpdateService(IServiceScopeFactory scopeFactory, ILogger<DbUpdateService> logger)
+    public DbUpdateService(IServiceScopeFactory scopeFactory, ILogger<DbUpdateService> logger, IConfiguration configuration)
     {
         this.scopeFactory = scopeFactory;
         this.logger = logger;
+        this.configuration = configuration;
 
         PreferedTime = new TimeOnly(1, 0);
     }
@@ -24,12 +26,19 @@ public class DbUpdateService : BackgroundService
     private async Task UpdateModelRepoDatabase()
     {
         logger.LogInformation("Updating ModelRepoDatabase...");
+
+        if (!Uri.TryCreate(configuration["Crawler:RootRepositoryUri"], UriKind.RelativeOrAbsolute, out var rootUri))
+        {
+            logger.LogError("Unable to parse configuration Crawler:RootRepositoryUri. Database update skipped.");
+            return;
+        }
+
         try
         {
             using (var scope = scopeFactory.CreateScope())
             {
                 var crawler = scope.ServiceProvider.GetRequiredService<IRepositoryCrawler>();
-                var repositories = await crawler.CrawlModelRepositories(new Uri("https://models.interlis.ch")).ConfigureAwait(false);
+                var repositories = await crawler.CrawlModelRepositories(rootUri).ConfigureAwait(false);
 
                 var context = scope.ServiceProvider.GetRequiredService<RepoBrowserContext>();
                 context.Database.BeginTransaction();
