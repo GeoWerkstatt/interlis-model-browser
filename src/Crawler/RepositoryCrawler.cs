@@ -4,6 +4,7 @@ using System.Collections.Concurrent;
 
 namespace ModelRepoBrowser.Crawler;
 
+/// <inheritdoc />
 public class RepositoryCrawler : IRepositoryCrawler
 {
     private readonly ILogger<RepositoryCrawler> logger;
