@@ -6,21 +6,13 @@ namespace ModelRepoBrowser.Crawler;
 
 public static class RepositoryFilesDeserializer
 {
-    private static Dictionary<Type, XmlSerializer> serializers = new();
-
     private static T? DeserializeDatasection<T>(Stream stream)
     {
         if (stream is null) return default(T);
 
-        XmlSerializer? serializer;
-        if (!serializers.TryGetValue(typeof(T), out serializer))
-        {
-            serializer = new XmlSerializer(typeof(T));
-            serializers.Add(typeof(T), serializer);
-        }
-
         try
         {
+            var serializer = new XmlSerializer(typeof(T));
             using var xmlReader = new XmlTextReader(stream);
             xmlReader.Namespaces = false;
             xmlReader.ReadToDescendant("DATASECTION");
