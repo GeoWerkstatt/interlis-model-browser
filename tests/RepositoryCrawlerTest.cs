@@ -1,5 +1,4 @@
-﻿using Geowerkstatt.TestTools;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ModelRepoBrowser.Crawler;
 using ModelRepoBrowser.Models;

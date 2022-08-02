@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Geowerkstatt.TestTools;
+namespace ModelRepoBrowser.TestHelpers;
 
 /// <summary>
 /// Provides extension methods for dictionaries to verify

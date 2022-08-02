@@ -3,7 +3,7 @@ using System;
 using System.Globalization;
 using System.Linq;
 
-namespace Geowerkstatt.TestTools;
+namespace ModelRepoBrowser.TestHelpers;
 
 /// <summary>
 /// Provides support in building error messages.

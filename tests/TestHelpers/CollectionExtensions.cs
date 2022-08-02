@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 
-namespace Geowerkstatt.TestTools;
+namespace ModelRepoBrowser.TestHelpers;
 
 /// <summary>
 /// Provides extension methods for collections to verify
