@@ -68,7 +68,7 @@ public class RepositoryCrawler : IRepositoryCrawler
             var models = await modelsTask.ConfigureAwait(false);
             var metadatas = await metadatasTask.ConfigureAwait(false);
 
-            if (ilisite is null) return (null, Array.Empty<Uri>());
+            if (ilisite is null) return (null, Enumerable.Empty<Uri>());
 
             var repository = new Repository
             {
@@ -96,7 +96,7 @@ public class RepositoryCrawler : IRepositoryCrawler
             var subsidiaryRepositories = ilisite.subsidiarySites?
                     .Where(location => location?.value is not null)
                     .Select(location => new Uri(location.value!))
-                    .ToList() ?? new List<Uri>();
+                    .ToList() ?? Enumerable.Empty<Uri>();
 
             return (repository, subsidiaryRepositories);
         }
