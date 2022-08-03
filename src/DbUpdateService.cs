@@ -55,7 +55,7 @@ public class DbUpdateService : BackgroundService
                     context.SaveChanges();
 
                     context.Database.CommitTransaction();
-                    logger.LogInformation("Updating ModelRepoDatabase complete. Inserted {RepositoryCount} repositores", repositories.Count);
+                    logger.LogInformation("Updating ModelRepoDatabase complete. Inserted {RepositoryCount} repositories.", repositories.Count);
                 }
                 else
                 {
