@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ModelRepoBrowser.Crawler;
+using System.Runtime.CompilerServices;
 
+[assembly:InternalsVisibleTo("ModelRepoBrowser.Test")]
 namespace ModelRepoBrowser;
 
 /// <summary>
@@ -11,8 +13,7 @@ public class DbUpdateService : BackgroundService
     private readonly IServiceScopeFactory scopeFactory;
     private readonly ILogger<DbUpdateService> logger;
     private readonly IConfiguration configuration;
-
-    public TimeOnly PreferedTime { get; set; }
+    private readonly TimeOnly preferredTime;
 
     public DbUpdateService(IServiceScopeFactory scopeFactory, ILogger<DbUpdateService> logger, IConfiguration configuration)
     {
@@ -20,7 +21,7 @@ public class DbUpdateService : BackgroundService
         this.logger = logger;
         this.configuration = configuration;
 
-        PreferedTime = new TimeOnly(1, 0);
+        preferredTime = new TimeOnly(1, 0);
     }
 
     private async Task UpdateModelRepoDatabase()
@@ -67,13 +68,13 @@ public class DbUpdateService : BackgroundService
         {
             await UpdateModelRepoDatabase().ConfigureAwait(false);
 
-            var delayTime = GetTimeSpanUntilPreferedTime(DateTime.Now, PreferedTime);
+            var delayTime = GetTimeSpanUntilPreferedTime(DateTime.Now, preferredTime);
             logger.LogInformation("Next ModelRepoDatabase update in {DelayTime}", delayTime);
             await Task.Delay(delayTime, stoppingToken).ConfigureAwait(false);
         }
     }
 
-    public static TimeSpan GetTimeSpanUntilPreferedTime(DateTime currentDateTime, TimeOnly preferedTime)
+    internal static TimeSpan GetTimeSpanUntilPreferedTime(DateTime currentDateTime, TimeOnly preferedTime)
     {
         var preferedDateTime = currentDateTime.Date + preferedTime.ToTimeSpan();
         if (preferedDateTime <= currentDateTime)
