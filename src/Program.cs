@@ -10,6 +10,7 @@ var connectionString = builder.Configuration.GetConnectionString("RepoBrowserCon
 builder.Services.AddNpgsql<RepoBrowserContext>(connectionString);
 
 builder.Services.AddTransient<IRepositoryCrawler, RepositoryCrawler>().AddHttpClient();
+builder.Services.AddHostedService<DbUpdateService>();
 var app = builder.Build();
 
 if (!app.Environment.IsDevelopment())
@@ -31,18 +32,6 @@ using (var scope = app.Services.CreateScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<RepoBrowserContext>();
     context.Database.EnsureCreated();
-
-    var crawler = scope.ServiceProvider.GetRequiredService<IRepositoryCrawler>();
-    var repositories = crawler.CrawlModelRepositories(new Uri("https://models.interlis.ch")).Result;
-
-    context.Database.BeginTransaction();
-    context.Catalogs.RemoveRange(context.Catalogs);
-    context.Models.RemoveRange(context.Models);
-    context.Repositories.RemoveRange(context.Repositories);
-
-    context.Repositories.AddRange(repositories.Values);
-
-    context.Database.CommitTransaction();
 }
 
 app.Run();
