@@ -80,7 +80,6 @@ public class RepositoryCrawlerTest
         Assert.IsNotNull(result);
         result.AssertCount(0);
         loggerMock.Verify(LogLevel.Error, "Analysis of https://undefined.models.testdata/ failed.", Times.Once());
-        loggerMock.Verify(LogLevel.Warning, "Could not analyse https://undefined.models.testdata/ilidata.xml", Times.Once());
     }
 
     [TestMethod]
