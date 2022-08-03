@@ -40,7 +40,7 @@ public class DbUpdateService : BackgroundService
                 var crawler = scope.ServiceProvider.GetRequiredService<IRepositoryCrawler>();
                 var repositories = await crawler.CrawlModelRepositories(rootUri).ConfigureAwait(false);
 
-                var context = scope.ServiceProvider.GetRequiredService<RepoBrowserContext>();
+                using var context = scope.ServiceProvider.GetRequiredService<RepoBrowserContext>();
                 context.Database.BeginTransaction();
 
                 context.Catalogs.RemoveRange(context.Catalogs);
