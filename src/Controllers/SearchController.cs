@@ -24,6 +24,7 @@ public class SearchController : ControllerBase
 
         var searchPattern = $"%{EscapeLikePattern(q)}%";
         var models = context.Models
+            .Where(m => !m.File.StartsWith("obsolete/"))
             .Where(m =>
                 EF.Functions.ILike(m.Name, searchPattern, @"\")
                 || EF.Functions.ILike(m.Version, searchPattern, @"\")
