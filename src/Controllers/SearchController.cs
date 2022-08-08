@@ -22,6 +22,9 @@ public class SearchController : ControllerBase
     {
         logger.LogInformation("Search with query <{SearchQuery}>", q);
 
+        context.SearchQueries.Add(new Models.SearchQuery() { Query = q });
+        context.SaveChanges();
+
         var searchPattern = $"%{EscapeLikePattern(q)}%";
         var models = context.Models
             .Where(m => !m.File.StartsWith("obsolete/"))
