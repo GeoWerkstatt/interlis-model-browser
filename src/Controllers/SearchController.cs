@@ -26,12 +26,22 @@ public class SearchController : ControllerBase
         context.SaveChanges();
 
         var searchPattern = $"%{EscapeLikePattern(q)}%";
+
+        var modelsNamesFoundFromCatalogs = context.Catalogs
+            .Where(c => EF.Functions.ILike(c.Identifier, searchPattern, @"\"))
+            .Select(c => c.ReferencedModels)
+            .AsEnumerable()
+            .SelectMany(c => c)
+            .Distinct()
+            .ToList();
+
         var models = context.Models
             .Where(m => !m.File.StartsWith("obsolete/"))
             .Where(m =>
                 EF.Functions.ILike(m.Name, searchPattern, @"\")
                 || EF.Functions.ILike(m.Version, searchPattern, @"\")
                 || EF.Functions.ILike(m.File, searchPattern, @"\")
+                || modelsNamesFoundFromCatalogs.Contains(m.Name)
                 || m.Tags.Contains(q))
             .Select(m => $"{m.Name}, {m.Version}, {m.File}, {{{string.Join(", ", m.Tags)}}}")
             .ToList();
