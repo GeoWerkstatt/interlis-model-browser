@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button, IconButton, TextField, Tooltip, Stack, Typography } from "@mui/material";
+import { Button, IconButton, TextField, Tooltip, Stack } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import SearchIcon from "@mui/icons-material/Search";
 import ClearIcon from "@mui/icons-material/Clear";
