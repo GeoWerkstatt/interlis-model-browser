@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using ModelRepoBrowser.Models;
 
 namespace ModelRepoBrowser.Controllers;
 
@@ -18,7 +19,7 @@ public class SearchController : ControllerBase
     }
 
     [HttpGet]
-    public string Get(string q)
+    public async Task<IEnumerable<Model>> Get(string q)
     {
         logger.LogInformation("Search with query <{SearchQuery}>", q);
 
@@ -36,17 +37,16 @@ public class SearchController : ControllerBase
             .ToList();
 
         var models = context.Models
+            .Include(m => m.ModelRepository)
             .Where(m => !m.File.StartsWith("obsolete/"))
             .Where(m =>
                 EF.Functions.ILike(m.Name, searchPattern, @"\")
                 || EF.Functions.ILike(m.Version, searchPattern, @"\")
                 || EF.Functions.ILike(m.File, searchPattern, @"\")
                 || modelsNamesFoundFromCatalogs.Contains(m.Name)
-                || m.Tags.Contains(q))
-            .Select(m => $"{m.Name}, {m.Version}, {m.File}, {{{string.Join(", ", m.Tags)}}}")
-            .ToList();
+                || m.Tags.Contains(q));
 
-        return string.Join("\n", models);
+        return await models.AsNoTracking().ToListAsync().ConfigureAwait(false);
     }
 
     internal string EscapeLikePattern(string pattern)
