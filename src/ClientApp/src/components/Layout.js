@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
-import Container from "@mui/material/Container";
-import Typography from "@mui/material/Typography";
+import { AppBar, Container, Toolbar, Typography } from "@mui/material";
 
 export function Layout(props) {
   const [version, setVersion] = useState();
@@ -15,6 +14,11 @@ export function Layout(props) {
 
   return (
     <div>
+      <AppBar position="static">
+        <Toolbar>
+          <Typography>INTERLIS Model Repo Browser</Typography>
+        </Toolbar>
+      </AppBar>
       <Container>{props.children}</Container>
       <footer>
         <Typography variant="body2" gutterBottom>

@@ -1,3 +1,9 @@
 {
-  "welcome": "Bienvenue"
+  "welcome": "Bienvenue",
+  "search-instructions": "Trouver modèles INTERLIS",
+  "reset-search": "Réinitialiser la recherche",
+  "models-found_one": "Modèle trouvé",
+  "models-found_other": "Modèles trouvés",
+  "filter": "filtre",
+  "search": "Recherche"
 }
