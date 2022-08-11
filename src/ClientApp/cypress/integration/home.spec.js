@@ -1,6 +1,6 @@
 describe("Landing page tests", () => {
-  it("Displays welcome message in german", () => {
-    const germanWelcome = "Willkommen";
+  it("Displays search message in german", () => {
+    const germanSearch = "Suchen";
 
     cy.visit("/", {
       onBeforeLoad(win) {
@@ -13,11 +13,11 @@ describe("Landing page tests", () => {
       },
     });
 
-    cy.contains(germanWelcome);
+    cy.contains(germanSearch);
   });
 
-  it("Displays welcome message in french", () => {
-    const frenchWelcome = "Bienvenue";
+  it("Displays search message in french", () => {
+    const frenchSearch = "Recherche";
 
     cy.visit("/", {
       onBeforeLoad(win) {
@@ -30,11 +30,11 @@ describe("Landing page tests", () => {
       },
     });
 
-    cy.contains(frenchWelcome);
+    cy.contains(frenchSearch);
   });
 
-  it("Displays welcome message in italia", () => {
-    const italianWelcome = "Benvenuto";
+  it("Displays search message in italia", () => {
+    const italianSearch = "Cerca";
 
     cy.visit("/", {
       onBeforeLoad(win) {
@@ -46,6 +46,6 @@ describe("Landing page tests", () => {
         "Accept-Language": "it",
       },
     });
-    cy.contains(italianWelcome);
+    cy.contains(italianSearch);
   });
 });
