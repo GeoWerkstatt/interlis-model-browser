@@ -23,11 +23,15 @@ public class SearchController : ControllerBase
     {
         logger.LogInformation("Search with query <{SearchQuery}>", query);
 
-        _ = Task.Run(() =>
+        try
         {
             context.SearchQueries.Add(new() { Query = query });
             context.SaveChanges();
-        });
+        }
+        catch (DbUpdateException ex)
+        {
+            logger.LogWarning(ex, "Writing query <{SearchQuery}> to the database log failed.", query);
+        }
 
         var searchPattern = $"%{EscapeLikePattern(query)}%";
 
