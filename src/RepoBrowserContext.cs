@@ -16,4 +16,5 @@ public class RepoBrowserContext : DbContext
     public DbSet<Repository> Repositories { get; set; }
     public DbSet<Model> Models { get; set; }
     public DbSet<Catalog> Catalogs { get; set; }
+    public DbSet<SearchQuery> SearchQueries { get; set; }
 }
