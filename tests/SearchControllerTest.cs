@@ -1,7 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ModelRepoBrowser.Controllers;
+using ModelRepoBrowser.TestHelpers;
 using Moq;
 
 namespace ModelRepoBrowser;
@@ -17,7 +17,7 @@ public class SearchControllerTest
     public void TestInitialize()
     {
         loggerMock = new Mock<ILogger<SearchController>>();
-        context = new RepoBrowserContext(new DbContextOptionsBuilder<RepoBrowserContext>().Options);
+        context = ContextFactory.CreateContext();
         controller = new SearchController(loggerMock.Object, context);
     }
 
@@ -33,5 +33,91 @@ public class SearchControllerTest
     {
         Assert.AreEqual("HOTRANGE", controller.EscapeLikePattern("HOTRANGE"));
         Assert.AreEqual(@"H\_OT\%AN\\GE", controller.EscapeLikePattern(@"H_OT%AN\GE"));
+    }
+
+    [TestMethod]
+    public async Task SearchName()
+    {
+        var searchResult = await controller.Get("entUCK");
+        searchResult
+            .AssertCount(2)
+            .AssertSingleItem(m => m.Id == 22, m => Assert.AreEqual("Kentucky", m.Name));
+    }
+
+    [TestMethod]
+    public async Task SearchVersion()
+    {
+        var searchResult = await controller.Get("021-02-2");
+        searchResult
+            .AssertCount(2)
+            .AssertSingleItem(m => m.Id == 89, m => Assert.AreEqual("2021-02-24", m.Version));
+    }
+
+    [TestMethod]
+    public async Task SearchFilepath()
+    {
+        var searchResult = await controller.Get("spool/FANtastic");
+        searchResult
+            .AssertCount(1)
+            .AssertSingleItem(m => m.Id == 6, m => Assert.AreEqual("var/spool/fantastic.aab", m.File));
+    }
+
+    [TestMethod]
+    public async Task SearchCatalog()
+    {
+        var searchResult = await controller.Get("irecTO");
+        searchResult
+            .AssertCount(2)
+            .AssertSingleItem(m => m.Id == 15, m => Assert.AreEqual("transition_vortals", m.Name))
+            .AssertSingleItem(m => m.Id == 70, m => Assert.AreEqual("bandwidth_auxiliary_Incredible", m.Name));
+    }
+
+    [TestMethod]
+    public async Task SearchTag()
+    {
+        var searchResult = await controller.Get("Centralized");
+        searchResult
+            .AssertCount(1)
+            .AssertSingleItem(m => m.Id == 23, m => m.Tags.AssertContains("Centralized"));
+
+        // tags must match exactly
+        searchResult = await controller.Get("entralize");
+        searchResult.AssertCount(0);
+
+        searchResult = await controller.Get("centralizED");
+        searchResult.AssertCount(0);
+    }
+
+    [TestMethod]
+    public async Task SearchOmitsObsolete()
+    {
+        context.Models
+            .Where(m => m.File.StartsWith("obsolete"))
+            .ToList()
+            .AssertCount(12, "Precondition: the testdata contains obsolete models.");
+
+        var searchResult = await controller.Get("obsolete");
+        searchResult.AssertCount(0);
+    }
+
+    [TestMethod]
+    public async Task SearchWithWildcardsDisabled()
+    {
+        var searchResult = await controller.Get("Kentucky");
+        searchResult.AssertCount(2);
+
+        searchResult = await controller.Get("Kent_cky");
+        searchResult.AssertCount(0);
+
+        searchResult = await controller.Get("Ken%cky");
+        searchResult.AssertCount(0);
+    }
+
+    [TestMethod]
+    public async Task SearchQueryWrittenToDatabase()
+    {
+        await controller.Get("reinvent_maroon_Washington_connect_clear-thinking");
+
+        context.SearchQueries.Select(s => s.Query).AssertContains("reinvent_maroon_Washington_connect_clear-thinking");
     }
 }
