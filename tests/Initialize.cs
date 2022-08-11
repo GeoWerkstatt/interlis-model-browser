@@ -18,7 +18,7 @@ public sealed class Initialize
         using var context = ContextFactory.CreateContext();
         context.Database.EnsureCreated();
 
-        // clear database and fill it with test data
+        // Clear database and fill it with test data
         context.SearchQueries.RemoveRange(context.SearchQueries);
         context.Catalogs.RemoveRange(context.Catalogs);
         context.Models.RemoveRange(context.Models);

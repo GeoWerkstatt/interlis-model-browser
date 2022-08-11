@@ -80,7 +80,7 @@ public class SearchControllerTest
             .AssertCount(1)
             .AssertSingleItem(m => m.Id == 23, m => m.Tags.AssertContains("Centralized"));
 
-        // tags must match exactly
+        // Tags must match exactly
         searchResult = await controller.Search("entralize");
         searchResult.AssertCount(0);
 

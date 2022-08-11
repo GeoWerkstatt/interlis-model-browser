@@ -13,12 +13,12 @@ public static class RepoBrowserContextExtensions
 {
     public static void SeedData(this RepoBrowserContext context)
     {
-        using var transatcion = context.Database.BeginTransaction();
+        using var transaction = context.Database.BeginTransaction();
 
         // Set Bogus Data System Clock
         Bogus.DataSets.Date.SystemClock = () => DateTime.Parse("01.01.2022 00:00:00", new CultureInfo("de_CH", false));
 
-        var schemaLanugages = new[] { "ili2_4", "ili1", "ili2_2", "ili2_3" };
+        var schemaLanguages = new[] { "ili2_4", "ili1", "ili2_2", "ili2_3" };
 
         var fakeRepositories = new Faker<Repository>()
             .StrictMode(true)
@@ -43,7 +43,7 @@ public static class RepoBrowserContextExtensions
             .RuleFor(m => m.Id, f => modelIds++)
             .RuleFor(m => m.MD5, f => f.Random.Hash(32))
             .RuleFor(m => m.Name, f => string.Join("_", f.Random.WordsArray(1, 5)))
-            .RuleFor(m => m.SchemaLanguage, f => f.PickRandom(schemaLanugages))
+            .RuleFor(m => m.SchemaLanguage, f => f.PickRandom(schemaLanguages))
             .RuleFor(m => m.File, f => f.System.FilePath().Trim('/').OrDefault(f, 0.1f, "obsolete" + f.System.FilePath()))
             .RuleFor(m => m.Version, f => f.Date.Past().ToString("yyyy-MM-dd", DateTimeFormatInfo.InvariantInfo))
             .RuleFor(m => m.PublishingDate, f => f.Date.Past())
@@ -77,6 +77,6 @@ public static class RepoBrowserContextExtensions
         context.Catalogs.AddRange(catalogs);
         context.SaveChanges();
 
-        transatcion.Commit();
+        transaction.Commit();
     }
 }

@@ -9,7 +9,6 @@ namespace ModelRepoBrowser.Controllers;
 public class SearchController : ControllerBase
 {
     private readonly ILogger<SearchController> logger;
-
     private readonly RepoBrowserContext context;
 
     public SearchController(ILogger<SearchController> logger, RepoBrowserContext context)
