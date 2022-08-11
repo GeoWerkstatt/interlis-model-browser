@@ -4,5 +4,12 @@
   "models-found_one": "Modèle trouvé",
   "models-found_other": "Modèles trouvés",
   "filter": "filtre",
-  "search": "Recherche"
+  "search": "Recherche",
+  "schema-language": "Langage de schéma",
+  "model-repository": "Dépôt de modèle",
+  "latest-version": "Dernière version",
+  "issuer": "Émetteur",
+  "last-updated": "Dernière mise à jour",
+  "file": "Fichier",
+  "more-information": "Plus d'informations"
 }

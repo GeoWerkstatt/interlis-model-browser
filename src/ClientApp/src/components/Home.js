@@ -66,7 +66,7 @@ export function Home() {
           </Button>
         </Stack>
       </form>
-      {numberOfModels !== null && <Results numberOfResults={numberOfModels}></Results>}
+      {numberOfModels !== null && <Results></Results>}
     </div>
   );
 }
