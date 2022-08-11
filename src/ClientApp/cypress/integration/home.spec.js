@@ -48,4 +48,13 @@ describe("Landing page tests", () => {
     });
     cy.contains(italianSearch);
   });
+
+  it("Displays results after search", () => {
+    cy.visit("/");
+    cy.get("div[name=home]").should("not.contain", "Filter");
+    cy.get("div[name=home]").should("not.contain", "Modelle gefunden");
+    cy.get("input[name=searchInput]").should("be.visible").click().type("SearchString{enter}");
+    cy.get("div[name=home]").should("contain", "Filter");
+    cy.get("div[name=home]").should("contain", "Modelle gefunden");
+  });
 });
