@@ -23,8 +23,11 @@ public class SearchController : ControllerBase
     {
         logger.LogInformation("Search with query <{SearchQuery}>", query);
 
-        context.SearchQueries.Add(new Models.SearchQuery() { Query = query });
-        context.SaveChanges();
+        _ = Task.Run(() =>
+        {
+            context.SearchQueries.Add(new() { Query = query });
+            context.SaveChanges();
+        });
 
         var searchPattern = $"%{EscapeLikePattern(query)}%";
 
