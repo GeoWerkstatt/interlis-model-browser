@@ -137,6 +137,13 @@ public class SearchControllerTest
     }
 
     [TestMethod]
+    public async Task SearchQueryWithSpace()
+    {
+        var searchResult = await controller.Search("ken tucky");
+        searchResult.AssertCount(0);
+    }
+
+    [TestMethod]
     public async Task SearchQueryWrittenToDatabase()
     {
         await controller.Search("reinvent_maroon_Washington_connect_clear-thinking");
