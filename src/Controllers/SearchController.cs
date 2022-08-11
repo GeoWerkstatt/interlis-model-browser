@@ -18,6 +18,13 @@ public class SearchController : ControllerBase
         this.context = context;
     }
 
+    /// <summary>
+    /// Search the Model Repositories for Models that match the <paramref name="query"/>
+    /// with their Name, Version, File path or Tags. If the <paramref name="query"/> matches
+    /// a catalog name its referenced models are also included in the search result.
+    /// </summary>
+    /// <param name="query">The query string to search for.</param>
+    /// <returns>A sequence of <see cref="Model"/> that matched the <paramref name="query"/>.</returns>
     [HttpGet]
     public async Task<IEnumerable<Model>> Search(string query)
     {
