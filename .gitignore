@@ -402,6 +402,7 @@ FodyWeavers.xsd
 src/ClientApp/cypress/screenshot
 src/ClientApp/cypress/downloads
 src/ClientApp/cypress/videos
+src/ClientApp/cypress/screenshots
 
 # Dependencies
 /src/ClientAppnode_modules
@@ -422,4 +423,3 @@ src/ClientApp/.env.production.local
 src/ClientApp/npm-debug.log*
 src/ClientApp/yarn-debug.log*
 src/ClientApp/yarn-error.log*
-src/ClientApp/cypress/screenshots/
