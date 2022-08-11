@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button, IconButton, TextField, Tooltip, Stack } from "@mui/material";
+import { Box, Button, IconButton, TextField, Tooltip, Stack } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import SearchIcon from "@mui/icons-material/Search";
 import ClearIcon from "@mui/icons-material/Clear";
@@ -29,7 +29,7 @@ export function Home() {
   const { t } = useTranslation("common");
 
   return (
-    <div>
+    <Box name="home">
       <form onSubmit={handleSubmit(onSubmit)} name="search-form">
         <Stack mt={20} direction="row" justifyContent="space-between" alignItems="strech">
           <TextField
@@ -67,6 +67,6 @@ export function Home() {
         </Stack>
       </form>
       {numberOfModels !== null && <Results></Results>}
-    </div>
+    </Box>
   );
 }
