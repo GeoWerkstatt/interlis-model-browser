@@ -19,14 +19,14 @@ public class SearchController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IEnumerable<Model>> Get(string q)
+    public async Task<IEnumerable<Model>> Search(string query)
     {
-        logger.LogInformation("Search with query <{SearchQuery}>", q);
+        logger.LogInformation("Search with query <{SearchQuery}>", query);
 
-        context.SearchQueries.Add(new Models.SearchQuery() { Query = q });
+        context.SearchQueries.Add(new Models.SearchQuery() { Query = query });
         context.SaveChanges();
 
-        var searchPattern = $"%{EscapeLikePattern(q)}%";
+        var searchPattern = $"%{EscapeLikePattern(query)}%";
 
         var modelsNamesFoundFromCatalogs = context.Catalogs
             .Where(c => EF.Functions.ILike(c.Identifier, searchPattern, @"\"))
@@ -44,7 +44,7 @@ public class SearchController : ControllerBase
                 || EF.Functions.ILike(m.Version, searchPattern, @"\")
                 || EF.Functions.ILike(m.File, searchPattern, @"\")
                 || modelsNamesFoundFromCatalogs.Contains(m.Name)
-                || m.Tags.Contains(q));
+                || m.Tags.Contains(query));
 
         return await models.AsNoTracking().ToListAsync().ConfigureAwait(false);
     }
