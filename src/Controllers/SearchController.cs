@@ -39,7 +39,13 @@ public class SearchController : ControllerBase
             logger.LogWarning(ex, "Writing query <{SearchQuery}> to the database log failed.", query);
         }
 
-        var searchPattern = $"%{EscapeLikePattern(query)}%";
+        var trimmedQuery = query?.Trim();
+        if (string.IsNullOrEmpty(trimmedQuery))
+        {
+            return Enumerable.Empty<Model>();
+        }
+
+        var searchPattern = $"%{EscapeLikePattern(trimmedQuery)}%";
 
         var modelsNamesFoundFromCatalogs = context.Catalogs
             .Where(c => EF.Functions.ILike(c.Identifier, searchPattern, @"\"))
@@ -57,16 +63,16 @@ public class SearchController : ControllerBase
                 || EF.Functions.ILike(m.Version, searchPattern, @"\")
                 || EF.Functions.ILike(m.File, searchPattern, @"\")
                 || modelsNamesFoundFromCatalogs.Contains(m.Name)
-                || m.Tags.Contains(query));
+                || m.Tags.Contains(trimmedQuery));
 
         return await models.AsNoTracking().ToListAsync().ConfigureAwait(false);
     }
 
-    internal string EscapeLikePattern(string pattern)
+    internal string? EscapeLikePattern(string pattern)
     {
         return pattern
-            .Replace(@"\", @"\\", StringComparison.OrdinalIgnoreCase)
-            .Replace("_", @"\_", StringComparison.OrdinalIgnoreCase)
-            .Replace("%", @"\%", StringComparison.OrdinalIgnoreCase);
+            ?.Replace(@"\", @"\\", StringComparison.OrdinalIgnoreCase)
+            ?.Replace("_", @"\_", StringComparison.OrdinalIgnoreCase)
+            ?.Replace("%", @"\%", StringComparison.OrdinalIgnoreCase);
     }
 }

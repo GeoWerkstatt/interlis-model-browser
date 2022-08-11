@@ -31,6 +31,8 @@ public class SearchControllerTest
     [TestMethod]
     public void EscapeLikePattern()
     {
+        Assert.AreEqual(null, controller.EscapeLikePattern(null));
+        Assert.AreEqual(string.Empty, controller.EscapeLikePattern(string.Empty));
         Assert.AreEqual("HOTRANGE", controller.EscapeLikePattern("HOTRANGE"));
         Assert.AreEqual(@"H\_OT\%AN\\GE", controller.EscapeLikePattern(@"H_OT%AN\GE"));
     }
@@ -110,6 +112,27 @@ public class SearchControllerTest
         searchResult.AssertCount(0);
 
         searchResult = await controller.Search("Ken%cky");
+        searchResult.AssertCount(0);
+    }
+
+    [TestMethod]
+    public async Task SearchEmptyString()
+    {
+        var searchResult = await controller.Search(string.Empty);
+        searchResult.AssertCount(0);
+    }
+
+    [TestMethod]
+    public async Task SearchNull()
+    {
+        var searchResult = await controller.Search(null);
+        searchResult.AssertCount(0);
+    }
+
+    [TestMethod]
+    public async Task SearchOneWhitespace()
+    {
+        var searchResult = await controller.Search(" ");
         searchResult.AssertCount(0);
     }
 
