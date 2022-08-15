@@ -63,7 +63,7 @@ public class SearchController : ControllerBase
             .Include(r => r.SubsidiarySites)
             .Include(r => r.ParentSites)
             .Include(r => r.Models
-                .Where(m => !m.File.StartsWith("obsolete/"))
+                .Where(m => !EF.Functions.ILike(m.File, "obsolete/%"))
                 .Where(m =>
                     EF.Functions.ILike(m.Name, searchPattern, @"\")
                     || EF.Functions.ILike(m.Version, searchPattern, @"\")
