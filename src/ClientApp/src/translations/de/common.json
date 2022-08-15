@@ -7,9 +7,16 @@
   "search": "Suchen",
   "schema-language": "Schemasprache",
   "model-repository": "Modellablage",
+  "model-repositories": "Modellablagen",
+  "referenced-models": "Referenzierte Modelle",
   "latest-version": "Aktuelle Version",
   "issuer": "Herausgeber",
   "last-updated": "Zuletzt aktualisiert",
   "file": "Datei",
-  "more-information": "Mehr Informationen"
+  "more-information": "Mehr Informationen",
+  "apply-filter": "Filter anwenden",
+  "model-name": "Modellbezeichnung",
+  "no-depends-on-model": "Keine referenzierten Modelle",
+  "reset": "zurücksetzen",
+  "all": "Alle"
 }

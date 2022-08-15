@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Box, Button, Chip, Link, Pagination, Stack, Typography } from "@mui/material";
 import CloudQueueIcon from "@mui/icons-material/CloudQueue";
 import SellIcon from "@mui/icons-material/Sell";
@@ -9,30 +9,45 @@ import FilterAltIcon from "@mui/icons-material/FilterAlt";
 import FlagIcon from "@mui/icons-material/Flag";
 import InsertDriveFileIcon from "@mui/icons-material/InsertDriveFile";
 import { useTranslation } from "react-i18next";
+import { Filter } from "./Filter";
 
 export function Results(props) {
   const { models } = props;
   const { t } = useTranslation("common");
   const [page, setPage] = useState(1);
+  const [showFilter, setShowFilter] = useState(false);
+  const [filteredModels, setFilteredModels] = useState(models);
+
   const modelsPerPage = 10;
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
 
+  const toggleFilter = () => {
+    setShowFilter(!showFilter);
+  };
+
+  useEffect(() => {
+    setFilteredModels(models);
+  }, [models]);
+
   return (
     <React.Fragment>
       <Stack direction="row" justifyContent="space-between" alignItems="flex-end" spacing={2}>
         <Typography variant="h4" mt={6} ml={1}>
-          {models.length + " " + t("models-found", { count: models.length })}
+          {filteredModels.length + " " + t("models-found", { count: filteredModels.length })}
         </Typography>
-        <Button variant="outlined" startIcon={<FilterAltIcon />}>
+        <Button variant="outlined" startIcon={<FilterAltIcon />} onClick={toggleFilter}>
           {t("filter")}
         </Button>
       </Stack>
-      <Box sx={{ width: "100%", bgcolor: "background.paper" }}>
-        {models &&
-          models
+      {showFilter && (
+        <Filter models={models} filteredModels={filteredModels} setFilteredModels={setFilteredModels}></Filter>
+      )}
+      <Box sx={{ width: "100%", bgcolor: "background.paper", marginBottom: 8 }}>
+        {filteredModels &&
+          filteredModels
             .sort((a, b) => new Date(b.publishingDate) - new Date(a.publishingDate))
             .slice((page - 1) * modelsPerPage, (page - 1) * modelsPerPage + modelsPerPage)
             .map((model) => (
@@ -91,12 +106,14 @@ export function Results(props) {
                 </Stack>
               </Box>
             ))}
-        <Pagination
-          sx={{ marginTop: 3, marginBottom: 8 }}
-          page={page}
-          count={Math.ceil(models.length / modelsPerPage)}
-          onChange={handleChangePage}
-        />
+        {filteredModels && filteredModels.length > modelsPerPage && (
+          <Pagination
+            sx={{ marginTop: 3 }}
+            page={page}
+            count={Math.ceil(filteredModels.length / modelsPerPage)}
+            onChange={handleChangePage}
+          />
+        )}
       </Box>
     </React.Fragment>
   );

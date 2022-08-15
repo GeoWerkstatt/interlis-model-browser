@@ -7,9 +7,16 @@
   "search": "Recherche",
   "schema-language": "Langage de schéma",
   "model-repository": "Dépôt de modèle",
+  "model-repositories": "Dépôt de modèles",
+  "referenced-models": "Modèles référencés",
   "latest-version": "Dernière version",
   "issuer": "Émetteur",
   "last-updated": "Dernière mise à jour",
   "file": "Fichier",
-  "more-information": "Plus d'informations"
+  "more-information": "Plus d'informations",
+  "apply-filter": "Appliquer le filtre",
+  "model-name": "Nom du modèle",
+  "no-depends-on-model": "Aucun modèle référencé",
+  "reset": "réinitialisation",
+  "all": "tout"
 }
