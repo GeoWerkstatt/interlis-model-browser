@@ -15,7 +15,12 @@ export function Home() {
   async function search(searchString) {
     const response = await fetch("/search?query=" + searchString);
     if (response.ok) {
-      setModels(await response.json());
+      if (response.status === 204 /* No Content */) {
+        setModels([]);
+      } else {
+        const repositoryTree = await response.json();
+        setModels(getAllModels(repositoryTree));
+      }
     } else {
       setModels([]);
     }
@@ -26,11 +31,23 @@ export function Home() {
       setSearchOptions([]);
     } else {
       const response = await fetch("/search?query=" + searchString);
-      if (response.ok) {
-        const models = await response.json();
-        setSearchOptions([...new Set(models.map((m) => m.name))]);
+      if (response.ok && response.status !== 204 /* No Content */) {
+        const repositoryTree = await response.json();
+        setSearchOptions([...new Set(getAllModels(repositoryTree).map((m) => m.name))]);
       }
     }
+  }
+
+  function getAllModels(repository) {
+    const modelRepository = repository.title + " [" + repository.name + "]";
+
+    return [
+      ...repository.models.map((m) => {
+        m.modelRepository = modelRepository;
+        return m;
+      }),
+      ...repository.subsidiarySites.flatMap((r) => getAllModels(r)),
+    ];
   }
 
   const onSubmit = (data) => search(data.searchInput);
