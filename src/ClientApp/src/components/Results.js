@@ -9,9 +9,9 @@ import FilterAltIcon from "@mui/icons-material/FilterAlt";
 import FlagIcon from "@mui/icons-material/Flag";
 import InsertDriveFileIcon from "@mui/icons-material/InsertDriveFile";
 import { useTranslation } from "react-i18next";
-import { MockData as Models } from "./MockData"; // Replace with search results, once search controller is available.
 
-export function Results() {
+export function Results(props) {
+  const { models } = props;
   const { t } = useTranslation("common");
   const [page, setPage] = useState(1);
   const modelsPerPage = 10;
@@ -24,15 +24,16 @@ export function Results() {
     <React.Fragment>
       <Stack direction="row" justifyContent="space-between" alignItems="flex-end" spacing={2}>
         <Typography variant="h4" mt={6} ml={1}>
-          {Models.length + " " + t("models-found", { count: Models.length })}
+          {models.length + " " + t("models-found", { count: models.length })}
         </Typography>
         <Button variant="outlined" startIcon={<FilterAltIcon />}>
           {t("filter")}
         </Button>
       </Stack>
       <Box sx={{ width: "100%", bgcolor: "background.paper" }}>
-        {Models &&
-          Models.sort((a, b) => new Date(b.publishingDate) - new Date(a.publishingDate))
+        {models &&
+          models
+            .sort((a, b) => new Date(b.publishingDate) - new Date(a.publishingDate))
             .slice((page - 1) * modelsPerPage, (page - 1) * modelsPerPage + modelsPerPage)
             .map((model) => (
               <Box key={model.id} mt={6} direction="column" alignItems="flex-start">
@@ -93,7 +94,7 @@ export function Results() {
         <Pagination
           sx={{ marginTop: 3, marginBottom: 8 }}
           page={page}
-          count={Math.ceil(Models.length / modelsPerPage)}
+          count={Math.ceil(models.length / modelsPerPage)}
           onChange={handleChangePage}
         />
       </Box>

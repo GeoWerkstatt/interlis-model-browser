@@ -8,22 +8,21 @@ import { Results } from "./Results";
 
 export function Home() {
   const { register, handleSubmit, watch, reset } = useForm();
-  const [numberOfModels, setNumberOfModels] = useState(null);
+  const [models, setModels] = useState(null);
 
   async function search(searchString) {
-    const response = await fetch("/search?q=" + searchString);
+    const response = await fetch("/search?query=" + searchString);
     if (response.ok) {
-      ///implement once controller is ready
-      console.log(response);
+      setModels(await response.json());
     } else {
-      setNumberOfModels(0);
+      setModels([]);
     }
   }
 
   const onSubmit = (data) => search(data.searchInput);
   const clear = () => {
     reset({ searchInput: "" });
-    setNumberOfModels(null);
+    setModels(null);
   };
 
   const { t } = useTranslation("common");
@@ -66,7 +65,7 @@ export function Home() {
           </Button>
         </Stack>
       </form>
-      {numberOfModels !== null && <Results></Results>}
+      {models !== null && <Results models={models}></Results>}
     </Box>
   );
 }
