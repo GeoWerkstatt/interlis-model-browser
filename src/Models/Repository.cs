@@ -22,9 +22,9 @@ public class Repository
 
     public ISet<Repository> SubsidiarySites { get; set; } = new HashSet<Repository>();
 
+    [JsonIgnore]
     public ISet<Repository> ParentSites { get; set; } = new HashSet<Repository>();
 
-    [JsonIgnore]
     public ISet<Model> Models { get; set; } = new HashSet<Model>();
 
     public ISet<Catalog> Catalogs { get; set; } = new HashSet<Catalog>();
