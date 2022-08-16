@@ -6,10 +6,17 @@
   "filter": "filtro",
   "search": "Cerca",
   "schema-language": "Linguaggio dello schema",
-  "model-repository": "Archiviazione Modello",
+  "model-repository": "Archiviazione modello",
+  "model-repositories": "Archiviazione modelli",
+  "referenced-models": "Modelli referenziati",
   "latest-version": "Ultima versione",
   "issuer": "Emittente",
   "last-updated": "Ultimo aggiornamento",
   "file": "File",
-  "more-information": "Saperne di più"
+  "more-information": "Saperne di più",
+  "apply-filter": "Applica filtro",
+  "model-name": "Nome del modello",
+  "no-depends-on-model": "Nessun modello referenziato",
+  "reset": "resettare",
+  "all": "tutto"
 }
