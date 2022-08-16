@@ -1,4 +1,5 @@
 ﻿using ModelRepoBrowser.Crawler;
+using System.Text.Json.Serialization;
 
 namespace ModelRepoBrowser.Models;
 
@@ -30,6 +31,7 @@ public class Model
 
     public string? FurtherInformation { get; set; }
 
+    [JsonIgnore]
     public Repository ModelRepository { get; set; }
 
     public Uri? Uri => string.IsNullOrEmpty(File) ? null : ModelRepository.Uri.Append(File);

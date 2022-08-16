@@ -77,7 +77,7 @@ export function Results(props) {
                   </Box>
                   <Box ml={1} mt={1}>
                     <CloudQueueIcon sx={{ marginBottom: -0.5, marginRight: 0.5 }} />
-                    {t("model-repository")}: {model.modelRepository.title + " [" + model.modelRepository.name + "]"}
+                    {t("model-repository")}: {model.modelRepository}
                   </Box>
                   <Box ml={1} mt={1}>
                     <FlagIcon sx={{ marginBottom: -0.5, marginRight: 0.5 }} />
