@@ -41,7 +41,9 @@ public class SearchControllerTest
     public async Task SearchName()
     {
         var searchResult = await controller.Search("entUCK");
+        Assert.IsNotNull(searchResult);
         searchResult
+            .GetAllModels()
             .AssertCount(2)
             .AssertSingleItem(m => m.Id == 22, m => Assert.AreEqual("Kentucky", m.Name));
     }
@@ -50,7 +52,9 @@ public class SearchControllerTest
     public async Task SearchVersion()
     {
         var searchResult = await controller.Search("021-02-2");
+        Assert.IsNotNull(searchResult);
         searchResult
+            .GetAllModels()
             .AssertCount(2)
             .AssertSingleItem(m => m.Id == 89, m => Assert.AreEqual("2021-02-24", m.Version));
     }
@@ -59,7 +63,9 @@ public class SearchControllerTest
     public async Task SearchFilepath()
     {
         var searchResult = await controller.Search("spool/FANtastic");
+        Assert.IsNotNull(searchResult);
         searchResult
+            .GetAllModels()
             .AssertCount(1)
             .AssertSingleItem(m => m.Id == 6, m => Assert.AreEqual("var/spool/fantastic.aab", m.File));
     }
@@ -68,7 +74,9 @@ public class SearchControllerTest
     public async Task SearchCatalog()
     {
         var searchResult = await controller.Search("irecTO");
+        Assert.IsNotNull(searchResult);
         searchResult
+            .GetAllModels()
             .AssertCount(2)
             .AssertSingleItem(m => m.Id == 15, m => Assert.AreEqual("transition_vortals", m.Name))
             .AssertSingleItem(m => m.Id == 70, m => Assert.AreEqual("bandwidth_auxiliary_Incredible", m.Name));
@@ -78,16 +86,18 @@ public class SearchControllerTest
     public async Task SearchTag()
     {
         var searchResult = await controller.Search("Centralized");
+        Assert.IsNotNull(searchResult);
         searchResult
+            .GetAllModels()
             .AssertCount(1)
             .AssertSingleItem(m => m.Id == 23, m => m.Tags.AssertContains("Centralized"));
 
         // Tags must match exactly
         searchResult = await controller.Search("entralize");
-        searchResult.AssertCount(0);
+        Assert.AreEqual(null, searchResult);
 
         searchResult = await controller.Search("centralizED");
-        searchResult.AssertCount(0);
+        Assert.AreEqual(null, searchResult);
     }
 
     [TestMethod]
@@ -99,48 +109,49 @@ public class SearchControllerTest
             .AssertCount(12, "Precondition: the testdata contains obsolete models.");
 
         var searchResult = await controller.Search("obsolete");
-        searchResult.AssertCount(0);
+        Assert.AreEqual(null, searchResult);
     }
 
     [TestMethod]
     public async Task SearchWithWildcardsDisabled()
     {
         var searchResult = await controller.Search("Kentucky");
-        searchResult.AssertCount(2);
+        Assert.IsNotNull(searchResult);
+        searchResult.GetAllModels().AssertCount(2);
 
         searchResult = await controller.Search("Kent_cky");
-        searchResult.AssertCount(0);
+        Assert.AreEqual(null, searchResult);
 
         searchResult = await controller.Search("Ken%cky");
-        searchResult.AssertCount(0);
+        Assert.AreEqual(null, searchResult);
     }
 
     [TestMethod]
     public async Task SearchEmptyString()
     {
         var searchResult = await controller.Search(string.Empty);
-        searchResult.AssertCount(0);
+        Assert.AreEqual(null, searchResult);
     }
 
     [TestMethod]
     public async Task SearchNull()
     {
         var searchResult = await controller.Search(null);
-        searchResult.AssertCount(0);
+        Assert.AreEqual(null, searchResult);
     }
 
     [TestMethod]
     public async Task SearchOneWhitespace()
     {
         var searchResult = await controller.Search(" ");
-        searchResult.AssertCount(0);
+        Assert.AreEqual(null, searchResult);
     }
 
     [TestMethod]
     public async Task SearchQueryWithSpace()
     {
         var searchResult = await controller.Search("ken tucky");
-        searchResult.AssertCount(0);
+        Assert.AreEqual(null, searchResult);
     }
 
     [TestMethod]
@@ -149,5 +160,28 @@ public class SearchControllerTest
         await controller.Search("reinvent_maroon_Washington_connect_clear-thinking");
 
         context.SearchQueries.Select(s => s.Query).AssertContains("reinvent_maroon_Washington_connect_clear-thinking");
+    }
+
+    [TestMethod]
+    public async Task SearchRepositoryTreeResult()
+    {
+        var searchResult = await controller.Search("ga");
+
+        Assert.IsNotNull(searchResult);
+        searchResult.GetAllModels().AssertCount(11);
+        Assert.AreEqual("delores.com", searchResult.HostNameId);
+        Assert.AreEqual(1, searchResult.Models.Count);
+
+        searchResult.SubsidiarySites
+            .AssertCount(3)
+            .AssertSingleItem("eula.biz", 1)
+            .AssertSingleItem("hilario.info", 2)
+            .AssertSingleItem("valentine.net", 0, r => r
+                .AssertCount(5)
+                .AssertSingleItem("aliyah.org", 1)
+                .AssertSingleItem("arvel.name", 1)
+                .AssertSingleItem("chandler.net", 2)
+                .AssertSingleItem("jaquelin.com", 1)
+                .AssertSingleItem("kelsi.biz", 2));
     }
 }

@@ -36,6 +36,18 @@ public static class RepoBrowserContextExtensions
         Repository SeededRepository(int seed) => fakeRepositories.UseSeed(seed).Generate();
         var repositories = Enumerable.Range(1, 20).Select(SeededRepository).ToList();
 
+        foreach (var child in repositories.Skip(1).Take(9))
+        {
+            repositories[0].SubsidiarySites.Add(child);
+            child.ParentSites.Add(repositories[0]);
+        }
+
+        foreach (var child in repositories.Skip(10))
+        {
+            repositories[9].SubsidiarySites.Add(child);
+            child.ParentSites.Add(repositories[9]);
+        }
+
         var modelIds = 1;
         var modelRange = Enumerable.Range(modelIds, 100);
         var fakeModels = new Faker<Model>()

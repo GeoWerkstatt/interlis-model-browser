@@ -23,9 +23,13 @@ public class SearchController : ControllerBase
     /// a catalog name its referenced models are also included in the search result.
     /// </summary>
     /// <param name="query">The query string to search for.</param>
-    /// <returns>A sequence of <see cref="Model"/> that matched the <paramref name="query"/>.</returns>
+    /// <returns>
+    /// The root of the <see cref="Repository"/> tree or <c>null</c> if no <see cref="Model"/>
+    /// matched the <paramref name="query"/>. The Repositories contain only <see cref="Model"/>s
+    /// that matched the <paramref name="query"/>.
+    /// </returns>
     [HttpGet]
-    public async Task<IEnumerable<Model>> Search(string query)
+    public async Task<Repository?> Search(string query)
     {
         logger.LogInformation("Search with query <{SearchQuery}>", query);
 
@@ -42,7 +46,7 @@ public class SearchController : ControllerBase
         var trimmedQuery = query?.Trim();
         if (string.IsNullOrEmpty(trimmedQuery))
         {
-            return Enumerable.Empty<Model>();
+            return null;
         }
 
         var searchPattern = $"%{EscapeLikePattern(trimmedQuery)}%";
@@ -55,17 +59,49 @@ public class SearchController : ControllerBase
             .Distinct()
             .ToList();
 
-        var models = context.Models
-            .Include(m => m.ModelRepository)
-            .Where(m => !m.File.StartsWith("obsolete/"))
-            .Where(m =>
-                EF.Functions.ILike(m.Name, searchPattern, @"\")
-                || EF.Functions.ILike(m.Version, searchPattern, @"\")
-                || EF.Functions.ILike(m.File, searchPattern, @"\")
-                || modelsNamesFoundFromCatalogs.Contains(m.Name)
-                || m.Tags.Contains(trimmedQuery));
+        var repositories = await context.Repositories
+            .Include(r => r.SubsidiarySites)
+            .Include(r => r.ParentSites)
+            .Include(r => r.Models
+                .Where(m => !EF.Functions.ILike(m.File, "obsolete/%"))
+                .Where(m =>
+                    EF.Functions.ILike(m.Name, searchPattern, @"\")
+                    || EF.Functions.ILike(m.Version, searchPattern, @"\")
+                    || EF.Functions.ILike(m.File, searchPattern, @"\")
+                    || modelsNamesFoundFromCatalogs.Contains(m.Name)
+                    || m.Tags.Contains(trimmedQuery)))
+            .AsNoTracking()
+            .ToDictionaryAsync(r => r.HostNameId)
+            .ConfigureAwait(false);
 
-        return await models.AsNoTracking().ToListAsync().ConfigureAwait(false);
+        // Create repository tree
+        foreach (var repository in repositories.Values)
+        {
+            repository.SubsidiarySites = repository.SubsidiarySites.Select(c => repositories[c.HostNameId]).ToHashSet();
+        }
+
+        var root = repositories.Values.SingleOrDefault(r => !r.ParentSites.Any());
+        if (root != null && PruneEmptyRepositories(root))
+        {
+            return root;
+        }
+        else
+        {
+            return null;
+        }
+    }
+
+    /// <summary>
+    /// Remove subsidiary repositories that contain no models.
+    /// </summary>
+    /// <returns><c>true</c> if the <paramref name="repository"/> or any subsidiary repository contains some models, <c>false</c> otherwise.</returns>
+    private bool PruneEmptyRepositories(Repository repository)
+    {
+        repository.SubsidiarySites = repository.SubsidiarySites
+            .Where(r => PruneEmptyRepositories(r))
+            .ToHashSet();
+
+        return repository.Models.Any() || repository.SubsidiarySites.Any();
     }
 
     internal string? EscapeLikePattern(string pattern)

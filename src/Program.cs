@@ -7,7 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 
 var connectionString = builder.Configuration.GetConnectionString("RepoBrowserContext");
-builder.Services.AddNpgsql<RepoBrowserContext>(connectionString);
+builder.Services.AddNpgsql<RepoBrowserContext>(connectionString, options => options.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery));
 
 builder.Services.AddTransient<IRepositoryCrawler, RepositoryCrawler>().AddHttpClient();
 builder.Services.AddHostedService<DbUpdateService>();
