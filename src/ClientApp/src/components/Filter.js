@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Autocomplete,
   Box,
@@ -13,22 +13,23 @@ import {
 } from "@mui/material";
 import { useForm, Controller } from "react-hook-form";
 import { useTranslation } from "react-i18next";
+import TreeView from "@mui/lab/TreeView";
+import TreeItem from "@mui/lab/TreeItem";
 
 export function Filter(props) {
-  const { models, filteredModels, setFilteredModels } = props;
+  const { models, filteredModels, setFilteredModels, repositoryTree } = props;
   const [filterApplied, setFilterApplied] = useState(false);
   const [referencedModels, setReferencedModels] = useState([]);
-  const [repoFilterSelected, setRepoFilterSelected] = useState(false);
   const [issuerFilterSelected, setIssuerFilterSelected] = useState(false);
   const [schemaLanguageFilterSelected, setSchemaLanguageFilterSelected] = useState(false);
 
   const { t } = useTranslation("common");
-  const { control, register, reset, resetField, handleSubmit, watch } = useForm();
+  const { control, register, reset, resetField, setValue, handleSubmit, watch } = useForm();
 
   const onSubmit = (data) => {
     let filtered = models;
-    if (data.modelRepository?.length > 0) {
-      filtered = filtered.filter((m) => data.modelRepository.includes(m.modelRepository.name));
+    if (Array.isArray(data.modelRepository)) {
+      filtered = filtered.filter((m) => data.modelRepository.some((repo) => m.modelRepository.includes(repo)));
     }
     if (data.issuer?.length > 0) {
       filtered = filtered.filter((m) => data.issuer.includes(m.issuer));
@@ -42,20 +43,16 @@ export function Filter(props) {
     setFilteredModels(filtered);
   };
 
-  const modellRepositoryOptions = [...new Set(models.map((m) => m.modelRepository.name))];
   const schemaLanguageOptions = [...new Set(models.map((m) => m.schemaLanguage))];
   const issuerOptions = [...new Set(models.filter((m) => m.issuer !== null).map((m) => m.issuer))];
 
   const currentDependsOnModelOptions = [...new Set(filteredModels.flatMap((m) => m.dependsOnModel))];
 
-  const resetRepoFilter = () => {
-    Object.entries(modellRepositoryOptions).forEach(([k, v]) => {
-      // Reset all checkboxes with key for correct display in UI.
-      resetField("modelRepository" + k);
-      // Reset formData array.
-      resetField("modelRepository");
-    });
-  };
+  // Set default checkboxes checked for tree
+  useEffect(() => {
+    setChildrenCheckStatus(repositoryTree, true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const resetIssuerFilter = () => {
     Object.entries(issuerOptions).forEach(([k, v]) => {
@@ -72,14 +69,56 @@ export function Filter(props) {
   };
 
   const resetFilter = () => {
-    setRepoFilterSelected(false);
     setIssuerFilterSelected(false);
     setSchemaLanguageFilterSelected(false);
     setFilteredModels(models);
     setFilterApplied(false);
     setReferencedModels([]);
     reset();
+    setChildrenCheckStatus(repositoryTree, true);
   };
+
+  function getAllRepoNames(repositoryTree) {
+    return [repositoryTree.name, ...repositoryTree.subsidiarySites.flatMap((r) => getAllRepoNames(r))];
+  }
+
+  function setChildrenCheckStatus(repositoryTree, checked) {
+    const reposToCheck = getAllRepoNames(repositoryTree);
+    reposToCheck.forEach((name) => setValue("modelRepository" + name, checked));
+  }
+
+  const renderTree = (repositoryTree) => (
+    <TreeItem key={repositoryTree.name} nodeId={repositoryTree.name}>
+      <FormGroup>
+        <FormControlLabel
+          control={
+            <Controller
+              name={"modelRepository" + repositoryTree.name}
+              control={control}
+              render={({ field }) => (
+                <Checkbox
+                  {...field}
+                  // The additional register with the same name for all mapped checkboxes
+                  // allows to pass all values of this type as an array to the filter.
+                  {...register("modelRepository")}
+                  checked={!!watch("modelRepository" + repositoryTree.name)}
+                  onChange={(e) => {
+                    field.onChange(e.target.checked);
+                    setChildrenCheckStatus(repositoryTree, e.target.checked);
+                  }}
+                  value={repositoryTree.name}
+                />
+              )}
+            />
+          }
+          label={repositoryTree.name}
+        />
+      </FormGroup>
+      {Array.isArray(repositoryTree.subsidiarySites)
+        ? repositoryTree.subsidiarySites.map((node) => renderTree(node))
+        : null}
+    </TreeItem>
+  );
 
   return (
     <Paper sx={{ padding: 3, marginTop: 2, bgcolor: "action.hover" }}>
@@ -87,47 +126,7 @@ export function Filter(props) {
         <Stack direction="row" justifyContent="space-between" alignItems="flex-start" spacing={2}>
           <Box>
             <Typography variant="h6"> {t("model-repositories")}</Typography>
-            <FormGroup>
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={!repoFilterSelected}
-                    onChange={(e) => {
-                      resetRepoFilter();
-                      setRepoFilterSelected(false);
-                    }}
-                  />
-                }
-                label={t("all")}
-              />
-            </FormGroup>
-            {Object.entries(modellRepositoryOptions).map(([k, v]) => (
-              <FormGroup>
-                <FormControlLabel
-                  control={
-                    <Controller
-                      name={"modelRepository" + k}
-                      control={control}
-                      render={({ field }) => (
-                        <Checkbox
-                          {...field}
-                          // The additional register with the same name for all mapped checkboxes
-                          // allows to pass all values of this type as an array to the filter.
-                          {...register("modelRepository")}
-                          checked={!!watch("modelRepository" + k)}
-                          onChange={(e) => {
-                            field.onChange(e.target.checked);
-                            setRepoFilterSelected(true);
-                          }}
-                          value={v}
-                        />
-                      )}
-                    />
-                  }
-                  label={v}
-                />
-              </FormGroup>
-            ))}
+            <TreeView expanded={getAllRepoNames(repositoryTree)}>{renderTree(repositoryTree)}</TreeView>
           </Box>
           <Box>
             <Typography variant="h6">{t("issuer")}</Typography>

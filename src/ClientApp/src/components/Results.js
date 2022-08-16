@@ -12,7 +12,7 @@ import { useTranslation } from "react-i18next";
 import { Filter } from "./Filter";
 
 export function Results(props) {
-  const { models } = props;
+  const { models, repositoryTree } = props;
   const { t } = useTranslation("common");
   const [page, setPage] = useState(1);
   const [showFilter, setShowFilter] = useState(false);
@@ -26,6 +26,7 @@ export function Results(props) {
 
   const toggleFilter = () => {
     setShowFilter(!showFilter);
+    setFilteredModels(models);
   };
 
   useEffect(() => {
@@ -43,7 +44,12 @@ export function Results(props) {
         </Button>
       </Stack>
       {showFilter && (
-        <Filter models={models} filteredModels={filteredModels} setFilteredModels={setFilteredModels}></Filter>
+        <Filter
+          models={models}
+          filteredModels={filteredModels}
+          repositoryTree={repositoryTree}
+          setFilteredModels={setFilteredModels}
+        ></Filter>
       )}
       <Box sx={{ width: "100%", bgcolor: "background.paper", marginBottom: 8 }}>
         {filteredModels &&

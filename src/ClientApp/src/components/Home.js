@@ -10,6 +10,7 @@ export function Home() {
   const { register, handleSubmit, watch, reset } = useForm();
   const [models, setModels] = useState(null);
   const [inputValue, setInputValue] = useState("");
+  const [repositoryTree, setRepositoryTree] = useState();
   const [searchOptions, setSearchOptions] = useState([]);
 
   async function search(searchString) {
@@ -19,6 +20,7 @@ export function Home() {
         setModels([]);
       } else {
         const repositoryTree = await response.json();
+        setRepositoryTree(repositoryTree);
         setModels(getAllModels(repositoryTree));
       }
     } else {
@@ -119,7 +121,7 @@ export function Home() {
           </Button>
         </Stack>
       </form>
-      {models !== null && <Results models={models}></Results>}
+      {models !== null && <Results models={models} repositoryTree={repositoryTree}></Results>}
     </Box>
   );
 }
