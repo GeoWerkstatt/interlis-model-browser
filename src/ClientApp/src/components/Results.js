@@ -31,6 +31,7 @@ export function Results(props) {
 
   useEffect(() => {
     setFilteredModels(models);
+    setShowFilter(false);
   }, [models]);
 
   return (
