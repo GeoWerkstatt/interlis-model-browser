@@ -20,21 +20,21 @@ export function Filter(props) {
   const { models, filteredModels, setFilteredModels, repositoryTree } = props;
   const [filterApplied, setFilterApplied] = useState(false);
   const [referencedModels, setReferencedModels] = useState([]);
-  const [issuerFilterSelected, setIssuerFilterSelected] = useState(false);
-  const [schemaLanguageFilterSelected, setSchemaLanguageFilterSelected] = useState(false);
+  const [allIssuerSelected, setAllIssuerSelected] = useState(false);
+  const [allSchemaLanguageSelected, setAllSchemaLanguageSelected] = useState(true);
 
   const { t } = useTranslation("common");
-  const { control, register, reset, resetField, setValue, handleSubmit, watch } = useForm();
+  const { control, getValues, register, reset, setValue, handleSubmit, watch } = useForm();
 
   const onSubmit = (data) => {
     let filtered = models;
     if (Array.isArray(data.modelRepository)) {
       filtered = filtered.filter((m) => data.modelRepository.some((repo) => m.modelRepository.includes(repo)));
     }
-    if (data.issuer?.length > 0) {
+    if (Array.isArray(data.issuer)) {
       filtered = filtered.filter((m) => data.issuer.includes(m.issuer));
     }
-    if (data.schemaLanguage?.length > 0) {
+    if (Array.isArray(data.schemaLanguage)) {
       filtered = filtered.filter((m) => data.schemaLanguage.includes(m.schemaLanguage));
     }
     if (referencedModels.length > 0) {
@@ -51,30 +51,45 @@ export function Filter(props) {
   // Set default checkboxes checked for tree
   useEffect(() => {
     setChildrenCheckStatus(repositoryTree, true);
+    checkAllSchemaLanguage(true);
+    checkAllIssuer(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const resetIssuerFilter = () => {
-    Object.entries(issuerOptions).forEach(([k, v]) => {
-      resetField("issuer" + k);
-      resetField("issuer");
-    });
+  const updateIfAllChecked = (fieldName, optionsArray, setter) => {
+    setter(allChecked(fieldName, optionsArray));
   };
 
-  const resetSchemaLangugageFilter = () => {
+  const allChecked = (fieldName, optionsArray) =>
+    Object.entries(optionsArray).every(([k, v]) => getValues(fieldName + k) === true);
+
+  const allSame = (fieldName, optionsArray) => {
+    return Object.entries(optionsArray).every(([k, v]) => getValues(fieldName + k) === getValues(fieldName + 0));
+  };
+
+  const checkAllSchemaLanguage = (checked) => {
+    setAllSchemaLanguageSelected(checked);
     Object.entries(schemaLanguageOptions).forEach(([k, v]) => {
-      resetField("schemaLanguage" + k);
-      resetField("schemaLanguage");
+      setValue("schemaLanguage" + k, checked);
     });
+    checked ? setValue("schemaLanguage", null) : setValue("schemaLanguage", []);
+  };
+
+  const checkAllIssuer = (checked) => {
+    setAllIssuerSelected(checked);
+    Object.entries(issuerOptions).forEach(([k, v]) => {
+      setValue("issuer" + k, checked);
+    });
+    checked ? setValue("issuer", null) : setValue("issuer", []);
   };
 
   const resetFilter = () => {
-    setIssuerFilterSelected(false);
-    setSchemaLanguageFilterSelected(false);
+    reset();
     setFilteredModels(models);
     setFilterApplied(false);
     setReferencedModels([]);
-    reset();
+    checkAllSchemaLanguage(true);
+    checkAllIssuer(true);
     setChildrenCheckStatus(repositoryTree, true);
   };
 
@@ -126,7 +141,9 @@ export function Filter(props) {
         <Stack direction="row" justifyContent="space-between" alignItems="flex-start" spacing={2}>
           <Box>
             <Typography variant="h6"> {t("model-repositories")}</Typography>
-            <TreeView expanded={getAllRepoNames(repositoryTree)}>{renderTree(repositoryTree)}</TreeView>
+            <TreeView sx={{ marginLeft: -2 }} expanded={getAllRepoNames(repositoryTree)}>
+              {renderTree(repositoryTree)}
+            </TreeView>
           </Box>
           <Box>
             <Typography variant="h6">{t("issuer")}</Typography>
@@ -134,10 +151,10 @@ export function Filter(props) {
               <FormControlLabel
                 control={
                   <Checkbox
-                    checked={!issuerFilterSelected}
+                    checked={allIssuerSelected}
+                    indeterminate={!allSame("issuer", issuerOptions)}
                     onChange={(e) => {
-                      resetIssuerFilter();
-                      setIssuerFilterSelected(false);
+                      checkAllIssuer(e.target.checked);
                     }}
                   />
                 }
@@ -145,7 +162,7 @@ export function Filter(props) {
               />
             </FormGroup>
             {Object.entries(issuerOptions).map(([k, v]) => (
-              <FormGroup>
+              <FormGroup sx={{ marginLeft: 2 }}>
                 <FormControlLabel
                   control={
                     <Controller
@@ -158,7 +175,7 @@ export function Filter(props) {
                           checked={!!watch("issuer" + k)}
                           onChange={(e) => {
                             field.onChange(e.target.checked);
-                            setIssuerFilterSelected(true);
+                            updateIfAllChecked("issuer", issuerOptions, setAllIssuerSelected);
                           }}
                           value={v}
                         />
@@ -178,10 +195,10 @@ export function Filter(props) {
                   <FormControlLabel
                     control={
                       <Checkbox
-                        checked={!schemaLanguageFilterSelected}
+                        checked={allSchemaLanguageSelected}
+                        indeterminate={!allSame("schemaLanguage", schemaLanguageOptions)}
                         onChange={(e) => {
-                          resetSchemaLangugageFilter();
-                          setSchemaLanguageFilterSelected(false);
+                          checkAllSchemaLanguage(e.target.checked);
                         }}
                       />
                     }
@@ -189,7 +206,7 @@ export function Filter(props) {
                   />
                 </FormGroup>
                 {Object.entries(schemaLanguageOptions).map(([k, v]) => (
-                  <FormGroup>
+                  <FormGroup sx={{ marginLeft: 2 }}>
                     <FormControlLabel
                       control={
                         <Controller
@@ -202,7 +219,11 @@ export function Filter(props) {
                               checked={!!watch("schemaLanguage" + k)}
                               onChange={(e) => {
                                 field.onChange(e.target.checked);
-                                setSchemaLanguageFilterSelected(true);
+                                updateIfAllChecked(
+                                  "schemaLanguage",
+                                  schemaLanguageOptions,
+                                  setAllSchemaLanguageSelected
+                                );
                               }}
                               value={v}
                             />
