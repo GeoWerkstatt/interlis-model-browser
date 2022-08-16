@@ -70,7 +70,6 @@ public class SearchController : ControllerBase
                     || EF.Functions.ILike(m.File, searchPattern, @"\")
                     || modelsNamesFoundFromCatalogs.Contains(m.Name)
                     || m.Tags.Contains(trimmedQuery)))
-            .AsSplitQuery()
             .AsNoTracking()
             .ToDictionaryAsync(r => r.HostNameId)
             .ConfigureAwait(false);
