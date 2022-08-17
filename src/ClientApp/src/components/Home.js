@@ -41,7 +41,7 @@ export function Home() {
     if (searchString.length < 3) {
       setSearchOptions([]);
     } else {
-      const response = await fetch("/search?query=" + searchString);
+      const response = await fetch("/search/suggest/" + searchString);
       if (response.ok && response.status !== 204 /* No Content */) {
         const repositoryTree = await response.json();
         setSearchOptions([...new Set(getAllModels(repositoryTree).map((m) => m.name))]);

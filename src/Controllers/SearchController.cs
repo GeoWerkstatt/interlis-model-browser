@@ -68,6 +68,31 @@ public class SearchController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Get search query suggestions based on <paramref name="query"/>.
+    /// </summary>
+    /// <param name="query">The query string to search for.</param>
+    /// <returns>A sequence of <see cref="Model.Name"/> related to <paramref name="query"/>.</returns>
+    [HttpGet("suggest/{query}")]
+    public async Task<IEnumerable<string>> GetSearchSuggestions(string query)
+    {
+        logger.LogDebug("Get search options for <{SearchQuery}>", query);
+
+        var trimmedQuery = query?.Trim();
+        if (string.IsNullOrEmpty(trimmedQuery))
+        {
+            return Enumerable.Empty<string>();
+        }
+
+        var repositories = await SearchRepositories(trimmedQuery).ConfigureAwait(false);
+
+        return repositories
+            .Values
+            .SelectMany(r => r.Models)
+            .Select(m => m.Name)
+            .ToList();
+    }
+
     private Task<Dictionary<string, Repository>> SearchRepositories(string query)
     {
         var searchPattern = $"%{EscapeLikePattern(query)}%";

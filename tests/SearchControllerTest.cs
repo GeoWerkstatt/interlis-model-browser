@@ -184,4 +184,57 @@ public class SearchControllerTest
                 .AssertSingleItem("jaquelin.com", 1)
                 .AssertSingleItem("kelsi.biz", 2));
     }
+
+    [TestMethod]
+    public async Task GetSearchSuggestions()
+    {
+        const string query = "and";
+        var suggestions = await controller.GetSearchSuggestions(query);
+        var search = await controller.Search(query);
+        Assert.IsNotNull(search);
+
+        CollectionAssert.AreEquivalent(new[]
+            {
+                "Handcrafted Rubber Tuna_Sudanese Pound_syndicate",
+                "Engineer_Hill_Solutions_Practical_Michigan",
+                "Iceland Krona_New Israeli Sheqel_matrix_Oklahoma",
+                "Handcrafted Granite Ball_Associate_haptic_Money Market Account_Beauty",
+                "deposit",
+                "Virgin Islands, U.S._withdrawal_CFA Franc BCEAO_THX",
+                "indigo_Sleek Granite Salad_Practical Concrete Ball_moderator_interface",
+                "back-end_benchmark_Legacy_Future_Crescent",
+                "capability_Unbranded Granite Table_Intelligent Cotton Table_static",
+                "Global_Licensed",
+                "bandwidth_Refined Fresh Shoes",
+                "back-end_grey_JBOD",
+                "bandwidth_auxiliary_Incredible",
+                "Handcrafted Fresh Hat_metrics_invoice",
+                "Iowa_Junctions",
+                "Via_West Virginia_withdrawal",
+            },
+            suggestions.ToArray());
+
+        CollectionAssert.AreEquivalent(search.GetAllModels().Select(x => x.Name).ToList(), suggestions.ToList());
+    }
+
+    [TestMethod]
+    public async Task GetSearchSuggestionsNull()
+    {
+        var suggestions = await controller.GetSearchSuggestions(null);
+        suggestions.AssertCount(0);
+    }
+
+    [TestMethod]
+    public async Task GetSearchSuggestionsEmptyString()
+    {
+        var suggestions = await controller.GetSearchSuggestions(string.Empty);
+        suggestions.AssertCount(0);
+    }
+
+    [TestMethod]
+    public async Task GetSearchSuggestionsWhitespace()
+    {
+        var suggestions = await controller.GetSearchSuggestions(" ");
+        suggestions.AssertCount(0);
+    }
 }
