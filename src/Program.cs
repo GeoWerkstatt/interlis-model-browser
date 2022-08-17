@@ -1,6 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ModelRepoBrowser;
 using ModelRepoBrowser.Crawler;
+using Npgsql.Logging;
+
+NpgsqlLogManager.Provider = new ConsoleLoggingProvider(NpgsqlLogLevel.Debug, true, false);
+NpgsqlLogManager.IsParameterLoggingEnabled = true;
 
 var builder = WebApplication.CreateBuilder(args);
 
