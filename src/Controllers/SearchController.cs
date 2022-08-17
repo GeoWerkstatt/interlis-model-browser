@@ -49,30 +49,7 @@ public class SearchController : ControllerBase
             return null;
         }
 
-        var searchPattern = $"%{EscapeLikePattern(trimmedQuery)}%";
-
-        var modelsNamesFoundFromCatalogs = context.Catalogs
-            .Where(c => EF.Functions.ILike(c.Identifier, searchPattern, @"\"))
-            .Select(c => c.ReferencedModels)
-            .AsEnumerable()
-            .SelectMany(c => c)
-            .Distinct()
-            .ToList();
-
-        var repositories = await context.Repositories
-            .Include(r => r.SubsidiarySites)
-            .Include(r => r.ParentSites)
-            .Include(r => r.Models
-                .Where(m => !EF.Functions.ILike(m.File, "obsolete/%"))
-                .Where(m =>
-                    EF.Functions.ILike(m.Name, searchPattern, @"\")
-                    || EF.Functions.ILike(m.Version, searchPattern, @"\")
-                    || EF.Functions.ILike(m.File, searchPattern, @"\")
-                    || modelsNamesFoundFromCatalogs.Contains(m.Name)
-                    || m.Tags.Contains(trimmedQuery)))
-            .AsNoTracking()
-            .ToDictionaryAsync(r => r.HostNameId)
-            .ConfigureAwait(false);
+        var repositories = await SearchRepositories(trimmedQuery).ConfigureAwait(false);
 
         // Create repository tree
         foreach (var repository in repositories.Values)
@@ -89,6 +66,33 @@ public class SearchController : ControllerBase
         {
             return null;
         }
+    }
+
+    private Task<Dictionary<string, Repository>> SearchRepositories(string query)
+    {
+        var searchPattern = $"%{EscapeLikePattern(query)}%";
+
+        var modelsNamesFoundFromCatalogs = context.Catalogs
+            .Where(c => EF.Functions.ILike(c.Identifier, searchPattern, @"\"))
+            .Select(c => c.ReferencedModels)
+            .AsEnumerable()
+            .SelectMany(c => c)
+            .Distinct()
+            .ToList();
+
+        return context.Repositories
+            .Include(r => r.SubsidiarySites)
+            .Include(r => r.ParentSites)
+            .Include(r => r.Models
+                .Where(m => !EF.Functions.ILike(m.File, "obsolete/%"))
+                .Where(m =>
+                    EF.Functions.ILike(m.Name, searchPattern, @"\")
+                    || EF.Functions.ILike(m.Version, searchPattern, @"\")
+                    || EF.Functions.ILike(m.File, searchPattern, @"\")
+                    || modelsNamesFoundFromCatalogs.Contains(m.Name)
+                    || m.Tags.Contains(query)))
+            .AsNoTracking()
+            .ToDictionaryAsync(r => r.HostNameId);
     }
 
     /// <summary>
