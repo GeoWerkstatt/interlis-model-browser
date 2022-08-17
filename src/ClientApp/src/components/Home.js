@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import { Autocomplete, Box, Button, IconButton, TextField, Tooltip, Stack } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import SearchIcon from "@mui/icons-material/Search";
@@ -8,12 +9,20 @@ import { Results } from "./Results";
 
 export function Home() {
   const { register, handleSubmit, watch, reset } = useForm();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [models, setModels] = useState(null);
-  const [inputValue, setInputValue] = useState("");
+  const [inputValue, setInputValue] = useState(searchParams.get("query") || "");
   const [repositoryTree, setRepositoryTree] = useState();
   const [searchOptions, setSearchOptions] = useState([]);
+  const { t } = useTranslation("common");
 
   async function search(searchString) {
+    setSearchParams(
+      {
+        query: searchString,
+      },
+      { replace: true }
+    );
     const response = await fetch("/search?query=" + searchString);
     if (response.ok) {
       if (response.status === 204 /* No Content */) {
@@ -61,7 +70,13 @@ export function Home() {
     setModels(null);
   };
 
-  const { t } = useTranslation("common");
+  // If component is first loaded with search params present in URL the search should immediately be executed.
+  useEffect(() => {
+    if (inputValue !== "") {
+      search(inputValue);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <Box name="home">
