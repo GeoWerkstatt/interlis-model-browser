@@ -29,6 +29,7 @@ export default function App() {
         <Routes>
           <Route exact path="/" element={<Home />} />
           <Route path="/detail/:md5/:name" element={<Detail />} />
+          <Route path="*" element={<Home />} />
         </Routes>
       </Layout>
     </ThemeProvider>
