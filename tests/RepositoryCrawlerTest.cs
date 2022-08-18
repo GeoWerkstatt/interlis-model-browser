@@ -231,7 +231,7 @@ public class RepositoryCrawlerTest
             .AssertSingleItem(ps => "models.geo.admin.testdata".Equals(ps.HostNameId, StringComparison.OrdinalIgnoreCase), AssertModelsGeoAdminCh)
             .AssertCount(2);
         repository.Models
-            .AssertCount(0);
+            .AssertCount(3);
         repository.Catalogs
             .AssertCount(0);
     }
@@ -257,5 +257,22 @@ public class RepositoryCrawlerTest
         result
             .AssertCount(2)
             .AssertAllNotNull();
+    }
+
+    [TestMethod]
+    public async Task CrawlerCompletesMissingMD5()
+    {
+        var result = await repositoryCrawler.CrawlModelRepositories(new Uri("https://models.multiparent.testdata"));
+        Assert.IsNotNull(result);
+        result.AssertCount(1);
+
+        result.AssertSingleItem("models.multiparent.testdata", repository =>
+        {
+            repository.Models
+                .AssertCount(3)
+                .AssertSingleItem(m => m.Name == "Test_Model_Without_MD5", m => Assert.AreEqual("EB137F3B28D3D06C41F20237886A8B41", m.MD5))
+                .AssertSingleItem(m => m.Name == "Test_Model_With_Empty_MD5", m => Assert.AreEqual("EB137F3B28D3D06C41F20237886A8B41", m.MD5))
+                .AssertSingleItem(m => m.Name == "Test_Model_Without_MD5_And_Invalid_File", m => Assert.AreEqual(null, m.MD5));
+        });
     }
 }
