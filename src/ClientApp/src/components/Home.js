@@ -43,8 +43,8 @@ export function Home() {
     } else {
       const response = await fetch("/search/suggest/" + searchString);
       if (response.ok && response.status !== 204 /* No Content */) {
-        const repositoryTree = await response.json();
-        setSearchOptions([...new Set(getAllModels(repositoryTree).map((m) => m.name))]);
+        const suggestions = await response.json();
+        setSearchOptions([...new Set(suggestions)]);
       }
     }
   }
