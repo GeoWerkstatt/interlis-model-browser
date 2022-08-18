@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Box, Button, Chip, Link, Pagination, Stack, Typography } from "@mui/material";
+import { Link } from "react-router-dom";
+import { Box, Button, Chip, Pagination, Stack, Tooltip, Typography } from "@mui/material";
 import CloudQueueIcon from "@mui/icons-material/CloudQueue";
 import SellIcon from "@mui/icons-material/Sell";
 import EditIcon from "@mui/icons-material/Edit";
@@ -12,7 +13,7 @@ import { useTranslation } from "react-i18next";
 import { Filter } from "./Filter";
 
 export function Results(props) {
-  const { models, repositoryTree } = props;
+  const { models, repositoryTree, searchParams } = props;
   const { t } = useTranslation("common");
   const [page, setPage] = useState(1);
   const [showFilter, setShowFilter] = useState(false);
@@ -59,18 +60,19 @@ export function Results(props) {
             .slice((page - 1) * modelsPerPage, (page - 1) * modelsPerPage + modelsPerPage)
             .map((model) => (
               <Box key={model.id} mt={6} direction="column" alignItems="flex-start">
-                <Stack direction="row" alignItems="center">
-                  <Button sx={{ color: "text.primary", fontSize: 20, margin: -1 }} href={model.uri} target="_blank">
-                    {model.name}
+                <Stack direction="row" flexWrap="wrap" alignItems="center">
+                  <Button sx={{ color: "text.primary" }}>
+                    <Link
+                      style={{ color: "inherit", textDecoration: "inherit", fontSize: 20, margin: -1 }}
+                      to={{
+                        pathname: "/detail/" + model.mD5 + "/" + model.name,
+                      }}
+                      state={{ query: searchParams.get("query") }}
+                    >
+                      {model.name}
+                    </Link>
                   </Button>
-                  <Typography
-                    sx={{ fontWeight: "bold", marginLeft: 1 }}
-                    component="span"
-                    variant="body2"
-                    color="text.primary"
-                  ></Typography>
-                  {model.tags &&
-                    model.tags.map((tag) => <Chip key={tag} sx={{ margin: 1 }} label={tag} variant="outlined" />)}
+                  {model.tags && model.tags.map((tag) => <Chip key={tag} sx={{ margin: 1 }} label={tag} />)}
                 </Stack>
                 <Stack
                   direction={{ xs: "column", sm: "column", md: "row" }}
@@ -105,9 +107,9 @@ export function Results(props) {
                   {model.furtherInformation && (
                     <Box ml={1} mt={1}>
                       <InfoIcon sx={{ marginBottom: -0.5, marginRight: 0.5 }} />
-                      <Link href={model.furtherInformation} target="_blank">
+                      <a href={model.furtherInformation} target="_blank" rel="noreferrer">
                         {t("more-information")}
-                      </Link>
+                      </a>
                     </Box>
                   )}
                 </Stack>

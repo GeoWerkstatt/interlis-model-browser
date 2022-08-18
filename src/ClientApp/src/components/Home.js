@@ -136,7 +136,9 @@ export function Home() {
           </Button>
         </Stack>
       </form>
-      {models !== null && <Results models={models} repositoryTree={repositoryTree}></Results>}
+      {models !== null && (
+        <Results models={models} repositoryTree={repositoryTree} searchParams={searchParams}></Results>
+      )}
     </Box>
   );
 }

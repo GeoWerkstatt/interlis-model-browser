@@ -18,5 +18,10 @@
   "model-name": "Nom du modèle",
   "no-depends-on-model": "Aucun modèle référencé",
   "reset": "réinitialisation",
-  "all": "tout"
+  "all": "tout",
+  "technical-contact": "Contact technique",
+  "back-to-search": "Retour à la recherche",
+  "to-search": "Vers la recherche",
+  "model-preview": "Aperçu du modèle",
+  "invalid-model-url": "URL de modèle non valide"
 }
