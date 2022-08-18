@@ -2,6 +2,7 @@
 using ModelRepoBrowser;
 using ModelRepoBrowser.Crawler;
 using Npgsql.Logging;
+using System.Text.Json.Serialization;
 
 NpgsqlLogManager.Provider = new ConsoleLoggingProvider(NpgsqlLogLevel.Debug, true, false);
 NpgsqlLogManager.IsParameterLoggingEnabled = true;
@@ -12,6 +13,8 @@ builder.Services.AddControllersWithViews();
 
 var connectionString = builder.Configuration.GetConnectionString("RepoBrowserContext");
 builder.Services.AddNpgsql<RepoBrowserContext>(connectionString, options => options.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery));
+
+builder.Services.AddControllers().AddJsonOptions(options => { options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles; });
 
 builder.Services.AddTransient<IRepositoryCrawler, RepositoryCrawler>().AddHttpClient();
 builder.Services.AddHostedService<DbUpdateService>();
