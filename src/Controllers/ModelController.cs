@@ -17,6 +17,12 @@ public class ModelController : Controller
         this.context = context;
     }
 
+    /// <summary>
+    /// Retrieve the Model with the specified <paramref name="md5"/> and <paramref name="name"/>.
+    /// </summary>
+    /// <param name="md5">The <see cref="Model.MD5"/> of the Model.</param>
+    /// <param name="name">The <see cref="Model.Name"/> of the Model.</param>
+    /// <returns>The <see cref="Model"/> with the specified <paramref name="md5"/> and <paramref name="name"/> or <c>null</c> if it does not exist.</returns>
     [HttpGet("{md5}/{name}")]
     public Model? ModelDetails(string md5, string name)
     {
