@@ -1,6 +1,7 @@
 ﻿using ModelRepoBrowser.Crawler.XmlModels;
 using ModelRepoBrowser.Models;
 using System.Collections.Concurrent;
+using System.Security.Cryptography;
 
 namespace ModelRepoBrowser.Crawler;
 
@@ -144,7 +145,7 @@ public class RepositoryCrawler : IRepositoryCrawler
         var ilimodelsUri = GetIlimodelsUrl(repositoryUri);
         using (var ilimodelsStream = await GetStreamFromUrl(ilimodelsUri).ConfigureAwait(false))
         {
-            return RepositoryFilesDeserializer.ParseIliModels(ilimodelsStream)
+            var models = RepositoryFilesDeserializer.ParseIliModels(ilimodelsStream)
                 .Select(model => new Model
                     {
                         Name = model.Name,
@@ -161,6 +162,28 @@ public class RepositoryCrawler : IRepositoryCrawler
                         Tags = model.Tags?.Split(',').Distinct().ToList() ?? new List<string>(),
                     })
                 .ToHashSet();
+
+            foreach (var model in models)
+            {
+                if (string.IsNullOrEmpty(model.MD5))
+                {
+                    var modelFileUrl = repositoryUri.Append(model.File);
+                    logger.LogInformation("Calculate missing MD5 for Model <{Model}> in File <{URL}>.", model.Name, modelFileUrl);
+
+                    try
+                    {
+                        var stream = await GetStreamFromUrl(modelFileUrl).ConfigureAwait(false);
+                        var md5 = await GetMD5FromStream(stream).ConfigureAwait(false);
+                        model.MD5 = md5;
+                    }
+                    catch (HttpRequestException ex)
+                    {
+                        logger.LogError(ex, "Failed to calculate missing MD5 for Model <{Model}> in File <{URL}>", model.Name, modelFileUrl);
+                    }
+                }
+            }
+
+            return models;
         }
     }
 
@@ -179,6 +202,15 @@ public class RepositoryCrawler : IRepositoryCrawler
         response.EnsureSuccessStatusCode();
         var content = response.Content;
         return await content.ReadAsStreamAsync().ConfigureAwait(false);
+    }
+
+    internal async Task<string> GetMD5FromStream(Stream stream)
+    {
+#pragma warning disable CA5351 // Do Not Use Broken Cryptographic Algorithms
+        using var md5 = MD5.Create();
+#pragma warning restore CA5351 // Do Not Use Broken Cryptographic Algorithms
+        var hash = await md5.ComputeHashAsync(stream).ConfigureAwait(false);
+        return Convert.ToHexString(hash);
     }
 
     private async Task<Uri> PreferHttpsIfAvailable(Uri uri)
