@@ -168,6 +168,7 @@ public class RepositoryCrawler : IRepositoryCrawler
                 if (string.IsNullOrEmpty(model.MD5))
                 {
                     var modelFileUrl = repositoryUri.Append(model.File);
+                    logger.LogInformation("Calculate missing MD5 for Model <{Model}> in File <{URL}>.", model.Name, modelFileUrl);
 
                     try
                     {
