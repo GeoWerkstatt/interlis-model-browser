@@ -102,16 +102,18 @@ export function Detail() {
               <InsertDriveFileIcon sx={{ marginBottom: -0.5, marginRight: 0.5 }} />
               {t("file")}: {model.file}
             </Box>
-            <Box ml={1} mt={1}>
-              <HubIcon sx={{ marginBottom: -0.5, marginRight: 0.5 }} />
-              {t("referenced-models")}:
-              {model.dependsOnModel &&
-                model.dependsOnModel.map((m) => (
-                  <Chip sx={{ marginLeft: 1, marginBottom: 1 }} key={m} label={m} variant="outlined">
-                    {m}
-                  </Chip>
-                ))}
-            </Box>
+            {model.dependsOnModel?.length > 0 && (
+              <Box ml={1} mt={1}>
+                <HubIcon sx={{ marginBottom: -0.5, marginRight: 0.5 }} />
+                {t("referenced-models")}:
+                {model.dependsOnModel &&
+                  model.dependsOnModel.map((m) => (
+                    <Chip sx={{ marginLeft: 1, marginBottom: 1 }} key={m} label={m} variant="outlined">
+                      {m}
+                    </Chip>
+                  ))}
+              </Box>
+            )}
             {model.technicalContact && (
               <Box ml={1} mt={1}>
                 <MailIcon sx={{ marginBottom: -0.5, marginRight: 0.5 }} />
