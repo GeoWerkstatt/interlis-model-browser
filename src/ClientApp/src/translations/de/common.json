@@ -32,5 +32,6 @@
   "generate-embed-tag-instructions": "Für ein optimales Ergebnis empfehlen wir eine minimale Breite von 900px und eine minimale Höhe von 750px.",
   "border": "Rahmen",
   "copy-to-clipboard": "In die Zwischenablage kopieren",
-  "close": "Schliessen"
+  "close": "Schliessen",
+  "hide-filter": "Filterbereich ausblenden"
 }

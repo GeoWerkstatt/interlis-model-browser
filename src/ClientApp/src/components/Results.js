@@ -13,7 +13,7 @@ import { useTranslation } from "react-i18next";
 import { Filter } from "./Filter";
 
 export function Results(props) {
-  const { models, repositoryTree, searchParams } = props;
+  const { models, repositoryTree, searchParams, hideFilter } = props;
   const { t } = useTranslation("common");
   const [page, setPage] = useState(1);
   const [showFilter, setShowFilter] = useState(false);
@@ -41,11 +41,13 @@ export function Results(props) {
         <Typography variant="h4" mt={6} ml={1}>
           {filteredModels.length + " " + t("models-found", { count: filteredModels.length })}
         </Typography>
-        <Button variant="outlined" startIcon={<FilterAltIcon />} onClick={toggleFilter}>
-          {t("filter")}
-        </Button>
+        {!hideFilter && (
+          <Button variant="outlined" startIcon={<FilterAltIcon />} onClick={toggleFilter}>
+            {t("filter")}
+          </Button>
+        )}
       </Stack>
-      {showFilter && (
+      {showFilter && !hideFilter && (
         <Filter
           models={models}
           filteredModels={filteredModels}
@@ -67,7 +69,7 @@ export function Results(props) {
                       to={{
                         pathname: "/detail/" + model.mD5 + "/" + model.name,
                       }}
-                      state={{ query: searchParams.get("query") }}
+                      state={{ query: searchParams.get("query"), hideFilter: hideFilter }}
                     >
                       {model.name}
                     </Link>

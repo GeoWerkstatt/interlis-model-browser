@@ -32,5 +32,6 @@
   "generate-embed-tag-instructions": "Per ottenere i migliori risultati, consigliamo una larghezza minima di 900px e un'altezza minima di 750px.",
   "border": "Telaio",
   "copy-to-clipboard": "Copia negli appunti",
-  "close": "Chiudere"
+  "close": "Chiudere",
+  "hide-filter": "Nascondi pannello filtro"
 }

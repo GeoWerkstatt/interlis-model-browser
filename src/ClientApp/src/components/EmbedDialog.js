@@ -23,6 +23,7 @@ export function EmbedDialog(props) {
   const [width, setWidth] = useState(900);
   const [height, setHeight] = useState(750);
   const [border, setBorder] = useState(true);
+  const [hideFilter, setHideFilter] = useState(false);
   const { t } = useTranslation("common");
 
   const handleClose = () => {
@@ -30,7 +31,7 @@ export function EmbedDialog(props) {
   };
 
   return (
-    <Dialog open={open} onClose={handleClose} fullWidth={true} maxWidth="md">
+    <Dialog open={open} onClose={handleClose} fullWidth={true} maxWidth="lg">
       <DialogTitle>{t("generate-embed-tag")}</DialogTitle>
       <DialogContent>
         <DialogContentText>{t("generate-embed-tag-instructions")}</DialogContentText>
@@ -65,10 +66,18 @@ export function EmbedDialog(props) {
               label={t("border")}
             />
           </FormGroup>
+          <FormGroup>
+            <FormControlLabel
+              control={<Switch checked={hideFilter} onChange={(e) => setHideFilter(e.target.checked)} />}
+              label={t("hide-filter")}
+            />
+          </FormGroup>
         </Stack>
         <Stack mt={5} direction="row" alignItems="flex-end">
           <TextField
-            value={`<iframe src="https://ilimodels.ch" width="${width}" height="${height}" style="border: ${
+            value={`<iframe src="https://ilimodels.ch${
+              hideFilter ? "/?hideFilter=true" : ""
+            }" width="${width}" height="${height}" style="border: ${
               border ? "1px solid darkgrey" : "none"
             } " sandbox="allow-scripts allow-same-origin allow-storage-access-by-user-activation allow-forms"></iframe>`}
             sx={{ bgcolor: "action.hover", marginTop: 5 }}
@@ -80,7 +89,9 @@ export function EmbedDialog(props) {
             <IconButton
               onClick={() => {
                 navigator.clipboard.writeText(
-                  `<iframe src="https://ilimodels.ch" width="${width}" height="${height}" style="border: ${
+                  `<iframe src="https://ilimodels.ch${
+                    hideFilter ? "/?hideFilter=true" : ""
+                  }" width="${width}" height="${height}" style="border: ${
                     border ? "1px solid darkgrey" : "none"
                   } " sandbox="allow-scripts allow-same-origin allow-storage-access-by-user-activation allow-forms"></iframe>`
                 );
