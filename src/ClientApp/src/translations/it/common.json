@@ -25,5 +25,12 @@
   "model-preview": "Anteprima del modello",
   "invalid-model-url": "URL del modello non valido",
   "no-model-preview": "Nessuna anteprima del modello disponibile",
-  "model-uri": "URI del modello"
+  "model-uri": "URI del  modello",
+  "width": "Larghezza",
+  "height": "Altezza",
+  "generate-embed-tag": "Genera IFrame da incorporare in un sito Web esterno",
+  "generate-embed-tag-instructions": "Per ottenere i migliori risultati, consigliamo una larghezza minima di 900px e un'altezza minima di 750px.",
+  "border": "Telaio",
+  "copy-to-clipboard": "Copia negli appunti",
+  "close": "Chiudere"
 }
