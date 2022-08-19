@@ -9,6 +9,7 @@ import MailIcon from "@mui/icons-material/Mail";
 import RestoreIcon from "@mui/icons-material/Restore";
 import FlagIcon from "@mui/icons-material/Flag";
 import HubIcon from "@mui/icons-material/Hub";
+import LinkIcon from "@mui/icons-material/Link";
 import InsertDriveFileIcon from "@mui/icons-material/InsertDriveFile";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import { useTranslation } from "react-i18next";
@@ -130,7 +131,14 @@ export function Detail() {
                 </a>
               </Box>
             )}
-
+            {model.uri && (
+              <Box ml={1} mt={1}>
+                <LinkIcon sx={{ marginBottom: -0.5, marginRight: 0.5 }} />
+                <a href={model.uri} target="_blank" rel="noreferrer">
+                  {t("model-uri")}
+                </a>
+              </Box>
+            )}
             <TextField
               sx={{ bgcolor: "action.hover", marginTop: 5 }}
               variant="outlined"
