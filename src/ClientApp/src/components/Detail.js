@@ -57,7 +57,7 @@ export function Detail() {
     }
 
     getModel(md5, name);
-  }, [md5, name]);
+  }, [md5, name, t]);
 
   return (
     <Box mt={10}>
