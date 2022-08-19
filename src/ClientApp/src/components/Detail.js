@@ -25,29 +25,38 @@ export function Detail() {
   const backToSearch = () => navigate(`/?query=${location.state.query}`, { replace: true });
   const toHome = () => navigate("/");
 
-  async function getModel(md5, name) {
-    const response = await fetch("/model/" + md5 + "/" + name);
-    if (response.ok) {
-      if (response.status === 204 /* No Content */) {
-        setModel();
-      } else {
-        const model = await response.json();
-        setModel(model);
-      }
-    } else {
-      setModel();
-    }
-  }
-
-  async function getModelPreview(model) {
-    const response = await fetch(model.uri);
-    setModelText(await response.text());
-  }
-
   useEffect(() => {
+    async function getModelPreview(model) {
+      // Use try catch block to avoid error when CORS prevents successful fetch.
+      try {
+        const response = await fetch(model.uri);
+        if (response?.ok) {
+          setModelText(await response.text());
+        } else {
+          setModelText(t("no-model-preview"));
+        }
+      } catch {
+        setModelText(t("no-model-preview"));
+      }
+    }
+
+    async function getModel(md5, name) {
+      const response = await fetch("/model/" + md5 + "/" + name);
+      if (response.ok) {
+        if (response.status === 204 /* No Content */) {
+          setModel();
+        } else {
+          const model = await response.json();
+          setModel(model);
+          getModelPreview(model);
+        }
+      } else {
+        setModel();
+      }
+    }
+
     getModel(md5, name);
-    getModelPreview(model);
-  }, [md5, model, name]);
+  }, [md5, name]);
 
   return (
     <Box mt={10}>

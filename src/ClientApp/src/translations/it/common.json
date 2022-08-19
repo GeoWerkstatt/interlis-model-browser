@@ -23,5 +23,6 @@
   "back-to-search": "Torna alla ricerca",
   "to-search": "Vai alla ricerca",
   "model-preview": "Anteprima del modello",
-  "invalid-model-url": "URL del modello non valido"
+  "invalid-model-url": "URL del modello non valido",
+  "no-model-preview": "Nessuna anteprima del modello disponibile",
 }
