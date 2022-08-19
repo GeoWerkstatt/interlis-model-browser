@@ -14,12 +14,14 @@ public class DbUpdateService : BackgroundService
     private readonly ILogger<DbUpdateService> logger;
     private readonly IConfiguration configuration;
     private readonly TimeOnly preferredTime;
+    private readonly DbUpdateServiceHealthCheck healthCheck;
 
-    public DbUpdateService(IServiceScopeFactory scopeFactory, ILogger<DbUpdateService> logger, IConfiguration configuration)
+    public DbUpdateService(IServiceScopeFactory scopeFactory, ILogger<DbUpdateService> logger, IConfiguration configuration, DbUpdateServiceHealthCheck healthCheck)
     {
         this.scopeFactory = scopeFactory;
         this.logger = logger;
         this.configuration = configuration;
+        this.healthCheck = healthCheck;
 
         preferredTime = new TimeOnly(1, 0);
     }
@@ -62,10 +64,13 @@ public class DbUpdateService : BackgroundService
                     logger.LogError("Updating ModelRepoDatabase aborted. Crawler could not parse any repository.");
                 }
             }
+
+            healthCheck.LastDbUpdateSuccessful = true;
         }
         catch (DbUpdateException ex)
         {
             logger.LogError(ex, "Unable to update ModelRepoDatabase");
+            healthCheck.LastDbUpdateSuccessful = false;
         }
     }
 
