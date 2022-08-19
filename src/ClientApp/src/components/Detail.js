@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation, useParams } from "react-router-dom";
-import { Box, Button, Chip, Stack, TextField, Typography } from "@mui/material";
+import { Box, Button, CircularProgress, Chip, Stack, TextField, Typography } from "@mui/material";
 import CloudQueueIcon from "@mui/icons-material/CloudQueue";
 import SellIcon from "@mui/icons-material/Sell";
 import EditIcon from "@mui/icons-material/Edit";
@@ -16,6 +16,7 @@ import { useTranslation } from "react-i18next";
 
 export function Detail() {
   const [model, setModel] = useState();
+  const [loading, setLoading] = useState();
   const [modelText, setModelText] = useState("");
   const { t } = useTranslation("common");
 
@@ -27,25 +28,32 @@ export function Detail() {
   const toHome = () => navigate("/");
 
   useEffect(() => {
+    setLoading(true);
+
     async function getModelPreview(model) {
       // Use try catch block to avoid error when CORS prevents successful fetch.
       try {
         const response = await fetch(model.uri);
         if (response?.ok) {
           setModelText(await response.text());
+          setLoading(false);
         } else {
           setModelText(t("no-model-preview"));
+          setLoading(false);
         }
       } catch {
         setModelText(t("no-model-preview"));
+        setLoading(false);
       }
     }
 
     async function getModel(md5, name) {
       const response = await fetch("/model/" + md5 + "/" + name);
+
       if (response.ok) {
         if (response.status === 204 /* No Content */) {
           setModel();
+          setLoading(false);
         } else {
           const model = await response.json();
           setModel(model);
@@ -53,9 +61,9 @@ export function Detail() {
         }
       } else {
         setModel();
+        setLoading(false);
       }
     }
-
     getModel(md5, name);
   }, [md5, name, t]);
 
@@ -70,7 +78,17 @@ export function Detail() {
           {t("to-search")}
         </Button>
       )}
-      {model && (
+      {(!model || !modelText) && loading && (
+        <Box mt={10}>
+          <CircularProgress />
+        </Box>
+      )}
+      {!model && !loading && (
+        <Typography mt={5} variant="h6">
+          {t("invalid-model-url")}
+        </Typography>
+      )}
+      {model && modelText && (
         <>
           <Stack direction="row" alignItems="flex-end" flexWrap="wrap" sx={{ color: "text.secondary" }}>
             <Typography mt={5} variant="h4">
@@ -154,11 +172,6 @@ export function Detail() {
             />
           </Stack>
         </>
-      )}
-      {!model && (
-        <Typography mt={5} variant="h6">
-          {t("invalid-model-url")}
-        </Typography>
       )}
     </Box>
   );
