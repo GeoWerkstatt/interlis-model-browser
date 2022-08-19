@@ -2,6 +2,9 @@
 
 namespace ModelRepoBrowser;
 
+/// <summary>
+/// Health check for model repository database. Checks whether the database is accessible and contains data.
+/// </summary>
 public class RepoBrowserDbHealthCheck : IHealthCheck
 {
     private readonly RepoBrowserContext repoBrowserContext;

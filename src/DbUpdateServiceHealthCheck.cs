@@ -2,6 +2,10 @@
 
 namespace ModelRepoBrowser;
 
+/// <summary>
+/// HealthCheck for <see cref="DbUpdateService"/>.
+/// Reports a degraded health if the last model repository database update exited with an exception.
+/// </summary>
 public class DbUpdateServiceHealthCheck : IHealthCheck
 {
     private volatile bool lastDbUpdateSuccessful;
