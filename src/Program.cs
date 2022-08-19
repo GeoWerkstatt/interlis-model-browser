@@ -18,6 +18,12 @@ builder.Services.AddControllers().AddJsonOptions(options => { options.JsonSerial
 
 builder.Services.AddTransient<IRepositoryCrawler, RepositoryCrawler>().AddHttpClient();
 builder.Services.AddHostedService<DbUpdateService>();
+builder.Services.AddSingleton<DbUpdateServiceHealthCheck>();
+
+builder.Services.AddHealthChecks()
+    .AddCheck<RepoBrowserDbHealthCheck>("RepoBrowserDbHealthCheck")
+    .AddCheck<DbUpdateServiceHealthCheck>("DbUpdateServiceHealthCheck");
+
 var app = builder.Build();
 
 if (!app.Environment.IsDevelopment())
@@ -28,6 +34,8 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
+
+app.MapHealthChecks("/health");
 
 app.MapControllerRoute(
     name: "default",
