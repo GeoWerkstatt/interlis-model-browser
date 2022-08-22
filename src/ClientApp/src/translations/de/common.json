@@ -11,6 +11,7 @@
   "referenced-models": "Referenzierte Modelle",
   "latest-version": "Aktuelle Version",
   "issuer": "Herausgeber",
+  "issuers": "Herausgeber",
   "last-updated": "Zuletzt aktualisiert",
   "file": "Datei",
   "more-information": "Mehr Informationen",
@@ -33,5 +34,9 @@
   "border": "Rahmen",
   "copy-to-clipboard": "In die Zwischenablage kopieren",
   "close": "Schliessen",
-  "hide-filter": "Filterbereich ausblenden"
+  "hide-filter": "Filterbereich ausblenden",
+  "additional-optional-filter-criteria": "Zusätzliche Fitlerkriterien (optional)",
+  "additional-optional-filter-criteria-instructions": "Durch das Setzen der folgenden Filterkriterien können Sie alle Sucheresultate im eingebetten Model-Repo-Browser einschränken.",
+  "chose-one-or-more-schema-languages": "Wählen Sie eine oder mehrere Schemasprachen",
+  "comma-seperated-filter-criteria-instructions": "Geben Sie Modellablagenamen, Herausgeber oder referenzierte Modelle als komma-separierte Liste an."
 }

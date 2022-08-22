@@ -7,10 +7,11 @@
   "search": "Recherche",
   "schema-language": "Langage de schéma",
   "model-repository": "Dépôt de modèle",
-  "model-repositories": "Dépôt de modèles",
+  "model-repositories": "Dépôts de modèle",
   "referenced-models": "Modèles référencés",
   "latest-version": "Dernière version",
   "issuer": "Émetteur",
+  "issuers": "Émetteurs",
   "last-updated": "Dernière mise à jour",
   "file": "Fichier",
   "more-information": "Plus d'informations",
@@ -33,5 +34,9 @@
   "border": "Encadrement",
   "copy-to-clipboard": "Copier dans le Presse-papiers",
   "close": "Fermer",
-  "hide-filter": "Masquer le panneau de filtre"
+  "hide-filter": "Masquer le panneau de filtre",
+  "additional-optional-filter-criteria": "Critères de filtrage supplémentaires (facultatif)",
+  "additional-optional-filter-criteria-instructions": "En définissant les critères de filtre suivants, vous pouvez restreindre tous les résultats de recherche dans le Model-Repo-Browser de modèle intégré.",
+  "chose-one-or-more-schema-languages": "Choisissez un ou plusieurs langages de schéma",
+  "comma-seperated-filter-criteria-instructions": "Spécifiez les noms de dépôt de modèle, les émetteurs ou les modèles référencés sous forme de liste séparée par des virgules."
 }

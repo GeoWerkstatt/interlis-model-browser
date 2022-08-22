@@ -11,6 +11,7 @@
   "referenced-models": "Modelli referenziati",
   "latest-version": "Ultima versione",
   "issuer": "Emittente",
+  "issuers": "Emittenti",
   "last-updated": "Ultimo aggiornamento",
   "file": "File",
   "more-information": "Saperne di più",
@@ -33,5 +34,9 @@
   "border": "Telaio",
   "copy-to-clipboard": "Copia negli appunti",
   "close": "Chiudere",
-  "hide-filter": "Nascondi pannello filtro"
+  "hide-filter": "Nascondi pannello filtro",
+  "additional-optional-filter-criteria": "Criteri di filtro aggiuntivi (facoltativo)",
+  "additional-optional-filter-criteria-instructions": "Impostando i seguenti criteri di filtro è possibile limitare tutti i risultati di ricerca nel Model-Repo-Browser incorporato.",
+  "chose-one-or-more-schema-languages": "Scegli uno o più linguaggi dello schema",
+  "comma-seperated-filter-criteria-instructions": "Specificare nomi di archiviazione modelli, eEmittenti o modelli referenziati come un elenco separato da virgole."
 }

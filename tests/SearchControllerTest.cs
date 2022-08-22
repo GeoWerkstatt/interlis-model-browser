@@ -207,6 +207,52 @@ public class SearchControllerTest
     }
 
     [TestMethod]
+    public async Task SearchNameFilterByRepositoryName()
+    {
+        var searchResult = await controller.Search("entUCK", new string[] { "relationships" });
+        Assert.IsNotNull(searchResult);
+        Assert.AreEqual(searchResult.SubsidiarySites.Single().SubsidiarySites.Single().Name, "relationships");
+        searchResult.GetAllModels().AssertCount(1)
+        .AssertSingleItem(m => m.Id == 27, m => Assert.AreEqual("deposit", m.Name))
+        .AssertSingleItem(m => m.Id == 27, m => Assert.AreEqual("Daniela.Hand26@hotmail.com", m.Issuer))
+        .AssertSingleItem(m => m.Id == 27, m => Assert.AreEqual("opt/include/specialist_down_sized_kentucky.teicorpus", m.File))
+        .AssertSingleItem(m => m.Id == 27, m => Assert.AreEqual("Berkshire hack Georgia", m.ShortDescription));
+    }
+
+    [TestMethod]
+    public async Task SearchNameFilterByIssuer()
+    {
+        var searchResult = await controller.Search("entUCK", null, new string[] { "Alysa_Bahringer@hotmail.com" });
+        Assert.IsNotNull(searchResult);
+        searchResult.GetAllModels().AssertCount(1)
+        .AssertSingleItem(m => m.Id == 22, m => Assert.AreEqual("Kentucky", m.Name))
+        .AssertSingleItem(m => m.Id == 22, m => Assert.AreEqual("Alysa_Bahringer@hotmail.com", m.Issuer));
+    }
+
+    [TestMethod]
+    public async Task SearchNameFilterSchemaLanguage()
+    {
+        var searchResult = await controller.Search("entUCK", null, null, new string[] { "ili2_3" });
+        Assert.IsNotNull(searchResult);
+        searchResult.GetAllModels().AssertCount(1)
+        .AssertSingleItem(m => m.Id == 27, m => Assert.AreEqual("deposit", m.Name))
+        .AssertSingleItem(m => m.Id == 27, m => Assert.AreEqual("Daniela.Hand26@hotmail.com", m.Issuer))
+        .AssertSingleItem(m => m.Id == 27, m => Assert.AreEqual("opt/include/specialist_down_sized_kentucky.teicorpus", m.File))
+        .AssertSingleItem(m => m.Id == 27, m => Assert.AreEqual("Berkshire hack Georgia", m.ShortDescription));
+    }
+
+    [TestMethod]
+    public async Task SearchNameFilterByDependsOnModels()
+    {
+        var searchResult = await controller.Search("ent", null, null, null, new string[] { "synthesizing" });
+        Assert.IsNotNull(searchResult);
+        searchResult.GetAllModels().AssertCount(1)
+        .AssertSingleItem(m => m.Id == 53, m => Assert.AreEqual("capability_Unbranded Granite Table_Intelligent Cotton Table_static", m.Name))
+        .AssertSingleItem(m => m.Id == 53, m => Assert.AreEqual("Reverse-engineered Lead orchid", m.ShortDescription))
+        .AssertSingleItem(m => m.Id == 53, m => Assert.AreEqual("synthesizing", m.DependsOnModel[1]));
+    }
+
+    [TestMethod]
     public async Task GetSearchSuggestions()
     {
         const string query = "and";
@@ -236,6 +282,24 @@ public class SearchControllerTest
             suggestions.ToArray());
 
         CollectionAssert.AreEquivalent(search.GetAllModels().Select(x => x.Name).ToList(), suggestions.ToList());
+    }
+
+    [TestMethod]
+    public async Task GetSearchSuggestionsWithSchemaLanguageFilter()
+    {
+        const string query = "and";
+        var suggestions = await controller.GetSearchSuggestions(query, null, null, new string[] { "ili2_3" });
+        var search = await controller.Search(query);
+        Assert.IsNotNull(search);
+
+        CollectionAssert.AreEquivalent(new[]
+            {
+            "back-end_benchmark_Legacy_Future_Crescent",
+            "deposit",
+            "Global_Licensed",
+            "bandwidth_Refined Fresh Shoes",
+            },
+            suggestions.ToArray());
     }
 
     [TestMethod]

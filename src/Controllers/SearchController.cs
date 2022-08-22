@@ -23,13 +23,17 @@ public class SearchController : ControllerBase
     /// a catalog name its referenced models are also included in the search result.
     /// </summary>
     /// <param name="query">The query string to search for.</param>
+    /// <param name="repositoryNames">The names of the repositories in which to search.</param>
+    /// <param name="issuers">The issuers to filter the found models by.</param>
+    /// <param name="schemaLanguages">The schemaLanguages to filter the found models by.</param>
+    /// <param name="dependsOnModels">The dependsOnModels list to filter the found models by.</param>
     /// <returns>
     /// The root of the <see cref="Repository"/> tree or <c>null</c> if no <see cref="Model"/>
     /// matched the <paramref name="query"/>. The Repositories contain only <see cref="Model"/>s
     /// that matched the <paramref name="query"/>.
     /// </returns>
     [HttpGet]
-    public async Task<Repository?> Search(string query)
+    public async Task<Repository?> Search(string query, [FromQuery] string[]? repositoryNames = null, [FromQuery] string[]? issuers = null, [FromQuery] string[]? schemaLanguages = null, [FromQuery] string[]? dependsOnModels = null)
     {
         logger.LogInformation("Search with query <{SearchQuery}>", query);
 
@@ -49,13 +53,15 @@ public class SearchController : ControllerBase
             return null;
         }
 
-        var repositories = await SearchRepositories(trimmedQuery).ConfigureAwait(false);
+        var repositories = await SearchRepositories(trimmedQuery, issuers, schemaLanguages, dependsOnModels).ConfigureAwait(false);
 
         // Create repository tree
         foreach (var repository in repositories.Values)
         {
             repository.SubsidiarySites = repository.SubsidiarySites.Select(c => repositories[c.HostNameId]).ToHashSet();
         }
+
+        repositories = FilterRepositories(repositoryNames, repositories);
 
         var root = repositories.Values.SingleOrDefault(r => !r.ParentSites.Any());
         if (root != null && PruneEmptyRepositories(root))
@@ -68,13 +74,42 @@ public class SearchController : ControllerBase
         }
     }
 
+    private Dictionary<string, Repository> FilterRepositories(string[]? repositoryNames, Dictionary<string, Repository> repositories)
+    {
+        if (repositoryNames != null && !repositoryNames.All(s => string.IsNullOrEmpty(s)))
+        {
+            // Filter repos by repositoryNames and include parents.
+            repositories = repositories.Values.Where(r => repositoryNames == null || repositoryNames.Contains(r.Name) || HasMatchingChild(r, repositoryNames)).ToDictionary(r => r.HostNameId);
+
+            // Empty subsidiarySites of repos which do not match repo name.
+            repositories = repositories.Values.ToList().Select(r =>
+            {
+                if (!repositoryNames.Contains(r.Name))
+                {
+                    r.SubsidiarySites
+                    .Where(s => !repositories.Any(f => f.Value.Name == s.Name))
+                    .ToList()
+                    .ForEach(s => r.SubsidiarySites.Remove(s));
+                }
+
+                return r;
+            }).ToDictionary(r => r.HostNameId);
+        }
+
+        return repositories;
+    }
+
     /// <summary>
     /// Get search query suggestions based on <paramref name="query"/>.
     /// </summary>
     /// <param name="query">The query string to search for.</param>
+    /// <param name="repositoryNames">The names of the repositories in which to search.</param>
+    /// <param name="issuers">The issuers to filter the found models by.</param>
+    /// <param name="schemaLanguages">The schemaLanguages to filter the found models by.</param>
+    /// <param name="dependsOnModels">The dependsOnModels list to filter the found models by.</param>
     /// <returns>A sequence of <see cref="Model.Name"/> related to <paramref name="query"/>.</returns>
-    [HttpGet("suggest/{query}")]
-    public async Task<IEnumerable<string>> GetSearchSuggestions(string query)
+    [HttpGet("suggest")]
+    public async Task<IEnumerable<string>> GetSearchSuggestions(string query, [FromQuery] string[]? repositoryNames = null, [FromQuery] string[]? issuers = null, [FromQuery] string[]? schemaLanguages = null, [FromQuery] string[]? dependsOnModels = null)
     {
         logger.LogDebug("Get search options for <{SearchQuery}>", query);
 
@@ -84,7 +119,8 @@ public class SearchController : ControllerBase
             return Enumerable.Empty<string>();
         }
 
-        var repositories = await SearchRepositories(trimmedQuery).ConfigureAwait(false);
+        var repositories = await SearchRepositories(trimmedQuery, issuers, schemaLanguages, dependsOnModels).ConfigureAwait(false);
+        repositories = FilterRepositories(repositoryNames, repositories);
 
         return repositories
             .Values
@@ -93,7 +129,19 @@ public class SearchController : ControllerBase
             .ToList();
     }
 
-    private Task<Dictionary<string, Repository>> SearchRepositories(string query)
+    private bool HasMatchingChild(Repository repo, string[] repositoryNames)
+    {
+        if (repositoryNames.Contains(repo.Name))
+        {
+            return true;
+        }
+        else
+        {
+            return repo.SubsidiarySites.Any(s => HasMatchingChild(s, repositoryNames));
+        }
+    }
+
+    private Task<Dictionary<string, Repository>> SearchRepositories(string query, string[]? issuers = null, string[]? schemaLanguages = null, string[]? dependsOnModels = null)
     {
         var searchPattern = $"%{EscapeLikePattern(query)}%";
 
@@ -105,10 +153,17 @@ public class SearchController : ControllerBase
             .Distinct()
             .ToList();
 
+        if (schemaLanguages != null && schemaLanguages.All(s => string.IsNullOrEmpty(s))) schemaLanguages = null;
+        if (dependsOnModels != null && dependsOnModels.All(d => string.IsNullOrEmpty(d))) dependsOnModels = null;
+        if (issuers != null && issuers.All(i => string.IsNullOrEmpty(i))) issuers = null;
+
         return context.Repositories
             .Include(r => r.SubsidiarySites)
             .Include(r => r.ParentSites)
             .Include(r => r.Models
+                .Where(m => schemaLanguages == null || schemaLanguages.Any(s => m.SchemaLanguage == s))
+                .Where(m => dependsOnModels == null || dependsOnModels.Any(d => m.DependsOnModel.Contains(d)))
+                .Where(m => issuers == null || issuers.Any(i => m.Issuer == i))
                 .Where(m => !EF.Functions.ILike(m.File, "obsolete/%"))
                 .Where(m =>
                     EF.Functions.ILike(m.Name, searchPattern, @"\")
