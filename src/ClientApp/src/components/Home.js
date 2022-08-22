@@ -12,6 +12,7 @@ export function Home() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [models, setModels] = useState(null);
   const [inputValue, setInputValue] = useState(searchParams.get("query") || "");
+  const [hideFilter, setHideFilter] = useState(false);
   const [repositoryTree, setRepositoryTree] = useState();
   const [searchOptions, setSearchOptions] = useState([]);
   const [loading, setLoading] = useState();
@@ -19,6 +20,10 @@ export function Home() {
   const { t } = useTranslation("common");
 
   async function search(searchString) {
+    // Use hideFilter state for query if it was not explicitly set in url.
+    if (searchParams.get("hideFilter") === undefined) {
+      searchString += "&hideFilter=" + !!hideFilter;
+    }
     setSearchParams(
       {
         query: searchString,
@@ -77,7 +82,9 @@ export function Home() {
   };
 
   // If component is first loaded with search params present in URL the search should immediately be executed.
+  // On first load the hideFilter state should be set for all following requests.
   useEffect(() => {
+    setHideFilter(searchParams.get("hideFilter"));
     if (inputValue !== "") {
       search(inputValue);
     }
@@ -148,7 +155,12 @@ export function Home() {
         </Box>
       )}
       {models !== null && (
-        <Results models={models} repositoryTree={repositoryTree} searchParams={searchParams}></Results>
+        <Results
+          hideFilter={hideFilter === "true"}
+          models={models}
+          repositoryTree={repositoryTree}
+          searchParams={searchParams}
+        ></Results>
       )}
     </Box>
   );

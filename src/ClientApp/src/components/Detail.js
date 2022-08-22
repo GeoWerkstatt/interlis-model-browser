@@ -24,7 +24,8 @@ export function Detail() {
   const navigate = useNavigate();
   const { md5, name } = useParams();
 
-  const backToSearch = () => navigate(`/?query=${location.state.query}`, { replace: true });
+  const backToSearch = () =>
+    navigate(`/?query=${location.state.query}&hideFilter=${location.state.hideFilter}`, { replace: true });
   const toHome = () => navigate("/");
 
   useEffect(() => {
