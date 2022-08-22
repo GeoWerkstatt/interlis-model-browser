@@ -28,7 +28,7 @@
   "model-uri": "Modell-URI",
   "width": "Breite",
   "height": "Höhe",
-  "generate-embed-tag": "IFrame zum Einbetten in externe Website generieren",
+  "generate-embed-tag": "iFrame oder Embed-Tag zum Einbetten in externe Webseite generieren",
   "generate-embed-tag-instructions": "Für ein optimales Ergebnis empfehlen wir eine minimale Breite von 900px und eine minimale Höhe von 750px.",
   "border": "Rahmen",
   "copy-to-clipboard": "In die Zwischenablage kopieren",

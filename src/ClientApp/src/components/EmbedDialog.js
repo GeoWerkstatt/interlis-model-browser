@@ -101,6 +101,32 @@ export function EmbedDialog(props) {
             </IconButton>
           </Tooltip>
         </Stack>
+        <Stack direction="row" alignItems="flex-end">
+          <TextField
+            value={`<embed type="text/html" src="https://ilimodels.ch${
+              hideFilter ? "/?hideFilter=true" : ""
+            }" width="${width}" height="${height}" style="border: ${border ? "1px solid darkgrey" : "none"}"></embed>`}
+            sx={{ bgcolor: "action.hover", marginTop: 5 }}
+            type="text"
+            fullWidth
+            variant="outlined"
+          />
+          <Tooltip title={t("copy-to-clipboard")}>
+            <IconButton
+              onClick={() => {
+                navigator.clipboard.writeText(
+                  `<embed type="text/html" src="https://ilimodels.ch${
+                    hideFilter ? "/?hideFilter=true" : ""
+                  }" width="${width}" height="${height}" style="border: ${
+                    border ? "1px solid darkgrey" : "none"
+                  }"></embed>`
+                );
+              }}
+            >
+              <ContentCopyIcon />
+            </IconButton>
+          </Tooltip>
+        </Stack>
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose}>{t("close")}</Button>
