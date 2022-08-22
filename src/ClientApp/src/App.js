@@ -2,6 +2,7 @@ import React from "react";
 import { Routes, Route } from "react-router";
 import { Layout } from "./components/Layout";
 import { Home } from "./components/Home";
+import { Detail } from "./components/Detail";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import "@fontsource/roboto/300.css";
@@ -27,6 +28,8 @@ export default function App() {
       <Layout>
         <Routes>
           <Route exact path="/" element={<Home />} />
+          <Route path="/detail/:md5/:name" element={<Detail />} />
+          <Route path="*" element={<Home />} />
         </Routes>
       </Layout>
     </ThemeProvider>

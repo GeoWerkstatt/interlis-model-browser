@@ -18,5 +18,12 @@
   "model-name": "Modellbezeichnung",
   "no-depends-on-model": "Keine referenzierten Modelle",
   "reset": "Zurücksetzen",
-  "all": "Alle"
+  "all": "Alle",
+  "technical-contact": "Technischer Kontakt",
+  "back-to-search": "Zurück zur Suche",
+  "to-search": "Zur Suche",
+  "model-preview": "Modellvorschau",
+  "invalid-model-url": "Ungültige Modell-URL",
+  "no-model-preview": "Keine Modellvorschau verfügbar",
+  "model-uri": "Modell-URI"
 }

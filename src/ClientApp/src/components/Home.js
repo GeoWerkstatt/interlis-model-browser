@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
-import { Autocomplete, Box, Button, IconButton, TextField, Tooltip, Stack } from "@mui/material";
+import { Autocomplete, Box, Button, CircularProgress, IconButton, TextField, Tooltip, Stack } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import SearchIcon from "@mui/icons-material/Search";
 import ClearIcon from "@mui/icons-material/Clear";
@@ -14,6 +14,8 @@ export function Home() {
   const [inputValue, setInputValue] = useState(searchParams.get("query") || "");
   const [repositoryTree, setRepositoryTree] = useState();
   const [searchOptions, setSearchOptions] = useState([]);
+  const [loading, setLoading] = useState();
+
   const { t } = useTranslation("common");
 
   async function search(searchString) {
@@ -23,17 +25,21 @@ export function Home() {
       },
       { replace: true }
     );
+    setLoading(true);
     const response = await fetch("/search?query=" + searchString);
     if (response.ok) {
       if (response.status === 204 /* No Content */) {
         setModels([]);
+        setLoading(false);
       } else {
         const repositoryTree = await response.json();
         setRepositoryTree(repositoryTree);
         setModels(getAllModels(repositoryTree));
+        setLoading(false);
       }
     } else {
       setModels([]);
+      setLoading(false);
     }
   }
 
@@ -136,7 +142,14 @@ export function Home() {
           </Button>
         </Stack>
       </form>
-      {models !== null && <Results models={models} repositoryTree={repositoryTree}></Results>}
+      {!models && loading && (
+        <Box mt={10}>
+          <CircularProgress />
+        </Box>
+      )}
+      {models !== null && (
+        <Results models={models} repositoryTree={repositoryTree} searchParams={searchParams}></Results>
+      )}
     </Box>
   );
 }
