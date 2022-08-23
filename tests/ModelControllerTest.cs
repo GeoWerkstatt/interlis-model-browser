@@ -35,7 +35,7 @@ public class ModelControllerTest
         Assert.AreEqual("544a7e2f91f51172f1d471dc3b3ce10c", model.MD5);
         Assert.AreEqual("home/scalable_assistant_georgia.json5", model.File);
         Assert.IsNotNull(model.ModelRepository, "ModelRepository has to be included.");
-        Assert.AreEqual("Practical Frozen Gloves", model.ModelRepository.Name);
+        Assert.AreEqual("white", model.ModelRepository.Name);
     }
 
     [TestMethod]
