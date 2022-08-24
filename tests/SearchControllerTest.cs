@@ -85,18 +85,39 @@ public class SearchControllerTest
     [TestMethod]
     public async Task SearchTag()
     {
-        var searchResult = await controller.Search("Centralized");
+        var searchResult = await controller.Search("Specialist");
         Assert.IsNotNull(searchResult);
         searchResult
             .GetAllModels()
-            .AssertCount(1)
-            .AssertSingleItem(m => m.Id == 23, m => m.Tags.AssertContains("Centralized"));
+            .AssertCount(3)
+            .AssertSingleItem(m => m.Id == 23, m => m.Tags.AssertContains("Specialist"));
 
         // Tags must match exactly
-        searchResult = await controller.Search("entralize");
+        searchResult = await controller.Search("pecialist");
+        Assert.IsNotNull(searchResult);
+        searchResult.GetAllModels().AssertCount(2);
+
+        searchResult = await controller.Search("SpecialiST");
+        Assert.IsNotNull(searchResult);
+        searchResult.GetAllModels().AssertCount(2);
+    }
+
+    [TestMethod]
+    public async Task SearchDependsOnModel()
+    {
+        var searchResult = await controller.Search("Home Loan Account");
+        Assert.IsNotNull(searchResult);
+        var models = searchResult.GetAllModels();
+        searchResult
+            .GetAllModels()
+            .AssertCount(3)
+            .AssertSingleItem(m => m.Id == 86, m => m.DependsOnModel.AssertContains("Home Loan Account"));
+
+        // DependsOnModel must match exactly
+        searchResult = await controller.Search("agenta");
         Assert.AreEqual(null, searchResult);
 
-        searchResult = await controller.Search("centralizED");
+        searchResult = await controller.Search("MAgenta");
         Assert.AreEqual(null, searchResult);
     }
 
@@ -173,16 +194,16 @@ public class SearchControllerTest
         Assert.AreEqual(1, searchResult.Models.Count);
 
         searchResult.SubsidiarySites
-            .AssertCount(3)
-            .AssertSingleItem("eula.biz", 1)
-            .AssertSingleItem("hilario.info", 2)
+            .AssertCount(5)
+            .AssertSingleItem("eldora.net", 1)
+            .AssertSingleItem("geovany.org", 1)
             .AssertSingleItem("valentine.net", 0, r => r
                 .AssertCount(5)
-                .AssertSingleItem("aliyah.org", 1)
                 .AssertSingleItem("arvel.name", 1)
-                .AssertSingleItem("chandler.net", 2)
-                .AssertSingleItem("jaquelin.com", 1)
-                .AssertSingleItem("kelsi.biz", 2));
+                .AssertSingleItem("breana.com", 1)
+                .AssertSingleItem("jaquelin.com", 2)
+                .AssertSingleItem("lenny.net", 1)
+                .AssertSingleItem("mack.info", 1));
     }
 
     [TestMethod]

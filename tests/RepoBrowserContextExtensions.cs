@@ -59,7 +59,7 @@ public static class RepoBrowserContextExtensions
             .RuleFor(m => m.File, f => f.System.FilePath().Trim('/').OrDefault(f, 0.1f, "obsolete" + f.System.FilePath()))
             .RuleFor(m => m.Version, f => f.Date.Past().ToString("yyyy-MM-dd", DateTimeFormatInfo.InvariantInfo))
             .RuleFor(m => m.PublishingDate, f => f.Date.Past())
-            .RuleFor(m => m.DependsOnModel, new List<string>())
+            .RuleFor(m => m.DependsOnModel, f => f.Random.WordsArray(0, 3).ToList())
             .RuleFor(m => m.Tags, f => f.Random.WordsArray(0, 5).ToList())
             .RuleFor(m => m.ShortDescription, f => f.Random.Words())
             .RuleFor(m => m.Issuer, f => f.Internet.Email())

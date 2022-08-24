@@ -115,7 +115,8 @@ public class SearchController : ControllerBase
                     || EF.Functions.ILike(m.Version, searchPattern, @"\")
                     || EF.Functions.ILike(m.File, searchPattern, @"\")
                     || modelsNamesFoundFromCatalogs.Contains(m.Name)
-                    || m.Tags.Contains(query)))
+                    || m.Tags.Contains(query)
+                    || m.DependsOnModel.Contains(query)))
             .AsNoTracking()
             .ToDictionaryAsync(r => r.HostNameId);
     }
