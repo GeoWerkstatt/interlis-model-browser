@@ -21,6 +21,7 @@ export function Home() {
   const [repositoryTree, setRepositoryTree] = useState();
   const [searchOptions, setSearchOptions] = useState([]);
   const [loading, setLoading] = useState();
+  const [searchUrl, setSearchUrl] = useState();
 
   const { t } = useTranslation("common");
 
@@ -38,15 +39,15 @@ export function Home() {
     dependsOnModels.forEach((model) => {
       url.searchParams.append(FilterValues.DependsOnModels, model);
     });
+    if (searchParams.get("hideFilter") === undefined) {
+      url.searchParams.append("hideFilter", !!hideFilter);
+    }
+    setSearchUrl(url);
     return url;
   };
 
   async function search(searchString) {
     const url = getSearchUrl();
-    // Use hideFilter state for query if it was not explicitly set in url.
-    if (searchParams.get("hideFilter") === undefined) {
-      url.searchParams += "&hideFilter=" + !!hideFilter;
-    }
     setSearchParams(
       {
         query: searchString,
@@ -123,7 +124,6 @@ export function Home() {
     !!searchParams.get(FilterValues.DependsOnModels)
       ? setDependsOnModels(searchParams.getAll(FilterValues.DependsOnModels))
       : setDependsOnModels([]);
-
     if (inputValue !== "") {
       search(inputValue);
     }
@@ -193,14 +193,7 @@ export function Home() {
           <CircularProgress />
         </Box>
       )}
-      {models !== null && (
-        <Results
-          hideFilter={hideFilter === "true"}
-          models={models}
-          repositoryTree={repositoryTree}
-          searchParams={searchParams}
-        ></Results>
-      )}
+      {models !== null && <Results searchUrl={searchUrl} models={models} repositoryTree={repositoryTree}></Results>}
     </Box>
   );
 }

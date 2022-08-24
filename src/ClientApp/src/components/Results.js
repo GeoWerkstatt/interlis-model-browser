@@ -13,7 +13,8 @@ import { useTranslation } from "react-i18next";
 import { Filter } from "./Filter";
 
 export function Results(props) {
-  const { models, repositoryTree, searchParams, hideFilter } = props;
+  const { models, repositoryTree, searchUrl } = props;
+  const hideFilter = searchUrl.searchParams.get("hideFilter") === "true";
   const { t } = useTranslation("common");
   const [page, setPage] = useState(1);
   const [showFilter, setShowFilter] = useState(false);
@@ -66,10 +67,8 @@ export function Results(props) {
                   <Button sx={{ color: "text.primary" }}>
                     <Link
                       style={{ color: "inherit", textDecoration: "inherit", fontSize: 20, margin: -1 }}
-                      to={{
-                        pathname: "/detail/" + model.mD5 + "/" + model.name,
-                      }}
-                      state={{ query: searchParams.get("query"), hideFilter: hideFilter }}
+                      to={{ pathname: "/detail/" + model.mD5 + "/" + model.name }}
+                      state={{ searchQuery: searchUrl.search }}
                     >
                       {model.name}
                     </Link>
