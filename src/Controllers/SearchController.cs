@@ -76,7 +76,7 @@ public class SearchController : ControllerBase
 
     private Dictionary<string, Repository> FilterRepositories(string[]? repositoryNames, Dictionary<string, Repository> repositories)
     {
-        if (repositoryNames != null && !repositoryNames.All(s => string.IsNullOrEmpty(s)))
+        if (repositoryNames != null && !repositoryNames.All(string.IsNullOrEmpty))
         {
             // Filter repos by repositoryNames and include parents.
             repositories = repositories.Values.Where(r => repositoryNames == null || repositoryNames.Contains(r.Name) || HasMatchingChild(r, repositoryNames)).ToDictionary(r => r.HostNameId);
@@ -153,9 +153,9 @@ public class SearchController : ControllerBase
             .Distinct()
             .ToList();
 
-        if (schemaLanguages != null && schemaLanguages.All(s => string.IsNullOrEmpty(s))) schemaLanguages = null;
-        if (dependsOnModels != null && dependsOnModels.All(d => string.IsNullOrEmpty(d))) dependsOnModels = null;
-        if (issuers != null && issuers.All(i => string.IsNullOrEmpty(i))) issuers = null;
+        if (schemaLanguages != null && schemaLanguages.All(string.IsNullOrEmpty)) schemaLanguages = null;
+        if (dependsOnModels != null && dependsOnModels.All(string.IsNullOrEmpty)) dependsOnModels = null;
+        if (issuers != null && issuers.All(string.IsNullOrEmpty)) issuers = null;
 
         return context.Repositories
             .Include(r => r.SubsidiarySites)
