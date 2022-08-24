@@ -6,6 +6,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import ClearIcon from "@mui/icons-material/Clear";
 import { useForm } from "react-hook-form";
 import { Results } from "./Results";
+import { FilterValues } from "./FilterValues";
 
 export function Home() {
   const { register, handleSubmit, watch, reset } = useForm();
@@ -13,16 +14,38 @@ export function Home() {
   const [models, setModels] = useState(null);
   const [inputValue, setInputValue] = useState(searchParams.get("query") || "");
   const [hideFilter, setHideFilter] = useState(false);
+  const [schemaLanguages, setSchemaLanguages] = useState([]);
+  const [issuers, setIssuers] = useState([]);
+  const [repositoryNames, setRepositoryNames] = useState([]);
+  const [dependsOnModels, setDependsOnModels] = useState([]);
   const [repositoryTree, setRepositoryTree] = useState();
   const [searchOptions, setSearchOptions] = useState([]);
   const [loading, setLoading] = useState();
 
   const { t } = useTranslation("common");
 
+  const getSearchUrl = () => {
+    var url = new URL(window.location);
+    issuers.forEach((issuer) => {
+      url.searchParams.append(FilterValues.Issuers, issuer);
+    });
+    repositoryNames.forEach((name) => {
+      url.searchParams.append(FilterValues.RepositoryNames, name);
+    });
+    schemaLanguages.forEach((language) => {
+      url.searchParams.append(FilterValues.SchemaLanguages, language);
+    });
+    dependsOnModels.forEach((model) => {
+      url.searchParams.append(FilterValues.DependsOnModels, model);
+    });
+    return url;
+  };
+
   async function search(searchString) {
+    const url = getSearchUrl();
     // Use hideFilter state for query if it was not explicitly set in url.
     if (searchParams.get("hideFilter") === undefined) {
-      searchString += "&hideFilter=" + !!hideFilter;
+      url.searchParams += "&hideFilter=" + !!hideFilter;
     }
     setSearchParams(
       {
@@ -31,7 +54,9 @@ export function Home() {
       { replace: true }
     );
     setLoading(true);
-    const response = await fetch("/search?query=" + searchString);
+    url.searchParams.append("query", searchString);
+
+    const response = await fetch("/search" + url.search);
     if (response.ok) {
       if (response.status === 204 /* No Content */) {
         setModels([]);
@@ -49,10 +74,13 @@ export function Home() {
   }
 
   async function getSearchOptions(searchString) {
+    const url = getSearchUrl();
+
     if (searchString.length < 3) {
       setSearchOptions([]);
     } else {
-      const response = await fetch("/search/suggest/" + searchString);
+      url.searchParams.append("query", searchString);
+      const response = await fetch("/search/suggest/" + url.search);
       if (response.ok && response.status !== 204 /* No Content */) {
         const suggestions = await response.json();
         setSearchOptions([...new Set(suggestions)]);
@@ -85,6 +113,17 @@ export function Home() {
   // On first load the hideFilter state should be set for all following requests.
   useEffect(() => {
     setHideFilter(searchParams.get("hideFilter"));
+    !!searchParams.get(FilterValues.SchemaLanguages)
+      ? setSchemaLanguages(searchParams.getAll(FilterValues.SchemaLanguages))
+      : setSchemaLanguages([]);
+    !!searchParams.get(FilterValues.Issuers) ? setIssuers(searchParams.getAll(FilterValues.Issuers)) : setIssuers([]);
+    !!searchParams.get(FilterValues.RepositoryNames)
+      ? setRepositoryNames(searchParams.getAll(FilterValues.RepositoryNames))
+      : setRepositoryNames([]);
+    !!searchParams.get(FilterValues.DependsOnModels)
+      ? setDependsOnModels(searchParams.getAll(FilterValues.DependsOnModels))
+      : setDependsOnModels([]);
+
     if (inputValue !== "") {
       search(inputValue);
     }
