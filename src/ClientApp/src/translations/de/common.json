@@ -35,8 +35,8 @@
   "copy-to-clipboard": "In die Zwischenablage kopieren",
   "close": "Schliessen",
   "hide-filter": "Filterbereich ausblenden",
-  "additional-optional-filter-criteria": "Zusätzliche Fitlerkriterien (optional)",
-  "additional-optional-filter-criteria-instructions": "Durch das Setzen der folgenden Filterkriterien können Sie alle Sucheresultate im eingebetten Model-Repo-Browser einschränken.",
+  "additional-optional-filter-criteria": "Zusätzliche Filterkriterien (optional)",
+  "additional-optional-filter-criteria-instructions": "Durch das Setzen der folgenden Filterkriterien können Sie alle Sucheresultate im eingebetteten Model-Repo-Browser einschränken.",
   "chose-one-or-more-schema-languages": "Wählen Sie eine oder mehrere Schemasprachen",
   "comma-seperated-filter-criteria-instructions": "Geben Sie Modellablagenamen, Herausgeber oder referenzierte Modelle als komma-separierte Liste an."
 }
