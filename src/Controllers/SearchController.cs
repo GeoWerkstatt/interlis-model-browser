@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
 using ModelRepoBrowser.Models;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace ModelRepoBrowser.Controllers;
 
@@ -21,19 +23,24 @@ public class SearchController : ControllerBase
     /// Search the Model Repositories for Models that match the <paramref name="query"/>
     /// with their Name, Version, File path or Tags. If the <paramref name="query"/> matches
     /// a catalog name its referenced models are also included in the search result.
+    /// Search results can be limited by additionally supplying one or multiple filter parameters:
+    /// <paramref name="repositoryNames"/>, <paramref name="issuers"/>, <paramref name="schemaLanguages"/>,<paramref name="dependsOnModels"/>.
     /// </summary>
-    /// <param name="query">The query string to search for.</param>
-    /// <param name="repositoryNames">The names of the repositories in which to search.</param>
-    /// <param name="issuers">The issuers to filter the found models by.</param>
-    /// <param name="schemaLanguages">The schemaLanguages to filter the found models by.</param>
-    /// <param name="dependsOnModels">The dependsOnModels list to filter the found models by.</param>
+    /// <param name="query" example="kgdm">The query string to search for.</param>
+    /// <param name="repositoryNames" example='["models.geo.admin.ch", "models.geo.bl.ch"]'>The names of the repositories in which to search.</param>
+    /// <param name="issuers" example='["http://www.interlis.ch/models","http://www.geo.admin.ch", "http://models.geo.bl.ch/AfW"]'>The issuers to filter the found models by.</param>
+    /// <param name="schemaLanguages" example='["ili1","ili2_2","ili2_3" "ili2_4"]'>The schemaLanguages to filter the found models by.</param>
+    /// <param name="dependsOnModels" example='["CHAdminCodes_V1", "GeometryCHLV95_V1"]'>The dependsOnModels list to filter the found models by.</param>
     /// <returns>
     /// The root of the <see cref="Repository"/> tree or <c>null</c> if no <see cref="Model"/>
     /// matched the <paramref name="query"/>. The Repositories contain only <see cref="Model"/>s
     /// that matched the <paramref name="query"/>.
     /// </returns>
     [HttpGet]
-    public async Task<Repository?> Search(string query, [FromQuery] string[]? repositoryNames = null, [FromQuery] string[]? issuers = null, [FromQuery] string[]? schemaLanguages = null, [FromQuery] string[]? dependsOnModels = null)
+    [SwaggerResponse(StatusCodes.Status200OK, "The INTERLIS repository tree containinig all models matching the search.", typeof(Repository), new[] { "application/json" })]
+    [SwaggerResponse(StatusCodes.Status204NoContent, "No INTERLIS model matching the search query exists. No repository tree returned.", ContentTypes = new[] { "application/json" })]
+    [SwaggerResponse(StatusCodes.Status400BadRequest, "The server cannot process the request due to invalid or malformed request.", typeof(ProblemDetails), new[] { "application/json" })]
+    public async Task<Repository?> Search([BindRequired] string query, [FromQuery] string[]? repositoryNames = null, [FromQuery] string[]? issuers = null, [FromQuery] string[]? schemaLanguages = null, [FromQuery] string[]? dependsOnModels = null)
     {
         logger.LogInformation("Search with query <{SearchQuery}>", query);
 
@@ -102,14 +109,17 @@ public class SearchController : ControllerBase
     /// <summary>
     /// Get search query suggestions based on <paramref name="query"/>.
     /// </summary>
-    /// <param name="query">The query string to search for.</param>
-    /// <param name="repositoryNames">The names of the repositories in which to search.</param>
-    /// <param name="issuers">The issuers to filter the found models by.</param>
-    /// <param name="schemaLanguages">The schemaLanguages to filter the found models by.</param>
-    /// <param name="dependsOnModels">The dependsOnModels list to filter the found models by.</param>
+    /// <param name="query" example="kgdm">The query string to search for.</param>
+    /// <param name="repositoryNames" example='["models.geo.admin.ch", "models.geo.bl.ch"]'>The names of the repositories in which to search.</param>
+    /// <param name="issuers" example='["http://www.interlis.ch/models","http://www.geo.admin.ch", "http://models.geo.bl.ch/AfW"]'>The issuers to filter the found models by.</param>
+    /// <param name="schemaLanguages" example='["ili1","ili2_2","ili2_3" "ili2_4"]'>The schemaLanguages to filter the found models by.</param>
+    /// <param name="dependsOnModels" example='["CHAdminCodes_V1", "GeometryCHLV95_V1"]'>The dependsOnModels list to filter the found models by.</param>
     /// <returns>A sequence of <see cref="Model.Name"/> related to <paramref name="query"/>.</returns>
     [HttpGet("suggest")]
-    public async Task<IEnumerable<string>> GetSearchSuggestions(string query, [FromQuery] string[]? repositoryNames = null, [FromQuery] string[]? issuers = null, [FromQuery] string[]? schemaLanguages = null, [FromQuery] string[]? dependsOnModels = null)
+    [SwaggerResponse(StatusCodes.Status200OK, "The names of all INTERLIS models matching the search.", typeof(IEnumerable<string>), new[] { "application/json" })]
+    [SwaggerResponse(StatusCodes.Status204NoContent, "No INTERLIS model matching the search query exists. Nothing returned.", ContentTypes = new[] { "application/json" })]
+    [SwaggerResponse(StatusCodes.Status400BadRequest, "The server cannot process the request due to invalid or malformed request.", typeof(ProblemDetails), new[] { "application/json" })]
+    public async Task<IEnumerable<string>> GetSearchSuggestions([BindRequired] string query, [FromQuery] string[]? repositoryNames = null, [FromQuery] string[]? issuers = null, [FromQuery] string[]? schemaLanguages = null, [FromQuery] string[]? dependsOnModels = null)
     {
         logger.LogDebug("Get search options for <{SearchQuery}>", query);
 
