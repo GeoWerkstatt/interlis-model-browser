@@ -37,7 +37,6 @@ builder.Services.AddSwaggerGen(options =>
 
     options.EnableAnnotations();
     options.SupportNonNullableReferenceTypes();
-
 });
 
 builder.Services.AddHealthChecks()
