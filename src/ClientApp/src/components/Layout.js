@@ -27,7 +27,7 @@ export function Layout(props) {
       <Box sx={{ flexGrow: 1 }}>
         <AppBar position="static">
           <Toolbar>
-            <Typography sx={{ flexGrow: 1 }}>INTERLIS Model Repo Browser</Typography>
+            <Typography sx={{ flexGrow: 1 }}>INTERLIS Model Browser</Typography>
             <Tooltip title={t("generate-embed-tag")}>
               <CodeIcon sx={{ marginBottom: 0.5, marginRight: 1 }} onClick={handleClickOpen}></CodeIcon>
             </Tooltip>
