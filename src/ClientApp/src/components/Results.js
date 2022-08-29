@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Box, Button, Chip, Pagination, Stack, Typography } from "@mui/material";
+import { Box, Button, Chip, Pagination, Stack, Tooltip, Typography } from "@mui/material";
 import CloudQueueIcon from "@mui/icons-material/CloudQueue";
 import SellIcon from "@mui/icons-material/Sell";
 import EditIcon from "@mui/icons-material/Edit";
@@ -9,6 +9,7 @@ import RestoreIcon from "@mui/icons-material/Restore";
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
 import FlagIcon from "@mui/icons-material/Flag";
 import InsertDriveFileIcon from "@mui/icons-material/InsertDriveFile";
+import HubIcon from "@mui/icons-material/Hub";
 import { useTranslation } from "react-i18next";
 import { Filter } from "./Filter";
 
@@ -60,7 +61,11 @@ export function Results(props) {
       <Box sx={{ width: "100%", bgcolor: "background.paper", marginBottom: 8 }}>
         {filteredModels &&
           filteredModels
-            .sort((a, b) => new Date(b.publishingDate) - new Date(a.publishingDate))
+            .sort(
+              (a, b) =>
+                a.isDependOnModelResult - b.isDependOnModelResult ||
+                new Date(b.publishingDate) - new Date(a.publishingDate)
+            )
             .slice((page - 1) * modelsPerPage, (page - 1) * modelsPerPage + modelsPerPage)
             .map((model) => (
               <Box key={model.id} mt={6} direction="column" alignItems="flex-start">
@@ -74,6 +79,11 @@ export function Results(props) {
                       {model.name}
                     </Link>
                   </Button>
+                  {model.isDependOnModelResult && (
+                    <Tooltip title={t("search-term-was-found-in-depends-on-model")}>
+                      <HubIcon sx={{ color: "text.secondary", fontSize: 16 }} />
+                    </Tooltip>
+                  )}
                   {model.tags &&
                     model.tags.map((tag) => tag.length > 0 && <Chip key={tag} sx={{ margin: 1 }} label={tag} />)}
                 </Stack>

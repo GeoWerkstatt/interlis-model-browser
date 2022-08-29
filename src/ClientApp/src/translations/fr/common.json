@@ -38,5 +38,7 @@
   "additional-optional-filter-criteria": "Critères de filtrage supplémentaires (facultatif)",
   "additional-optional-filter-criteria-instructions": "En définissant les critères de filtre suivants, vous pouvez restreindre tous les résultats de recherche dans le Model-Repo-Browser de modèle intégré.",
   "chose-one-or-more-schema-languages": "Choisissez un ou plusieurs langages de schéma",
-  "comma-seperated-filter-criteria-instructions": "Spécifiez les noms de dépôt de modèle, les émetteurs ou les modèles référencés sous forme de liste séparée par des virgules."
+  "comma-seperated-filter-criteria-instructions": "Spécifiez les noms de dépôt de modèle, les émetteurs ou les modèles référencés sous forme de liste séparée par des virgules.",
+  "search-term-was-found-in-depends-on-model": "Le terme de recherche a été trouvé dans un modèle référencé",
+  "hide-results-for-depends-on-models": "Masquer les résultats liés aux modèles référencés"
 }

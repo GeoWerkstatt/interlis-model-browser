@@ -62,6 +62,16 @@ public class SearchController : ControllerBase
 
         var repositories = await SearchRepositories(trimmedQuery, issuers, schemaLanguages, dependsOnModels).ConfigureAwait(false);
 
+        // Flag results if querystring was found in dependsOnModels
+        repositories = repositories.Values.Select(r =>
+        {
+            r.Models.ToList().ForEach(m =>
+            {
+                m.IsDependOnModelResult = m.DependsOnModel.Contains(trimmedQuery);
+            });
+            return r;
+        }).ToDictionary(r => r.HostNameId);
+
         // Create repository tree
         foreach (var repository in repositories.Values)
         {
