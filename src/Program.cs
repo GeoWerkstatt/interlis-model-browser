@@ -1,7 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc.Controllers;
+using Microsoft.EntityFrameworkCore;
 using ModelRepoBrowser;
 using ModelRepoBrowser.Crawler;
 using Npgsql.Logging;
+using System.Reflection;
 using System.Text.Json.Serialization;
 
 NpgsqlLogManager.Provider = new ConsoleLoggingProvider(NpgsqlLogLevel.Debug, true, false);
@@ -19,6 +21,23 @@ builder.Services.AddControllers().AddJsonOptions(options => { options.JsonSerial
 builder.Services.AddTransient<IRepositoryCrawler, RepositoryCrawler>().AddHttpClient();
 builder.Services.AddHostedService<DbUpdateService>();
 builder.Services.AddSingleton<DbUpdateServiceHealthCheck>();
+builder.Services.AddSwaggerGen(options =>
+{
+    // Include existing documentation in Swagger UI.
+    options.IncludeXmlComments(
+        Path.Combine(AppContext.BaseDirectory, $"{Assembly.GetExecutingAssembly().GetName().Name}.xml"));
+
+    // Custom order in Swagger UI.
+    options.OrderActionsBy(apiDescription =>
+    {
+        var customOrder = new[] { "Search", "Model", "Version" };
+        var controllerName = (apiDescription.ActionDescriptor as ControllerActionDescriptor)?.ControllerName;
+        return $"{Array.IndexOf(customOrder, controllerName)}";
+    });
+
+    options.EnableAnnotations();
+    options.SupportNonNullableReferenceTypes();
+});
 
 builder.Services.AddHealthChecks()
     .AddCheck<RepoBrowserDbHealthCheck>("RepoBrowserDbHealthCheck")
@@ -34,6 +53,8 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.MapHealthChecks("/health");
 

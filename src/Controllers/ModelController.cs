@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ModelRepoBrowser.Models;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace ModelRepoBrowser.Controllers;
 
@@ -18,12 +19,14 @@ public class ModelController : Controller
     }
 
     /// <summary>
-    /// Retrieve the Model with the specified <paramref name="md5"/> and <paramref name="name"/>.
+    /// Retrieve the INTERLIS-Model with the specified <paramref name="md5"/> and <paramref name="name"/>.
     /// </summary>
-    /// <param name="md5">The <see cref="Model.MD5"/> of the Model.</param>
-    /// <param name="name">The <see cref="Model.Name"/> of the Model.</param>
+    /// <param name="md5" example="1fd8e69771af1a3b3177413d5e2f09de">The md5 hash of the model file.</param>
+    /// <param name="name" example="SZ_Schutzbauten_Wasser_V1">The name of the model.</param>
     /// <returns>The <see cref="Model"/> with the specified <paramref name="md5"/> and <paramref name="name"/> or <c>null</c> if it does not exist.</returns>
     [HttpGet("{md5}/{name}")]
+    [SwaggerResponse(StatusCodes.Status200OK, "The INTERLIS model.", typeof(Model), new[] { "application/json" })]
+    [SwaggerResponse(StatusCodes.Status204NoContent, "The INTERLIS model for the requested md5 and name combination does not exist. No content returned.", ContentTypes = new[] { "application/json" })]
     public Model? ModelDetails(string md5, string name)
     {
         logger.LogDebug("Get details for Model with hash <{MD5}> and name <{Name}>.", md5, name);
