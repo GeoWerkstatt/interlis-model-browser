@@ -43,10 +43,16 @@ export function Filter(props) {
     setFilteredModels(filtered);
   };
 
-  const schemaLanguageOptions = [...new Set(models.map((m) => m.schemaLanguage))];
-  const issuerOptions = [...new Set(models.filter((m) => m.issuer !== null).map((m) => m.issuer))];
+  // Get and sort filter options
+  const getIssuerWithoutPrefix = (issuer) => issuer.replace("https://", "").replace("http://", "").replace("www.", "");
 
-  const currentDependsOnModelOptions = [...new Set(filteredModels.flatMap((m) => m.dependsOnModel))];
+  const schemaLanguageOptions = [...new Set(models.map((m) => m.schemaLanguage))].sort((a, b) => a.localeCompare(b));
+  const issuerOptions = [...new Set(models.filter((m) => m.issuer !== null).map((m) => m.issuer))].sort((a, b) =>
+    getIssuerWithoutPrefix(a).localeCompare(getIssuerWithoutPrefix(b))
+  );
+  const currentDependsOnModelOptions = [...new Set(filteredModels.flatMap((m) => m.dependsOnModel))].sort((a, b) =>
+    a.localeCompare(b)
+  );
 
   // Set default checkboxes checked for tree
   useEffect(() => {
