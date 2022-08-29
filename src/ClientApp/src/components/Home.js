@@ -46,6 +46,15 @@ export function Home() {
     return url;
   };
 
+  const sortRepositoryTree = (nodes) => {
+    nodes.sort((a, b) => a.name.localeCompare(b.name));
+    nodes.forEach(function (node) {
+      if (node.subsidiarySites.length > 0) {
+        sortRepositoryTree(node.subsidiarySites);
+      }
+    });
+  };
+
   async function search(searchString) {
     const url = getSearchUrl();
     setSearchParams(
@@ -64,6 +73,7 @@ export function Home() {
         setLoading(false);
       } else {
         const repositoryTree = await response.json();
+        sortRepositoryTree(repositoryTree.subsidiarySites);
         setRepositoryTree(repositoryTree);
         setModels(getAllModels(repositoryTree));
         setLoading(false);
