@@ -29,7 +29,9 @@ public class Model
     public string? TechnicalContact { get; set; }
 
     public string? FurtherInformation { get; set; }
+
     public bool? IsDependOnModelResult { get; set; } = false;
+
     public Repository ModelRepository { get; set; }
 
     public Uri? Uri => string.IsNullOrEmpty(File) ? null : ModelRepository.Uri.Append(File);
