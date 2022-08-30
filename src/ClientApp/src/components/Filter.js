@@ -8,6 +8,7 @@ import {
   FormControlLabel,
   Paper,
   Stack,
+  Switch,
   TextField,
   Typography,
 } from "@mui/material";
@@ -20,6 +21,7 @@ export function Filter(props) {
   const { models, filteredModels, setFilteredModels, setPage, repositoryTree } = props;
   const [filterApplied, setFilterApplied] = useState(false);
   const [referencedModels, setReferencedModels] = useState([]);
+  const [hideReferencedModelResults, setHideReferencedModelResults] = useState(false);
   const [allIssuerSelected, setAllIssuerSelected] = useState(false);
   const [allSchemaLanguageSelected, setAllSchemaLanguageSelected] = useState(true);
 
@@ -39,6 +41,9 @@ export function Filter(props) {
     }
     if (referencedModels.length > 0) {
       filtered = filtered.filter((m) => m.dependsOnModel.some((m) => referencedModels.includes(m)));
+    }
+    if (hideReferencedModelResults) {
+      filtered = filtered.filter((m) => m.isDependOnModelResult === false);
     }
     setFilteredModels(filtered);
     setPage(1);
@@ -95,6 +100,7 @@ export function Filter(props) {
     setFilteredModels(models);
     setFilterApplied(false);
     setReferencedModels([]);
+    setHideReferencedModelResults(false);
     checkAllSchemaLanguage(true);
     checkAllIssuer(true);
     setChildrenCheckStatus(repositoryTree, true);
@@ -246,6 +252,19 @@ export function Filter(props) {
           </Box>
         </Stack>
         <Box>
+          {models.some((m) => m.isDependOnModelResult === true) && (
+            <FormGroup>
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={hideReferencedModelResults}
+                    onChange={(e) => setHideReferencedModelResults(e.target.checked)}
+                  />
+                }
+                label={t("hide-results-for-depends-on-models")}
+              />
+            </FormGroup>
+          )}
           <Typography mt={8} variant="h6">
             {t("referenced-models")}
           </Typography>

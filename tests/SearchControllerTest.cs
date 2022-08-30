@@ -108,17 +108,16 @@ public class SearchControllerTest
         var searchResult = await controller.Search("Home Loan Account");
         Assert.IsNotNull(searchResult);
         var models = searchResult.GetAllModels();
-        searchResult
-            .GetAllModels()
-            .AssertCount(3)
-            .AssertSingleItem(m => m.Id == 86, m => m.DependsOnModel.AssertContains("Home Loan Account"));
+        models.Where(m => m.IsDependOnModelResult == true).AssertCount(2);
+        models.Where(m => m.IsDependOnModelResult == false).AssertCount(1);
+        models.AssertSingleItem(m => m.Id == 86, m => m.DependsOnModel.AssertContains("Home Loan Account"));
 
         // DependsOnModel must match exactly
-        searchResult = await controller.Search("agenta");
-        Assert.AreEqual(null, searchResult);
+        searchResult = await controller.Search("home loan account");
+        searchResult!.GetAllModels().AssertCount(1);
 
-        searchResult = await controller.Search("MAgenta");
-        Assert.AreEqual(null, searchResult);
+        searchResult = await controller.Search("HOme Loan Account");
+        searchResult!.GetAllModels().AssertCount(1);
     }
 
     [TestMethod]
