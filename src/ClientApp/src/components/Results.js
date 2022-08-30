@@ -73,7 +73,8 @@ export function Results(props) {
                       {model.name}
                     </Link>
                   </Button>
-                  {model.tags && model.tags.map((tag) => <Chip key={tag} sx={{ margin: 1 }} label={tag} />)}
+                  {model.tags &&
+                    model.tags.map((tag) => tag.length > 0 && <Chip key={tag} sx={{ margin: 1 }} label={tag} />)}
                 </Stack>
                 <Stack
                   direction={{ xs: "column", sm: "column", md: "row" }}
