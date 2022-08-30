@@ -64,7 +64,7 @@ export function Home() {
       { replace: true }
     );
     setLoading(true);
-    url.searchParams.append("query", searchString);
+    url.searchParams.set("query", searchString);
 
     const response = await fetch("/search" + url.search);
     if (response.ok) {
