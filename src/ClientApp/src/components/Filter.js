@@ -17,7 +17,7 @@ import TreeView from "@mui/lab/TreeView";
 import TreeItem from "@mui/lab/TreeItem";
 
 export function Filter(props) {
-  const { models, filteredModels, setFilteredModels, repositoryTree } = props;
+  const { models, filteredModels, setFilteredModels, setPage, repositoryTree } = props;
   const [filterApplied, setFilterApplied] = useState(false);
   const [referencedModels, setReferencedModels] = useState([]);
   const [allIssuerSelected, setAllIssuerSelected] = useState(false);
@@ -41,6 +41,7 @@ export function Filter(props) {
       filtered = filtered.filter((m) => m.dependsOnModel.some((m) => referencedModels.includes(m)));
     }
     setFilteredModels(filtered);
+    setPage(1);
   };
 
   // Get and sort filter options
