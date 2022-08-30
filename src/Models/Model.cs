@@ -1,4 +1,5 @@
 ﻿using ModelRepoBrowser.Crawler;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ModelRepoBrowser.Models;
 
@@ -30,6 +31,7 @@ public class Model
 
     public string? FurtherInformation { get; set; }
 
+    [NotMapped]
     public bool? IsDependOnModelResult { get; set; } = false;
 
     public Repository ModelRepository { get; set; }
