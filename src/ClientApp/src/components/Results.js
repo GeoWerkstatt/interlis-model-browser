@@ -54,6 +54,7 @@ export function Results(props) {
           filteredModels={filteredModels}
           repositoryTree={repositoryTree}
           setFilteredModels={setFilteredModels}
+          setPage={setPage}
         ></Filter>
       )}
       <Box sx={{ width: "100%", bgcolor: "background.paper", marginBottom: 8 }}>
