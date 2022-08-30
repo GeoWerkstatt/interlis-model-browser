@@ -65,7 +65,8 @@ public static class RepoBrowserContextExtensions
             .RuleFor(m => m.Issuer, f => f.Internet.Email())
             .RuleFor(m => m.TechnicalContact, f => f.Internet.Email())
             .RuleFor(m => m.FurtherInformation, f => f.Lorem.Sentence())
-            .RuleFor(m => m.ModelRepository, f => f.PickRandom(repositories));
+            .RuleFor(m => m.ModelRepository, f => f.PickRandom(repositories))
+            .RuleFor(m => m.IsDependOnModelResult, _ => false);
         Model SeededModel(int seed) => fakeModels.UseSeed(seed).Generate();
         var models = modelRange.Select(SeededModel);
         context.Models.AddRange(models);
