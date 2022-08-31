@@ -38,6 +38,26 @@ public class SearchControllerTest
     }
 
     [TestMethod]
+    public async Task SearchNullOrEmpty()
+    {
+        var searchResult = await controller.Search("");
+        Assert.IsNotNull(searchResult);
+        searchResult.GetAllModels().AssertCount(88); // gets all non obsolete Models.
+
+        searchResult = await controller.Search(null);
+        Assert.IsNotNull(searchResult);
+        searchResult.GetAllModels().AssertCount(88);
+    }
+
+    [TestMethod]
+    public async Task SearchOneWhitespace()
+    {
+        var searchResult = await controller.Search(" "); // gets all non obsolete Models.
+        Assert.IsNotNull(searchResult);
+        searchResult.GetAllModels().AssertCount(88);
+    }
+
+    [TestMethod]
     public async Task SearchName()
     {
         var searchResult = await controller.Search("entUCK");
@@ -143,27 +163,6 @@ public class SearchControllerTest
         Assert.AreEqual(null, searchResult);
 
         searchResult = await controller.Search("Ken%cky");
-        Assert.AreEqual(null, searchResult);
-    }
-
-    [TestMethod]
-    public async Task SearchEmptyString()
-    {
-        var searchResult = await controller.Search(string.Empty);
-        Assert.AreEqual(null, searchResult);
-    }
-
-    [TestMethod]
-    public async Task SearchNull()
-    {
-        var searchResult = await controller.Search(null);
-        Assert.AreEqual(null, searchResult);
-    }
-
-    [TestMethod]
-    public async Task SearchOneWhitespace()
-    {
-        var searchResult = await controller.Search(" ");
         Assert.AreEqual(null, searchResult);
     }
 

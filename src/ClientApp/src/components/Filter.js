@@ -174,31 +174,33 @@ export function Filter(props) {
                 label={t("all")}
               />
             </FormGroup>
-            {Object.entries(issuerOptions).map(([k, v]) => (
-              <FormGroup sx={{ marginLeft: 2 }}>
-                <FormControlLabel
-                  control={
-                    <Controller
-                      name={"issuer" + k}
-                      control={control}
-                      render={({ field }) => (
-                        <Checkbox
-                          {...field}
-                          {...register("issuer")}
-                          checked={!!watch("issuer" + k)}
-                          onChange={(e) => {
-                            field.onChange(e.target.checked);
-                            updateIfAllChecked("issuer", issuerOptions, setAllIssuerSelected);
-                          }}
-                          value={v}
-                        />
-                      )}
-                    />
-                  }
-                  label={v}
-                />
-              </FormGroup>
-            ))}
+            <Box sx={{ maxHeight: 900, overflowY: "auto", overflowX: "hidden" }}>
+              {Object.entries(issuerOptions).map(([k, v]) => (
+                <FormGroup sx={{ marginLeft: 2 }}>
+                  <FormControlLabel
+                    control={
+                      <Controller
+                        name={"issuer" + k}
+                        control={control}
+                        render={({ field }) => (
+                          <Checkbox
+                            {...field}
+                            {...register("issuer")}
+                            checked={!!watch("issuer" + k)}
+                            onChange={(e) => {
+                              field.onChange(e.target.checked);
+                              updateIfAllChecked("issuer", issuerOptions, setAllIssuerSelected);
+                            }}
+                            value={v}
+                          />
+                        )}
+                      />
+                    }
+                    label={v}
+                  />
+                </FormGroup>
+              ))}
+            </Box>
           </Box>
           <Box>
             {schemaLanguageOptions && schemaLanguageOptions?.length > 1 && (
