@@ -8,18 +8,24 @@ import i18next from "i18next";
 import common_de from "./translations/de/common.json";
 import common_fr from "./translations/fr/common.json";
 import common_it from "./translations/it/common.json";
+import impressum_de from "./translations/de/impressum.json";
+import impressum_fr from "./translations/fr/impressum.json";
+import impressum_it from "./translations/it/impressum.json";
 
 i18next.use(LanguageDetector).init({
   fallbackLng: "de",
   resources: {
     de: {
       common: common_de,
+      impressum: impressum_de,
     },
     fr: {
       common: common_fr,
+      impressum: impressum_fr,
     },
     it: {
       common: common_it,
+      impressum: impressum_it,
     },
   },
 });
