@@ -34,6 +34,9 @@ public class Model
     [NotMapped]
     public bool? IsDependOnModelResult { get; set; } = false;
 
+    [NotMapped]
+    public List<string> CatalogueFiles { get; set; }
+
     public Repository ModelRepository { get; set; }
 
     public Uri? Uri => string.IsNullOrEmpty(File) ? null : ModelRepository.Uri.Append(File);

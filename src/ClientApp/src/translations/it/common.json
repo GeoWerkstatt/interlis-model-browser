@@ -40,5 +40,6 @@
   "chose-one-or-more-schema-languages": "Scegli uno o più linguaggi dello schema",
   "comma-seperated-filter-criteria-instructions": "Specificare nomi di archiviazione modelli, eEmittenti o modelli referenziati come un elenco separato da virgole.",
   "search-term-was-found-in-depends-on-model": "Il termine di ricerca è stato trovato in un modello referenziato",
-  "hide-results-for-depends-on-models": "Nascondi i risultati relativi ai modelli di riferimento"
+  "hide-results-for-depends-on-models": "Nascondi i risultati relativi ai modelli di riferimento",
+  "catalogue-files": "File di catalogo correlati"
 }

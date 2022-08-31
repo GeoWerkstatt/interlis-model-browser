@@ -31,10 +31,17 @@ public class ModelController : Controller
     {
         logger.LogDebug("Get details for Model with hash <{MD5}> and name <{Name}>.", md5, name);
 
-        return context.Models
+        var model = context.Models
             .Include(m => m.ModelRepository)
             .Where(m => m.MD5 == md5 && m.Name == name)
             .AsNoTracking()
             .SingleOrDefault();
+
+        if (model != null)
+        {
+            model.CatalogueFiles = context.Catalogs.Where(c => c.ReferencedModels.Contains(model.Name)).ToList().SelectMany(c => c.File).ToList();
+        }
+
+        return model;
     }
 }

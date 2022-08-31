@@ -66,7 +66,8 @@ public static class RepoBrowserContextExtensions
             .RuleFor(m => m.TechnicalContact, f => f.Internet.Email())
             .RuleFor(m => m.FurtherInformation, f => f.Lorem.Sentence())
             .RuleFor(m => m.ModelRepository, f => f.PickRandom(repositories))
-            .RuleFor(m => m.IsDependOnModelResult, _ => false);
+            .RuleFor(m => m.IsDependOnModelResult, _ => false)
+            .RuleFor(m => m.CatalogueFiles, _ => new List<string>());
         Model SeededModel(int seed) => fakeModels.UseSeed(seed).Generate();
         var models = modelRange.Select(SeededModel);
         context.Models.AddRange(models);
@@ -82,7 +83,7 @@ public static class RepoBrowserContextExtensions
             .RuleFor(c => c.PrecursorVersion, f => f.Date.Past().ToString("yyyy-MM-dd", DateTimeFormatInfo.InvariantInfo))
             .RuleFor(c => c.PublishingDate, f => f.Date.Past())
             .RuleFor(c => c.Owner, f => f.Name.FullName())
-            .RuleFor(c => c.File, new List<string>())
+            .RuleFor(c => c.File, f => new List<string> { f.Random.AlphaNumeric(28) })
             .RuleFor(c => c.Title, f => f.Random.Word())
             .RuleFor(c => c.ReferencedModels, f => f.PickRandom(models, 2).Select(m => m.Name).ToList().OrDefault(f, defaultValue: new List<string>()));
         Catalog SeededCatalog(int seed) => fakeCatalogs.UseSeed(seed).Generate();
