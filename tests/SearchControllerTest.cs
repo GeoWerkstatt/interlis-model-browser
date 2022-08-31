@@ -166,7 +166,6 @@ public class SearchControllerTest
         Assert.AreEqual(null, searchResult);
     }
 
-
     [TestMethod]
     public async Task SearchQueryWithSpace()
     {
