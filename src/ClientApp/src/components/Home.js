@@ -160,7 +160,7 @@ export function Home() {
                 fullWidth
                 label={t("search-instructions")}
                 variant="outlined"
-                {...register("searchInput", { required: true })}
+                {...register("searchInput")}
                 InputProps={{
                   ...params.InputProps,
                   style: {
@@ -170,7 +170,7 @@ export function Home() {
                   endAdornment: (
                     <Tooltip title={t("reset-search")}>
                       <IconButton
-                        sx={{ visibility: watch("searchInput") !== "" ? "visible" : "hidden" }}
+                        sx={{ visibility: watch("searchInput") !== "" || models?.length > 0 ? "visible" : "hidden" }}
                         onClick={clear}
                       >
                         <ClearIcon />

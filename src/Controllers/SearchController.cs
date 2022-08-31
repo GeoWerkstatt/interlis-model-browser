@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
 using ModelRepoBrowser.Models;
 using Swashbuckle.AspNetCore.Annotations;
@@ -40,24 +39,20 @@ public class SearchController : ControllerBase
     [SwaggerResponse(StatusCodes.Status200OK, "The INTERLIS repository tree containinig all models matching the search.", typeof(Repository), new[] { "application/json" })]
     [SwaggerResponse(StatusCodes.Status204NoContent, "No INTERLIS model matching the search query exists. No repository tree returned.", ContentTypes = new[] { "application/json" })]
     [SwaggerResponse(StatusCodes.Status400BadRequest, "The server cannot process the request due to invalid or malformed request.", typeof(ProblemDetails), new[] { "application/json" })]
-    public async Task<Repository?> Search([BindRequired] string query, [FromQuery] string[]? repositoryNames = null, [FromQuery] string[]? issuers = null, [FromQuery] string[]? schemaLanguages = null, [FromQuery] string[]? dependsOnModels = null)
+    public async Task<Repository?> Search([FromQuery] string? query, [FromQuery] string[]? repositoryNames = null, [FromQuery] string[]? issuers = null, [FromQuery] string[]? schemaLanguages = null, [FromQuery] string[]? dependsOnModels = null)
     {
         logger.LogInformation("Search with query <{SearchQuery}>", query);
 
+        var trimmedQuery = string.IsNullOrEmpty(query) ? "" : query.Trim();
+
         try
         {
-            context.SearchQueries.Add(new() { Query = query });
+            context.SearchQueries.Add(new() { Query = trimmedQuery });
             context.SaveChanges();
         }
         catch (DbUpdateException ex)
         {
-            logger.LogWarning(ex, "Writing query <{SearchQuery}> to the database log failed.", query);
-        }
-
-        var trimmedQuery = query?.Trim();
-        if (string.IsNullOrEmpty(trimmedQuery))
-        {
-            return null;
+            logger.LogWarning(ex, "Writing query <{SearchQuery}> to the database log failed.", trimmedQuery);
         }
 
         var repositories = await SearchRepositories(trimmedQuery, issuers, schemaLanguages, dependsOnModels).ConfigureAwait(false);
@@ -129,7 +124,7 @@ public class SearchController : ControllerBase
     [SwaggerResponse(StatusCodes.Status200OK, "The names of all INTERLIS models matching the search.", typeof(IEnumerable<string>), new[] { "application/json" })]
     [SwaggerResponse(StatusCodes.Status204NoContent, "No INTERLIS model matching the search query exists. Nothing returned.", ContentTypes = new[] { "application/json" })]
     [SwaggerResponse(StatusCodes.Status400BadRequest, "The server cannot process the request due to invalid or malformed request.", typeof(ProblemDetails), new[] { "application/json" })]
-    public async Task<IEnumerable<string>> GetSearchSuggestions([BindRequired] string query, [FromQuery] string[]? repositoryNames = null, [FromQuery] string[]? issuers = null, [FromQuery] string[]? schemaLanguages = null, [FromQuery] string[]? dependsOnModels = null)
+    public async Task<IEnumerable<string>> GetSearchSuggestions([FromQuery] string? query, [FromQuery] string[]? repositoryNames = null, [FromQuery] string[]? issuers = null, [FromQuery] string[]? schemaLanguages = null, [FromQuery] string[]? dependsOnModels = null)
     {
         logger.LogDebug("Get search options for <{SearchQuery}>", query);
 
