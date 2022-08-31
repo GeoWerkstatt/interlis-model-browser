@@ -40,5 +40,7 @@
   "chose-one-or-more-schema-languages": "Choisissez un ou plusieurs langages de schéma",
   "comma-seperated-filter-criteria-instructions": "Spécifiez les noms de dépôt de modèle, les émetteurs ou les modèles référencés sous forme de liste séparée par des virgules.",
   "search-term-was-found-in-depends-on-model": "Le terme de recherche a été trouvé dans un modèle référencé",
-  "hide-results-for-depends-on-models": "Masquer les résultats liés aux modèles référencés"
+  "hide-results-for-depends-on-models": "Masquer les résultats liés aux modèles référencés",
+  "impressum": "Empreinte",
+  "open-impressum": "Ouvrir l'empreinte"
 }
