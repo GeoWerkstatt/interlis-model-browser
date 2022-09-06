@@ -43,6 +43,8 @@ builder.Services.AddHealthChecks()
     .AddCheck<RepoBrowserDbHealthCheck>("RepoBrowserDbHealthCheck")
     .AddCheck<DbUpdateServiceHealthCheck>("DbUpdateServiceHealthCheck");
 
+builder.Services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
+
 var app = builder.Build();
 
 if (!app.Environment.IsDevelopment())
