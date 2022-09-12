@@ -40,5 +40,8 @@
   "chose-one-or-more-schema-languages": "Wählen Sie eine oder mehrere Schemasprachen",
   "comma-seperated-filter-criteria-instructions": "Geben Sie Modellablagenamen, Herausgeber oder referenzierte Modelle als komma-separierte Liste an.",
   "search-term-was-found-in-depends-on-model": "Suchbegriff wurde in einem referenzierten Modell gefunden",
-  "hide-results-for-depends-on-models": "Resultate die sich auf referenzierte Modelle beziehen ausblenden"
+  "hide-results-for-depends-on-models": "Resultate die sich auf referenzierte Modelle beziehen ausblenden",
+  "catalogue-files": "Zugehörige Katalogdateien",
+  "impressum": "Impressum",
+  "open-impressum": "Impressum öffnen"
 }

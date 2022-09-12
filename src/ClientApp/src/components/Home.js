@@ -85,8 +85,8 @@ export function Home() {
   }
 
   async function getSearchOptions(searchString) {
+    removeQueryParams();
     const url = getSearchUrl();
-
     if (searchString.length < 3) {
       setSearchOptions([]);
     } else {
@@ -112,12 +112,17 @@ export function Home() {
   }
 
   const onSubmit = (data) => search(data.searchInput);
+  const removeQueryParams = () => {
+    searchParams.delete("query");
+    setSearchParams(searchParams);
+  };
 
   const clear = () => {
     reset({ searchInput: "" });
     setInputValue("");
     setSearchOptions([]);
     setModels(null);
+    removeQueryParams();
   };
 
   // If component is first loaded with search params present in URL the search should immediately be executed.
@@ -160,7 +165,7 @@ export function Home() {
                 fullWidth
                 label={t("search-instructions")}
                 variant="outlined"
-                {...register("searchInput", { required: true })}
+                {...register("searchInput")}
                 InputProps={{
                   ...params.InputProps,
                   style: {
@@ -170,7 +175,7 @@ export function Home() {
                   endAdornment: (
                     <Tooltip title={t("reset-search")}>
                       <IconButton
-                        sx={{ visibility: watch("searchInput") !== "" ? "visible" : "hidden" }}
+                        sx={{ visibility: watch("searchInput") !== "" || models?.length > 0 ? "visible" : "hidden" }}
                         onClick={clear}
                       >
                         <ClearIcon />

@@ -12,6 +12,8 @@ import HubIcon from "@mui/icons-material/Hub";
 import LinkIcon from "@mui/icons-material/Link";
 import InsertDriveFileIcon from "@mui/icons-material/InsertDriveFile";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
+import AutoStoriesIcon from "@mui/icons-material/AutoStories";
+import { SchemaLanguages } from "./SchemaLanguages";
 import { useTranslation } from "react-i18next";
 
 export function Detail() {
@@ -99,7 +101,7 @@ export function Detail() {
           <Stack direction="column" alignItems="flex-start" sx={{ color: "text.secondary" }}>
             <Box ml={1} mt={1}>
               <SellIcon sx={{ marginBottom: -0.5, marginRight: 0.5 }} />
-              {t("schema-language")}: {model.schemaLanguage.substring(3)}
+              {t("schema-language")}: {SchemaLanguages[model.schemaLanguage]}
             </Box>
             <Box ml={1} mt={1}>
               <CloudQueueIcon sx={{ marginBottom: -0.5, marginRight: 0.5 }} />
@@ -130,6 +132,20 @@ export function Detail() {
                     <Chip sx={{ marginLeft: 1, marginBottom: 1 }} key={m} label={m} variant="outlined">
                       {m}
                     </Chip>
+                  ))}
+              </Box>
+            )}
+            {model.catalogueFiles?.length > 0 && (
+              <Box ml={1} mt={1}>
+                <AutoStoriesIcon sx={{ mb: -0.5, mr: 0.5 }} />
+                {t("catalogue-files")}:{" "}
+                {model.catalogueFiles &&
+                  model.catalogueFiles.map((f) => (
+                    <Typography variant="body" sx={{ mr: 1 }}>
+                      <a href={f} target="_blank" rel="noreferrer">
+                        {f}
+                      </a>
+                    </Typography>
                   ))}
               </Box>
             )}

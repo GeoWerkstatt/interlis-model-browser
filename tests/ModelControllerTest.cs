@@ -39,6 +39,19 @@ public class ModelControllerTest
     }
 
     [TestMethod]
+    public void ModelDetailsWithCatalogs()
+    {
+        var test = context.Catalogs.Take(10);
+        var test1 = context.Models.Where(m => m.Name == "Borders_Home Loan Account");
+        var model = controller.ModelDetails("2abd30d77a016df846307c50a621139b", "Borders_Home Loan Account");
+        Assert.AreEqual("Borders_Home Loan Account", model.Name);
+        Assert.AreEqual("2abd30d77a016df846307c50a621139b", model.MD5);
+        Assert.AreEqual("usr/libexec/agp.bz2", model.File);
+        Assert.IsNotNull(model.ModelRepository, "ModelRepository has to be included.");
+        Assert.AreEqual("g7yn9ioz927y65aoioyjvb4v3b84", model.CatalogueFiles[0]);
+    }
+
+    [TestMethod]
     public void ModelDetailsNull()
     {
         Assert.AreEqual(null, controller.ModelDetails(null, null));

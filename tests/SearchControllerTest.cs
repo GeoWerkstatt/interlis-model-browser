@@ -38,6 +38,26 @@ public class SearchControllerTest
     }
 
     [TestMethod]
+    public async Task SearchNullOrEmpty()
+    {
+        var searchResult = await controller.Search("");
+        Assert.IsNotNull(searchResult);
+        searchResult.GetAllModels().AssertCount(88); // gets all non obsolete Models.
+
+        searchResult = await controller.Search(null);
+        Assert.IsNotNull(searchResult);
+        searchResult.GetAllModels().AssertCount(88);
+    }
+
+    [TestMethod]
+    public async Task SearchOneWhitespace()
+    {
+        var searchResult = await controller.Search(" "); // gets all non obsolete Models.
+        Assert.IsNotNull(searchResult);
+        searchResult.GetAllModels().AssertCount(88);
+    }
+
+    [TestMethod]
     public async Task SearchName()
     {
         var searchResult = await controller.Search("entUCK");
@@ -73,13 +93,14 @@ public class SearchControllerTest
     [TestMethod]
     public async Task SearchCatalog()
     {
-        var searchResult = await controller.Search("irecTO");
+        var searchResult = await controller.Search("open system");
         Assert.IsNotNull(searchResult);
         searchResult
             .GetAllModels()
-            .AssertCount(2)
-            .AssertSingleItem(m => m.Id == 15, m => Assert.AreEqual("transition_vortals", m.Name))
-            .AssertSingleItem(m => m.Id == 70, m => Assert.AreEqual("bandwidth_auxiliary_Incredible", m.Name));
+            .AssertCount(3)
+            .AssertSingleItem(m => m.Id == 86, m => Assert.AreEqual("Handcrafted Granite Ball_Associate_haptic_Money Market Account_Beauty", m.Name))
+            .AssertSingleItem(m => m.Id == 99, m => Assert.AreEqual("Bedfordshire", m.Name))
+            .AssertSingleItem(m => m.Id == 43, m => Assert.AreEqual("Handcrafted Rubber Tuna_Sudanese Pound_syndicate", m.Name));
     }
 
     [TestMethod]
@@ -143,27 +164,6 @@ public class SearchControllerTest
         Assert.AreEqual(null, searchResult);
 
         searchResult = await controller.Search("Ken%cky");
-        Assert.AreEqual(null, searchResult);
-    }
-
-    [TestMethod]
-    public async Task SearchEmptyString()
-    {
-        var searchResult = await controller.Search(string.Empty);
-        Assert.AreEqual(null, searchResult);
-    }
-
-    [TestMethod]
-    public async Task SearchNull()
-    {
-        var searchResult = await controller.Search(null);
-        Assert.AreEqual(null, searchResult);
-    }
-
-    [TestMethod]
-    public async Task SearchOneWhitespace()
-    {
-        var searchResult = await controller.Search(" ");
         Assert.AreEqual(null, searchResult);
     }
 
@@ -261,22 +261,21 @@ public class SearchControllerTest
 
         CollectionAssert.AreEquivalent(new[]
             {
-                "Handcrafted Rubber Tuna_Sudanese Pound_syndicate",
-                "Engineer_Hill_Solutions_Practical_Michigan",
-                "Iceland Krona_New Israeli Sheqel_matrix_Oklahoma",
-                "Handcrafted Granite Ball_Associate_haptic_Money Market Account_Beauty",
-                "deposit",
-                "Virgin Islands, U.S._withdrawal_CFA Franc BCEAO_THX",
-                "indigo_Sleek Granite Salad_Practical Concrete Ball_moderator_interface",
-                "back-end_benchmark_Legacy_Future_Crescent",
-                "capability_Unbranded Granite Table_Intelligent Cotton Table_static",
-                "Global_Licensed",
-                "bandwidth_Refined Fresh Shoes",
                 "back-end_grey_JBOD",
-                "bandwidth_auxiliary_Incredible",
+                "Iceland Krona_New Israeli Sheqel_matrix_Oklahoma",
                 "Handcrafted Fresh Hat_metrics_invoice",
+                "Handcrafted Rubber Tuna_Sudanese Pound_syndicate",
                 "Iowa_Junctions",
+                "Handcrafted Granite Ball_Associate_haptic_Money Market Account_Beauty",
+                "bandwidth_auxiliary_Incredible",
+                "Virgin Islands, U.S._withdrawal_CFA Franc BCEAO_THX",
+                "capability_Unbranded Granite Table_Intelligent Cotton Table_static",
+                "deposit",
                 "Via_West Virginia_withdrawal",
+                "back-end_benchmark_Legacy_Future_Crescent",
+                "bandwidth_Refined Fresh Shoes",
+                "full-range_Kenyan Shilling_experiences_Money Market Account_Officer",
+                "Global_Licensed",
             },
             suggestions.ToArray());
 
