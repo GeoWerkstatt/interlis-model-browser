@@ -16,6 +16,7 @@ import { useForm, Controller } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import TreeView from "@mui/lab/TreeView";
 import TreeItem from "@mui/lab/TreeItem";
+import { SchemaLanguages } from "./SchemaLanguages";
 
 export function Filter(props) {
   const { models, filteredModels, setFilteredModels, setPage, repositoryTree } = props;
@@ -176,7 +177,7 @@ export function Filter(props) {
             </FormGroup>
             <Box sx={{ maxHeight: 900, overflowY: "auto", overflowX: "hidden" }}>
               {Object.entries(issuerOptions).map(([k, v]) => (
-                <FormGroup sx={{ marginLeft: 2 }}>
+                <FormGroup sx={{ marginLeft: 2 }} key={k}>
                   <FormControlLabel
                     control={
                       <Controller
@@ -221,7 +222,7 @@ export function Filter(props) {
                   />
                 </FormGroup>
                 {Object.entries(schemaLanguageOptions).map(([k, v]) => (
-                  <FormGroup sx={{ marginLeft: 2 }}>
+                  <FormGroup sx={{ marginLeft: 2 }} key={k}>
                     <FormControlLabel
                       control={
                         <Controller
@@ -245,7 +246,7 @@ export function Filter(props) {
                           )}
                         />
                       }
-                      label={v}
+                      label={SchemaLanguages[v]}
                     />
                   </FormGroup>
                 ))}

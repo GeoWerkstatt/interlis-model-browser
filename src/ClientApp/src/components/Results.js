@@ -12,6 +12,7 @@ import InsertDriveFileIcon from "@mui/icons-material/InsertDriveFile";
 import HubIcon from "@mui/icons-material/Hub";
 import { useTranslation } from "react-i18next";
 import { Filter } from "./Filter";
+import { SchemaLanguages } from "./SchemaLanguages";
 
 export function Results(props) {
   const { models, repositoryTree, searchUrl } = props;
@@ -95,7 +96,7 @@ export function Results(props) {
                 >
                   <Box ml={1} mt={1}>
                     <SellIcon sx={{ marginBottom: -0.5, marginRight: 0.5 }} />
-                    {t("schema-language")}: {model.schemaLanguage.substring(3)}
+                    {t("schema-language")}: {SchemaLanguages[model.schemaLanguage]}
                   </Box>
                   <Box ml={1} mt={1}>
                     <CloudQueueIcon sx={{ marginBottom: -0.5, marginRight: 0.5 }} />
