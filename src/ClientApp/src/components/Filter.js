@@ -177,7 +177,7 @@ export function Filter(props) {
             </FormGroup>
             <Box sx={{ maxHeight: 900, overflowY: "auto", overflowX: "hidden" }}>
               {Object.entries(issuerOptions).map(([k, v]) => (
-                <FormGroup sx={{ marginLeft: 2 }}>
+                <FormGroup sx={{ marginLeft: 2 }} key={k}>
                   <FormControlLabel
                     control={
                       <Controller
@@ -222,7 +222,7 @@ export function Filter(props) {
                   />
                 </FormGroup>
                 {Object.entries(schemaLanguageOptions).map(([k, v]) => (
-                  <FormGroup sx={{ marginLeft: 2 }}>
+                  <FormGroup sx={{ marginLeft: 2 }} key={k}>
                     <FormControlLabel
                       control={
                         <Controller
