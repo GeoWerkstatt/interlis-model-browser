@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 using ModelRepoBrowser;
 using ModelRepoBrowser.Crawler;
 using Npgsql.Logging;
@@ -37,6 +38,10 @@ builder.Services.AddSwaggerGen(options =>
 
     options.EnableAnnotations();
     options.SupportNonNullableReferenceTypes();
+    options.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "INTERLIS Model Browser REST API",
+    });
 });
 
 builder.Services.AddHealthChecks()
@@ -55,8 +60,17 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
-app.UseSwagger();
-app.UseSwaggerUI();
+app.UseSwagger(options =>
+{
+    options.RouteTemplate = "api/{documentName}/swagger.json";
+});
+
+app.UseSwaggerUI(options =>
+{
+    options.SwaggerEndpoint("/api/v1/swagger.json", "INTERLIS Model Browser REST API");
+    options.RoutePrefix = "api";
+    options.DocumentTitle = "INTERLIS Model Browser API Documentation";
+});
 
 app.MapHealthChecks("/health");
 
