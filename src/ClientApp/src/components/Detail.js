@@ -15,6 +15,7 @@ import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import AutoStoriesIcon from "@mui/icons-material/AutoStories";
 import { SchemaLanguages } from "./SchemaLanguages";
 import { useTranslation } from "react-i18next";
+import { getAllModels } from "./Utils";
 
 export function Detail() {
   const [model, setModel] = useState();
@@ -28,6 +29,25 @@ export function Detail() {
 
   const backToSearch = () => navigate(`/${location.state.searchQuery}`, { replace: true });
   const toHome = () => navigate("/");
+
+  const linkToModelOrSearch = async (modelname) => {
+    var url = new URL(window.location);
+    url.searchParams.set("query", modelname);
+    const response = await fetch("/search" + url.search);
+    if (response.ok && response.status !== 204 /* No Content */) {
+      const repositoryTree = await response.json();
+      const matchingModels = getAllModels(repositoryTree).filter((m) => m.name === modelname);
+      // Link to model if only one matches the referenced model name.
+      if (matchingModels.length === 1) {
+        navigate("/detail/" + matchingModels[0].mD5 + "/" + matchingModels[0].name, {
+          replace: true,
+          state: { searchQuery: location.state.searchQuery },
+        });
+      } else {
+        navigate("/" + url.search);
+      }
+    }
+  };
 
   useEffect(() => {
     setLoading(true);
@@ -129,7 +149,13 @@ export function Detail() {
                 {t("referenced-models")}:
                 {model.dependsOnModel &&
                   model.dependsOnModel.map((m) => (
-                    <Chip sx={{ marginLeft: 1, marginBottom: 1 }} key={m} label={m} variant="outlined">
+                    <Chip
+                      onClick={() => linkToModelOrSearch(m)}
+                      sx={{ marginLeft: 1, marginBottom: 1 }}
+                      key={m}
+                      label={m}
+                      variant="outlined"
+                    >
                       {m}
                     </Chip>
                   ))}

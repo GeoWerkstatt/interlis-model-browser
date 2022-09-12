@@ -7,6 +7,7 @@ import ClearIcon from "@mui/icons-material/Clear";
 import { useForm } from "react-hook-form";
 import { Results } from "./Results";
 import { FilterValues } from "./FilterValues";
+import { getAllModels } from "./Utils";
 
 export function Home() {
   const { register, handleSubmit, watch, reset } = useForm();
@@ -97,18 +98,6 @@ export function Home() {
         setSearchOptions([...new Set(suggestions)]);
       }
     }
-  }
-
-  function getAllModels(repository) {
-    const modelRepository = repository.title + " [" + repository.name + "]";
-
-    return [
-      ...repository.models.map((m) => {
-        m.modelRepository = modelRepository;
-        return m;
-      }),
-      ...repository.subsidiarySites.flatMap((r) => getAllModels(r)),
-    ];
   }
 
   const onSubmit = (data) => search(data.searchInput);
