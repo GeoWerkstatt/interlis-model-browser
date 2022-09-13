@@ -19,6 +19,8 @@ public class Model
 
     public DateTime? PublishingDate { get; set; }
 
+    public string? Title { get; set; }
+
     public List<string> DependsOnModel { get; set; }
 
     public List<string> Tags { get; set; }

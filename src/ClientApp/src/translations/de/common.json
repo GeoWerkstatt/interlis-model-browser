@@ -43,5 +43,6 @@
   "hide-results-for-depends-on-models": "Resultate die sich auf referenzierte Modelle beziehen ausblenden",
   "catalogue-files": "Zugehörige Katalogdateien",
   "impressum": "Impressum",
-  "open-impressum": "Impressum öffnen"
+  "open-impressum": "Impressum öffnen",
+  "title": "Titel"
 }

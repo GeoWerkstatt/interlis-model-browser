@@ -43,6 +43,8 @@ public class ModelMetadata
     [XmlElement(DataType = "date")]
     public DateTime publishingDate { get; set; }
 
+    public string? Title { get; set; }
+
     [XmlArray("dependsOnModel")]
     [XmlArrayItem("IliRepository09.ModelName_", typeof(DependsOnModel09))]
     [XmlArrayItem("IliRepository20.ModelName_", typeof(DependsOnModel20))]

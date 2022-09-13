@@ -34,6 +34,7 @@ public class ModelControllerTest
         Assert.AreEqual("Cotton_Officer", model.Name);
         Assert.AreEqual("544a7e2f91f51172f1d471dc3b3ce10c", model.MD5);
         Assert.AreEqual("home/scalable_assistant_georgia.json5", model.File);
+        Assert.AreEqual("Papua New Guinea interactive Tasty Sleek navigate", model.Title);
         Assert.IsNotNull(model.ModelRepository, "ModelRepository has to be included.");
         Assert.AreEqual("white", model.ModelRepository.Name);
     }
@@ -47,6 +48,7 @@ public class ModelControllerTest
         Assert.AreEqual("Borders_Home Loan Account", model.Name);
         Assert.AreEqual("2abd30d77a016df846307c50a621139b", model.MD5);
         Assert.AreEqual("usr/libexec/agp.bz2", model.File);
+        Assert.AreEqual("copy orange IB Regional Refined", model.Title);
         Assert.IsNotNull(model.ModelRepository, "ModelRepository has to be included.");
         Assert.AreEqual("g7yn9ioz927y65aoioyjvb4v3b84", model.CatalogueFiles[0]);
     }
