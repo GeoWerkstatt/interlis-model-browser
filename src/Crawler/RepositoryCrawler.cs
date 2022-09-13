@@ -218,11 +218,18 @@ public class RepositoryCrawler : IRepositoryCrawler
         if (Uri.UriSchemeHttps.Equals(uri.Scheme, StringComparison.OrdinalIgnoreCase))
             return uri;
 
-        var httpsUri = new Uri(uri.OriginalString.Replace(Uri.UriSchemeHttp, Uri.UriSchemeHttps, StringComparison.OrdinalIgnoreCase));
-        using (var request = new HttpRequestMessage(HttpMethod.Head, httpsUri))
+        try
         {
-            var response = await httpClient.SendAsync(request).ConfigureAwait(false);
-            return response.IsSuccessStatusCode ? httpsUri : uri;
+            var httpsUri = new Uri(uri.OriginalString.Replace(Uri.UriSchemeHttp, Uri.UriSchemeHttps, StringComparison.OrdinalIgnoreCase));
+            using (var request = new HttpRequestMessage(HttpMethod.Head, httpsUri))
+            {
+                var response = await httpClient.SendAsync(request).ConfigureAwait(false);
+                return response.IsSuccessStatusCode ? httpsUri : uri;
+            }
+        }
+        catch (HttpRequestException)
+        {
+            return uri;
         }
     }
 
