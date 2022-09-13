@@ -64,7 +64,7 @@ public class SearchControllerTest
         Assert.IsNotNull(searchResult);
         searchResult
             .GetAllModels()
-            .AssertCount(2)
+            .AssertCount(3)
             .AssertSingleItem(m => m.Id == 22, m => Assert.AreEqual("Kentucky", m.Name));
     }
 
@@ -110,17 +110,17 @@ public class SearchControllerTest
         Assert.IsNotNull(searchResult);
         searchResult
             .GetAllModels()
-            .AssertCount(3)
+            .AssertCount(4)
             .AssertSingleItem(m => m.Id == 23, m => m.Tags.AssertContains("Specialist"));
 
         // Tags must match exactly
         searchResult = await controller.Search("pecialist");
         Assert.IsNotNull(searchResult);
-        searchResult.GetAllModels().AssertCount(2);
+        searchResult.GetAllModels().AssertCount(3);
 
         searchResult = await controller.Search("SpecialiST");
         Assert.IsNotNull(searchResult);
-        searchResult.GetAllModels().AssertCount(2);
+        searchResult.GetAllModels().AssertCount(3);
     }
 
     [TestMethod]
@@ -130,15 +130,15 @@ public class SearchControllerTest
         Assert.IsNotNull(searchResult);
         var models = searchResult.GetAllModels();
         models.Where(m => m.IsDependOnModelResult == true).AssertCount(2);
-        models.Where(m => m.IsDependOnModelResult == false).AssertCount(1);
+        models.Where(m => m.IsDependOnModelResult == false).AssertCount(4);
         models.AssertSingleItem(m => m.Id == 86, m => m.DependsOnModel.AssertContains("Home Loan Account"));
 
         // DependsOnModel must match exactly
         searchResult = await controller.Search("home loan account");
-        searchResult!.GetAllModels().AssertCount(1);
+        searchResult!.GetAllModels().AssertCount(4);
 
         searchResult = await controller.Search("HOme Loan Account");
-        searchResult!.GetAllModels().AssertCount(1);
+        searchResult!.GetAllModels().AssertCount(4);
     }
 
     [TestMethod]
@@ -158,7 +158,7 @@ public class SearchControllerTest
     {
         var searchResult = await controller.Search("Kentucky");
         Assert.IsNotNull(searchResult);
-        searchResult.GetAllModels().AssertCount(2);
+        searchResult.GetAllModels().AssertCount(3);
 
         searchResult = await controller.Search("Kent_cky");
         Assert.AreEqual(null, searchResult);
@@ -188,20 +188,20 @@ public class SearchControllerTest
         var searchResult = await controller.Search("ga");
 
         Assert.IsNotNull(searchResult);
-        searchResult.GetAllModels().AssertCount(11);
+        searchResult.GetAllModels().AssertCount(21);
         Assert.AreEqual("delores.com", searchResult.HostNameId);
         Assert.AreEqual(1, searchResult.Models.Count);
 
         searchResult.SubsidiarySites
             .AssertCount(5)
-            .AssertSingleItem("eldora.net", 1)
-            .AssertSingleItem("geovany.org", 1)
+            .AssertSingleItem("eldora.net", 2)
+            .AssertSingleItem("geovany.org", 2)
             .AssertSingleItem("valentine.net", 0, r => r
-                .AssertCount(5)
+                .AssertCount(7)
                 .AssertSingleItem("arvel.name", 1)
-                .AssertSingleItem("breana.com", 1)
-                .AssertSingleItem("jaquelin.com", 2)
-                .AssertSingleItem("lenny.net", 1)
+                .AssertSingleItem("breana.com", 2)
+                .AssertSingleItem("jaquelin.com", 3)
+                .AssertSingleItem("lenny.net", 3)
                 .AssertSingleItem("mack.info", 1));
     }
 
@@ -262,20 +262,34 @@ public class SearchControllerTest
         CollectionAssert.AreEquivalent(new[]
             {
                 "back-end_grey_JBOD",
+                "transition_vortals",
                 "Iceland Krona_New Israeli Sheqel_matrix_Oklahoma",
                 "Handcrafted Fresh Hat_metrics_invoice",
                 "Handcrafted Rubber Tuna_Sudanese Pound_syndicate",
                 "Iowa_Junctions",
                 "Handcrafted Granite Ball_Associate_haptic_Money Market Account_Beauty",
                 "bandwidth_auxiliary_Incredible",
+                "violet_Metal_calculating",
+                "maroon_synthesizing_Awesome",
+                "index_transmitting_generate_24/7_Run",
                 "Virgin Islands, U.S._withdrawal_CFA Franc BCEAO_THX",
                 "capability_Unbranded Granite Table_Intelligent Cotton Table_static",
-                "deposit",
+                "circuit_impactful_Organic",
+                "SSL_cutting-edge_Global_platforms",
+                "Interactions_convergence_static",
                 "Via_West Virginia_withdrawal",
-                "back-end_benchmark_Legacy_Future_Crescent",
+                "deposit",
+                "Soft_Health_facilitate_Cotton",
                 "bandwidth_Refined Fresh Shoes",
+                "back-end_benchmark_Legacy_Future_Crescent",
+                "North Dakota_bypass_Gorgeous Steel Keyboard",
                 "full-range_Kenyan Shilling_experiences_Money Market Account_Officer",
+                "connecting_Distributed_Florida_mission-critical_Awesome Wooden Bacon",
                 "Global_Licensed",
+                "Generic Plastic Cheese_Infrastructure_Intelligent_quantify",
+                "IB_Health_sky blue",
+                "Small_withdrawal_transition_Response_Response",
+                "initiatives_Customer_neural_Bedfordshire_integrate",
             },
             suggestions.ToArray());
 
