@@ -172,6 +172,7 @@ public class SearchController : ControllerBase
         if (dependsOnModels != null && dependsOnModels.All(string.IsNullOrEmpty)) dependsOnModels = null;
         if (issuers != null && issuers.All(string.IsNullOrEmpty)) issuers = null;
 
+#pragma warning disable CS8604 // Possible null reference argument.
         return context.Repositories
             .Include(r => r.SubsidiarySites)
             .Include(r => r.ParentSites)
@@ -184,11 +185,13 @@ public class SearchController : ControllerBase
                     EF.Functions.ILike(m.Name, searchPattern, @"\")
                     || EF.Functions.ILike(m.Version, searchPattern, @"\")
                     || EF.Functions.ILike(m.File, searchPattern, @"\")
+                    || EF.Functions.ILike(m.Title, searchPattern, @"\")
                     || modelsNamesFoundFromCatalogs.Contains(m.Name)
                     || m.Tags.Contains(query)
                     || m.DependsOnModel.Contains(query)))
             .AsNoTracking()
             .ToDictionaryAsync(r => r.HostNameId);
+#pragma warning restore CS8604 // Possible null reference argument.
     }
 
     /// <summary>

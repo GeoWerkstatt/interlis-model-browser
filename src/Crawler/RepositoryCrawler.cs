@@ -147,20 +147,21 @@ public class RepositoryCrawler : IRepositoryCrawler
         {
             var models = RepositoryFilesDeserializer.ParseIliModels(ilimodelsStream)
                 .Select(model => new Model
-                    {
-                        Name = model.Name,
-                        SchemaLanguage = model.SchemaLanguage,
-                        File = model.File,
-                        Version = model.Version,
-                        PublishingDate = model.publishingDate.ToUniversalTime(),
-                        DependsOnModel = model.dependsOnModel.Where(s => !string.IsNullOrEmpty(s?.value)).Select(m => m.value!).ToList(),
-                        ShortDescription = model.shortDescription,
-                        Issuer = model.Issuer,
-                        TechnicalContact = model.technicalContact,
-                        FurtherInformation = model.furtherInformation,
-                        MD5 = model.md5,
-                        Tags = model.Tags?.Split(',').Distinct().ToList() ?? new List<string>(),
-                    })
+                {
+                    Name = model.Name,
+                    SchemaLanguage = model.SchemaLanguage,
+                    File = model.File,
+                    Version = model.Version,
+                    PublishingDate = model.publishingDate.ToUniversalTime(),
+                    DependsOnModel = model.dependsOnModel.Where(s => !string.IsNullOrEmpty(s?.value)).Select(m => m.value!).ToList(),
+                    ShortDescription = model.shortDescription,
+                    Title = model.Title,
+                    Issuer = model.Issuer,
+                    TechnicalContact = model.technicalContact,
+                    FurtherInformation = model.furtherInformation,
+                    MD5 = model.md5,
+                    Tags = model.Tags?.Split(',').Distinct().ToList() ?? new List<string>(),
+                })
                 .ToHashSet();
 
             foreach (var model in models)

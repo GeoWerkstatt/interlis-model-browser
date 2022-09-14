@@ -8,6 +8,7 @@ import InfoIcon from "@mui/icons-material/Info";
 import RestoreIcon from "@mui/icons-material/Restore";
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
 import FlagIcon from "@mui/icons-material/Flag";
+import TitleIcon from "@mui/icons-material/Title";
 import InsertDriveFileIcon from "@mui/icons-material/InsertDriveFile";
 import HubIcon from "@mui/icons-material/Hub";
 import { useTranslation } from "react-i18next";
@@ -94,6 +95,12 @@ export function Results(props) {
                   flexWrap="wrap"
                   sx={{ color: "text.secondary" }}
                 >
+                  {!!model.title && (
+                    <Box ml={1} mt={1}>
+                      <TitleIcon sx={{ marginBottom: -0.5, marginRight: 0.5 }} />
+                      {t("title")}: {model.title}
+                    </Box>
+                  )}
                   <Box ml={1} mt={1}>
                     <SellIcon sx={{ marginBottom: -0.5, marginRight: 0.5 }} />
                     {t("schema-language")}: {SchemaLanguages[model.schemaLanguage]}

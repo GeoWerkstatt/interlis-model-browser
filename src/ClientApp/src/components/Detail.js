@@ -13,6 +13,7 @@ import LinkIcon from "@mui/icons-material/Link";
 import InsertDriveFileIcon from "@mui/icons-material/InsertDriveFile";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import AutoStoriesIcon from "@mui/icons-material/AutoStories";
+import TitleIcon from "@mui/icons-material/Title";
 import { SchemaLanguages } from "./SchemaLanguages";
 import { useTranslation } from "react-i18next";
 import { getAllModels } from "./Utils";
@@ -119,6 +120,12 @@ export function Detail() {
             <Box>{model.tags && model.tags.map((tag) => <Chip key={tag} sx={{ margin: 1 }} label={tag} />)}</Box>
           </Stack>
           <Stack direction="column" alignItems="flex-start" sx={{ color: "text.secondary" }}>
+            {!!model.title && (
+              <Box ml={1} mt={1}>
+                <TitleIcon sx={{ marginBottom: -0.5, marginRight: 0.5 }} />
+                {t("title")}: {model.title}
+              </Box>
+            )}
             <Box ml={1} mt={1}>
               <SellIcon sx={{ marginBottom: -0.5, marginRight: 0.5 }} />
               {t("schema-language")}: {SchemaLanguages[model.schemaLanguage]}
