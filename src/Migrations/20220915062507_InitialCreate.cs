@@ -5,7 +5,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace ModelRepoBrowser.Migrations;
 
-public partial class AddTitle : Migration
+public partial class InitialCreate : Migration
 {
     protected override void Up(MigrationBuilder migrationBuilder)
     {
@@ -77,7 +77,6 @@ public partial class AddTitle : Migration
                 File = table.Column<string>(type: "text", nullable: false),
                 Version = table.Column<string>(type: "text", nullable: false),
                 PublishingDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                Title = table.Column<string>(type: "text", nullable: true),
                 DependsOnModel = table.Column<List<string>>(type: "text[]", nullable: false),
                 Tags = table.Column<List<string>>(type: "text[]", nullable: false),
                 ShortDescription = table.Column<string>(type: "text", nullable: true),

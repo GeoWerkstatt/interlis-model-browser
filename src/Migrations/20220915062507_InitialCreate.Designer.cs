@@ -13,8 +13,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ModelRepoBrowser.Migrations
 {
     [DbContext(typeof(RepoBrowserContext))]
-    [Migration("20220914151458_AddTitle")]
-    partial class AddTitle
+    [Migration("20220915062507_InitialCreate")]
+    partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -119,9 +119,6 @@ namespace ModelRepoBrowser.Migrations
                         .HasColumnType("text[]");
 
                     b.Property<string>("TechnicalContact")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Title")
                         .HasColumnType("text");
 
                     b.Property<string>("Version")
