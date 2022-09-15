@@ -16,7 +16,6 @@ public sealed class Initialize
         AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
         using var context = ContextFactory.CreateContext();
-        context.Database.EnsureDeleted();
         context.Database.EnsureCreated();
 
         // Clear database and fill it with test data
