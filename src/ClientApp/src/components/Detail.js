@@ -213,7 +213,7 @@ export function Detail() {
               rows={15}
               fullWidth
               label={t("model-preview")}
-              inputProps={{ style: { fontSize: 12 } }}
+              inputProps={{ style: { fontSize: 12, fontFamily: "'Courier New', monospace" } }}
               InputLabelProps={{ style: { fontSize: 22 } }}
               InputProps={{ readOnly: true, style: { fontSize: 22 } }}
               value={modelText}
