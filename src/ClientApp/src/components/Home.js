@@ -14,6 +14,7 @@ export function Home() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [models, setModels] = useState(null);
   const [inputValue, setInputValue] = useState(searchParams.get("query") || "");
+  const [value, setValue] = useState("");
   const [hideFilter, setHideFilter] = useState(false);
   const [schemaLanguages, setSchemaLanguages] = useState([]);
   const [issuers, setIssuers] = useState([]);
@@ -109,6 +110,7 @@ export function Home() {
   const clear = () => {
     reset({ searchInput: "" });
     setInputValue("");
+    setValue("");
     setSearchOptions([]);
     setModels(null);
     removeQueryParams();
@@ -141,6 +143,9 @@ export function Home() {
           <Autocomplete
             freeSolo
             inputValue={inputValue}
+            value={value}
+            // fired when search option is selected
+            onChange={(event, value) => search(value)}
             onInputChange={(event, newInputValue) => {
               setInputValue(newInputValue);
               getSearchOptions(newInputValue);
