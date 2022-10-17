@@ -9,7 +9,6 @@ import MailIcon from "@mui/icons-material/Mail";
 import RestoreIcon from "@mui/icons-material/Restore";
 import FlagIcon from "@mui/icons-material/Flag";
 import HubIcon from "@mui/icons-material/Hub";
-import LinkIcon from "@mui/icons-material/Link";
 import InsertDriveFileIcon from "@mui/icons-material/InsertDriveFile";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import AutoStoriesIcon from "@mui/icons-material/AutoStories";
@@ -148,7 +147,14 @@ export function Detail() {
             </Box>
             <Box ml={1} mt={1}>
               <InsertDriveFileIcon sx={{ marginBottom: -0.5, marginRight: 0.5 }} />
-              {t("file")}: {model.file}
+              {t("file")}:{" "}
+              {model.uri ? (
+                <a href={model.uri} target="_blank" rel="noreferrer">
+                  {model.file}
+                </a>
+              ) : (
+                model.file
+              )}
             </Box>
             {model.dependsOnModel?.length > 0 && (
               <Box ml={1} mt={1}>
@@ -195,14 +201,6 @@ export function Detail() {
                 <InfoIcon sx={{ marginBottom: -0.5, marginRight: 0.5 }} />
                 <a href={model.furtherInformation} target="_blank" rel="noreferrer">
                   {t("more-information")}
-                </a>
-              </Box>
-            )}
-            {model.uri && (
-              <Box ml={1} mt={1}>
-                <LinkIcon sx={{ marginBottom: -0.5, marginRight: 0.5 }} />
-                <a href={model.uri} target="_blank" rel="noreferrer">
-                  {t("model-uri")}
                 </a>
               </Box>
             )}
