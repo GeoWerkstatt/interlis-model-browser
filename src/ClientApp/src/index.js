@@ -29,6 +29,9 @@ i18next.use(LanguageDetector).init({
     },
   },
 });
+if (!["de", "fr", "it"].includes(i18next.language)) {
+  i18next.changeLanguage("de");
+}
 const baseUrl = document.getElementsByTagName("base")[0].getAttribute("href");
 const rootElement = document.getElementById("root");
 const root = createRoot(rootElement);
