@@ -204,7 +204,7 @@ export function Filter(props) {
             </Box>
           </Box>
           <Box>
-            {schemaLanguageOptions && schemaLanguageOptions?.length > 1 && (
+            {schemaLanguageOptions && schemaLanguageOptions?.length > 0 && (
               <React.Fragment>
                 <Typography variant="h6"> {t("schema-language")}</Typography>
                 <FormGroup>
