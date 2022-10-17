@@ -123,7 +123,14 @@ export function Results(props) {
                   </Box>
                   <Box ml={1} mt={1}>
                     <InsertDriveFileIcon sx={{ marginBottom: -0.5, marginRight: 0.5 }} />
-                    {t("file")}: {model.file}
+                    {t("file")}:{" "}
+                    {model.uri ? (
+                      <a href={model.uri} target="_blank" rel="noreferrer">
+                        {model.file}
+                      </a>
+                    ) : (
+                      model.file
+                    )}
                   </Box>
                   {model.furtherInformation && (
                     <Box ml={1} mt={1}>
