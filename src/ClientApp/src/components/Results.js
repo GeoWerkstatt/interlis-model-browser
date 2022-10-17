@@ -72,7 +72,7 @@ export function Results(props) {
             .map((model) => (
               <Box key={model.id} mt={6} direction="column" alignItems="flex-start">
                 <Stack direction="row" flexWrap="wrap" alignItems="center">
-                  <Button sx={{ color: "text.primary" }}>
+                  <Button sx={{ color: "text.primary", textTransform: "none" }}>
                     <Link
                       style={{ color: "inherit", textDecoration: "inherit", fontSize: 20, margin: -1 }}
                       to={{ pathname: "/detail/" + model.mD5 + "/" + model.name }}
