@@ -205,10 +205,10 @@ export function Detail() {
               </Box>
             )}
             <TextField
-              sx={{ bgcolor: "action.hover", marginTop: 5 }}
+              sx={{ bgcolor: "action.hover", marginTop: 5, marginBottom: 5 }}
               variant="outlined"
               multiline
-              rows={15}
+              rows={12}
               fullWidth
               label={t("model-preview")}
               inputProps={{ style: { fontSize: 12, fontFamily: "'Courier New', monospace" } }}
