@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useLocation } from "react-router-dom";
 import { Autocomplete, Box, Button, CircularProgress, IconButton, TextField, Tooltip, Stack } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import SearchIcon from "@mui/icons-material/Search";
@@ -24,6 +24,8 @@ export function Home() {
   const [searchOptions, setSearchOptions] = useState([]);
   const [loading, setLoading] = useState();
   const [searchUrl, setSearchUrl] = useState();
+  const location = useLocation();
+  const [filterDefaultValues, setFilterDefaultValues] = useState();
 
   const { t } = useTranslation("common");
 
@@ -59,6 +61,7 @@ export function Home() {
 
   async function search(searchString) {
     const url = getSearchUrl();
+    setFilterDefaultValues(null);
     setSearchParams(
       {
         query: searchString,
@@ -117,7 +120,7 @@ export function Home() {
   };
 
   // If component is first loaded with search params present in URL the search should immediately be executed.
-  // On first load the hideFilter state should be set for all following requests.
+  // On first load the hideFilter state and all permanent filters should be set for all following requests.
   useEffect(() => {
     setHideFilter(searchParams.get("hideFilter"));
     !!searchParams.get(FilterValues.SchemaLanguages)
@@ -132,7 +135,13 @@ export function Home() {
       : setDependsOnModels([]);
     if (inputValue !== "") {
       search(inputValue);
+    } else {
+      // Case if user is returning to an empty search after filtering.
+      if (location.state?.filterDefaultValues) {
+        search("");
+      }
     }
+    setFilterDefaultValues(location.state?.filterDefaultValues || null);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -202,7 +211,15 @@ export function Home() {
           <CircularProgress />
         </Box>
       )}
-      {models !== null && <Results searchUrl={searchUrl} models={models} repositoryTree={repositoryTree}></Results>}
+      {models !== null && (
+        <Results
+          searchUrl={searchUrl}
+          models={models}
+          repositoryTree={repositoryTree}
+          filterDefaultValues={filterDefaultValues}
+          setFilterDefaultValues={setFilterDefaultValues}
+        ></Results>
+      )}
     </Box>
   );
 }
