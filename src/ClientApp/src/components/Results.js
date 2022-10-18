@@ -16,7 +16,7 @@ import { Filter } from "./Filter";
 import { SchemaLanguages } from "./SchemaLanguages";
 
 export function Results(props) {
-  const { models, repositoryTree, searchUrl } = props;
+  const { models, repositoryTree, searchUrl, filterDefaultValues, setFilterDefaultValues } = props;
   const hideFilter = searchUrl.searchParams.get("hideFilter") === "true";
   const { t } = useTranslation("common");
   const [page, setPage] = useState(1);
@@ -39,6 +39,12 @@ export function Results(props) {
     setShowFilter(false);
   }, [models]);
 
+  useEffect(() => {
+    if (filterDefaultValues) {
+      setShowFilter(true);
+    }
+  }, [filterDefaultValues]);
+
   return (
     <React.Fragment>
       <Stack direction="row" justifyContent="space-between" alignItems="flex-end" spacing={2}>
@@ -58,6 +64,8 @@ export function Results(props) {
           repositoryTree={repositoryTree}
           setFilteredModels={setFilteredModels}
           setPage={setPage}
+          filterDefaultValues={filterDefaultValues ?? null}
+          setFilterDefaultValues={setFilterDefaultValues}
         ></Filter>
       )}
       <Box sx={{ width: "100%", bgcolor: "background.paper", marginBottom: 8 }}>
@@ -76,7 +84,7 @@ export function Results(props) {
                     <Link
                       style={{ color: "inherit", textDecoration: "inherit", fontSize: 20, margin: -1 }}
                       to={{ pathname: "/detail/" + model.mD5 + "/" + model.name }}
-                      state={{ searchQuery: searchUrl.search }}
+                      state={{ searchQuery: searchUrl.search, filterDefaultValues: filterDefaultValues }}
                     >
                       {model.name}
                     </Link>
