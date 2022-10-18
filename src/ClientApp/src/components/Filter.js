@@ -71,13 +71,14 @@ export function Filter(props) {
     a.localeCompare(b)
   );
 
-  // Set default checkboxes checked for tree
   useEffect(() => {
+    // Set default checkboxes checked for tree
     if (!filterDefaultValues) {
       setChildrenCheckStatus(repositoryTree, true);
       checkAllSchemaLanguage(true);
       checkAllIssuer(true);
     } else {
+      // Immediately submit filter form if filter default values were passed to component
       handleSubmit(onSubmit)();
       setFilterApplied(true);
     }
