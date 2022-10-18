@@ -29,7 +29,7 @@ export function Filter(props) {
     repositoryTree,
     filterDefaultValues,
     setFilterDefaultValues,
-    setShowFilter,
+    setFilterPanelExpanded,
   } = props;
   const [filterApplied, setFilterApplied] = useState(false);
   const [hideReferencedModelResults, setHideReferencedModelResults] = useState(false);
@@ -181,7 +181,7 @@ export function Filter(props) {
             </Button>
           )}
           <Box sx={{ flexGrow: 1 }}></Box>
-          <IconButton onClick={() => setShowFilter(false)}>
+          <IconButton onClick={() => setFilterPanelExpanded(false)}>
             <CloseIcon />
           </IconButton>
         </Stack>

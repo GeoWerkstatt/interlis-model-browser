@@ -20,7 +20,7 @@ export function Results(props) {
   const hideFilter = searchUrl.searchParams.get("hideFilter") === "true";
   const { t } = useTranslation("common");
   const [page, setPage] = useState(1);
-  const [showFilter, setShowFilter] = useState(false);
+  const [filterPanelExpanded, setFilterPanelExpanded] = useState(false);
   const [filteredModels, setFilteredModels] = useState(models);
 
   const modelsPerPage = 10;
@@ -30,18 +30,18 @@ export function Results(props) {
   };
 
   const toggleFilter = () => {
-    setShowFilter(!showFilter);
+    setFilterPanelExpanded(!filterPanelExpanded);
     setFilteredModels(models);
   };
 
   useEffect(() => {
     setFilteredModels(models);
-    setShowFilter(false);
+    setFilterPanelExpanded(false);
   }, [models]);
 
   useEffect(() => {
     if (filterDefaultValues) {
-      setShowFilter(true);
+      setFilterPanelExpanded(true);
     }
   }, [filterDefaultValues]);
 
@@ -51,13 +51,13 @@ export function Results(props) {
         <Typography variant="h4" mt={6} ml={1}>
           {filteredModels.length + " " + t("models-found", { count: filteredModels.length })}
         </Typography>
-        {!hideFilter && !showFilter && (
+        {!hideFilter && !filterPanelExpanded && (
           <Button variant="outlined" startIcon={<FilterAltIcon />} onClick={toggleFilter}>
             {t("filter")}
           </Button>
         )}
       </Stack>
-      {showFilter && !hideFilter && (
+      {filterPanelExpanded && !hideFilter && (
         <Filter
           models={models}
           filteredModels={filteredModels}
@@ -66,7 +66,7 @@ export function Results(props) {
           setPage={setPage}
           filterDefaultValues={filterDefaultValues ?? null}
           setFilterDefaultValues={setFilterDefaultValues}
-          setShowFilter={setShowFilter}
+          setFilterPanelExpanded={setFilterPanelExpanded}
         ></Filter>
       )}
       <Box sx={{ width: "100%", bgcolor: "background.paper", marginBottom: 8 }}>
