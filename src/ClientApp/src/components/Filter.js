@@ -6,12 +6,14 @@ import {
   Checkbox,
   FormGroup,
   FormControlLabel,
+  IconButton,
   Paper,
   Stack,
   Switch,
   TextField,
   Typography,
 } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
 import { useForm, Controller } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import TreeView from "@mui/lab/TreeView";
@@ -27,6 +29,7 @@ export function Filter(props) {
     repositoryTree,
     filterDefaultValues,
     setFilterDefaultValues,
+    setShowFilter,
   } = props;
   const [filterApplied, setFilterApplied] = useState(false);
   const [hideReferencedModelResults, setHideReferencedModelResults] = useState(false);
@@ -168,6 +171,20 @@ export function Filter(props) {
   return (
     <Paper sx={{ padding: 3, marginTop: 2, bgcolor: "action.hover" }}>
       <form onSubmit={handleSubmit(onSubmit)} name="search-form">
+        <Stack mb={5} direction="row" alignItems="flex-start" justifyContent="flex-start">
+          <Button type="submit" onClick={() => setFilterApplied(true)} variant="outlined">
+            {t("apply-filter")}
+          </Button>
+          {filterApplied && (
+            <Button type="reset" onClick={resetFilter} variant="text">
+              {t("reset")}
+            </Button>
+          )}
+          <Box sx={{ flexGrow: 1 }}></Box>
+          <IconButton onClick={() => setShowFilter(false)}>
+            <CloseIcon />
+          </IconButton>
+        </Stack>
         <Stack direction="row" justifyContent="space-between" alignItems="flex-start" spacing={2}>
           <Box>
             <Typography variant="h6"> {t("model-repositories")}</Typography>
@@ -308,16 +325,6 @@ export function Filter(props) {
             )}
           />
         </Box>
-        <Stack mt={5} direction="row" alignItems="flex-end" justifyContent="flex-end">
-          {filterApplied && (
-            <Button type="reset" onClick={resetFilter} variant="text">
-              {t("reset")}
-            </Button>
-          )}
-          <Button type="submit" onClick={() => setFilterApplied(true)} variant="outlined">
-            {t("apply-filter")}
-          </Button>
-        </Stack>
       </form>
     </Paper>
   );

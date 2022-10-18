@@ -51,7 +51,7 @@ export function Results(props) {
         <Typography variant="h4" mt={6} ml={1}>
           {filteredModels.length + " " + t("models-found", { count: filteredModels.length })}
         </Typography>
-        {!hideFilter && (
+        {!hideFilter && !showFilter && (
           <Button variant="outlined" startIcon={<FilterAltIcon />} onClick={toggleFilter}>
             {t("filter")}
           </Button>
@@ -66,6 +66,7 @@ export function Results(props) {
           setPage={setPage}
           filterDefaultValues={filterDefaultValues ?? null}
           setFilterDefaultValues={setFilterDefaultValues}
+          setShowFilter={setShowFilter}
         ></Filter>
       )}
       <Box sx={{ width: "100%", bgcolor: "background.paper", marginBottom: 8 }}>
