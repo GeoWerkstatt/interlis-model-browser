@@ -135,6 +135,11 @@ export function Home() {
       : setDependsOnModels([]);
     if (inputValue !== "") {
       search(inputValue);
+    } else {
+      // Case if user is returning to an empty search after filtering.
+      if (location.state?.filterDefaultValues) {
+        search("");
+      }
     }
     setFilterDefaultValues(location.state?.filterDefaultValues || null);
     // eslint-disable-next-line react-hooks/exhaustive-deps
