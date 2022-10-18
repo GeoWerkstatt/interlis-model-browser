@@ -9,5 +9,10 @@
   "copyrights": "Urheberrechte",
   "copyrights-text": "Die Urheber- und alle anderen Rechte an Inhalten, Bildern, Fotos oder anderen Dateien auf dieser Website, gehören ausschliesslich [NAME] oder den speziell genannten Rechteinhabern. Für die Reproduktion jeglicher Elemente ist die schriftliche Zustimmung des Urheberrechtsträgers im Voraus einzuholen.",
   "source": "Quelle",
-  "close": "Schliessen"
+  "close": "Schliessen",
+  "sponsoring": "Sponsoring",
+  "project-team": "Projektteam",
+  "realisation": "Realisierung",
+  "technical-notices": "Technische Hinweise",
+  "technical-notices-text": "Die Modellarchive werden gemäss den Angaben in ilisite.xml periodisch ausgelesen und für die Suche in PostgreSQL indexiert.Dieser Prozess läuft momentan nächtlich. Kann ein Archiv nicht erreicht werden, so wird es beim aktuellen Aktualisierungsprozess nicht berücksichtigt. Ausnahme: Wenn beim Aktualisierungsprozess ein Archiv, welches subsidiäre Archive enthält, nicht erreicht werden kann, so wird keine Aktualisierung sämtlicher Archive durchgeführt. Die Modellvorschau kann aufgrund restriktiver Cross-Domain-Policies nicht bei allen Archiven gewährleistet werden. In diesen Fällen ist der entsprechende Link zur Modelldatei zu nutzen."
 }

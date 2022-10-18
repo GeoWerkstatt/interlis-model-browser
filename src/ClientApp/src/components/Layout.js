@@ -40,7 +40,8 @@ export function Layout(props) {
       <Box sx={{ flexGrow: 1 }}>
         <AppBar position="static">
           <Toolbar>
-            <Typography variant="h6" sx={{ flexGrow: 1 }}>
+            <img alt="interlis-logo" src="interlis.png" width="20" height="20" />
+            <Typography variant="h6" sx={{ flexGrow: 1, ml: 1 }}>
               INTERLIS Model Browser
             </Typography>
             <Tooltip title={t("open-impressum")}>

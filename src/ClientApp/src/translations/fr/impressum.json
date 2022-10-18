@@ -9,5 +9,10 @@
   "copyrights": "Droits d'auteur",
   "copyrights-text": "Le droit d'auteur et tous les autres droits sur le contenu, les images, les photos ou d'autres fichiers de ce site Web appartiennent exclusivement à [NOM] ou aux titulaires de droits spécifiquement nommés. L'autorisation écrite du détenteur du droit d'auteur doit être obtenue à l'avance pour la reproduction de tout élément.",
   "source": "Source",
-  "close": "Fermer"
+  "close": "Fermer",
+  "sponsoring": "Parrainage",
+  "project-team": "Équipe de projet",
+  "realisation": "Réalisation",
+  "technical-notices": "Conseils techniques",
+  "technical-notices-text": "Les archives du modèle sont lues périodiquement en fonction des informations contenues dans ilisite.xml et indexées pour la recherche dans PostgreSQL.Ce processus s'exécute actuellement la nuit. Si une archive n'est pas accessible, elle ne sera pas incluse dans le processus de mise à jour en cours. Exception : Si une archive contenant des archives subsidiaires n'est pas accessible pendant le processus de mise à jour, toutes les archives ne sont pas mises à jour. En raison de politiques interdomaines restrictives, l'aperçu du modèle ne peut pas être garanti pour toutes les archives. Dans ces cas, le lien correspondant vers le fichier modèle doit être utilisé."
 }

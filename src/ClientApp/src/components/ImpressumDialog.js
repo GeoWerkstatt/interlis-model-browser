@@ -23,7 +23,36 @@ export function ImpressumDialog(props) {
       </DialogTitle>
       <DialogContent>
         <DialogContentText>
-          <Typography variant="h5"> {t("contact-address")}</Typography>
+          <Typography variant="h5" sx={{ mt: 4 }}>
+            {t("sponsoring")}
+          </Typography>
+          <Typography variant="body"> KGK-CGC/swisstopo </Typography>
+          <Typography variant="h5" sx={{ mt: 4 }}>
+            {t("project-team")}
+          </Typography>
+          <Typography variant="body">
+            Pasquale Di Donato (swisstopo), Kuno Epper (Kt. SZ), Romedi Filli (Kt. SH), Frank Gottsmann (swisstopo),
+            Peter Staub (KGK)
+          </Typography>
+          <Typography variant="h5" sx={{ mt: 4 }}>
+            {t("realisation")}
+          </Typography>
+          <Typography variant="body"> GeoWerkstatt GmbH, Aarau </Typography>
+          <Typography variant="h5" sx={{ mt: 4 }}>
+            Github
+          </Typography>
+          <Typography variant="body">
+            <a href="https://github.com/GeoWerkstatt/interlis-model-browser" target="_blank" rel="noreferrer">
+              https://github.com/GeoWerkstatt/interlis-model-browser
+            </a>
+          </Typography>
+          <Typography variant="h5" sx={{ mt: 4 }}>
+            {t("technical-notices")}
+          </Typography>
+          <Typography variant="body"> {t("technical-notices-text")} </Typography>
+          <Typography variant="h5" sx={{ mt: 4 }}>
+            {t("contact-address")}
+          </Typography>
           <Typography variant="body"> .... contact </Typography>
           <Typography variant="h5" sx={{ mt: 4 }}>
             {t("responsible-person")}

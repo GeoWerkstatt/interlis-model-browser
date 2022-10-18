@@ -9,5 +9,10 @@
   "copyrights": "Copyright",
   "copyrights-text": "Il copyright e tutti gli altri diritti su contenuti, immagini, foto o altri file su questo sito Web appartengono esclusivamente a [NOME] o ai titolari dei diritti specificatamente nominati. L'autorizzazione scritta del titolare del copyright deve essere ottenuta in anticipo per la riproduzione di qualsiasi elemento.",
   "source": "Origine",
-  "close": "Chiudere"
+  "close": "Chiudere",
+  "sponsoring": "Sponsorizzazione",
+  "project-team": "Team di progetto",
+  "realisation": "Realizzazione",
+  "technical-notices": "Consiglio tecnico",
+  "technical-notices-text": "Gli archivi del modello vengono letti periodicamente in base alle informazioni in ilisite.xml e indicizzati per la ricerca in PostgreSQL.Questo processo attualmente viene eseguito di notte. Se un archivio non può essere raggiunto, non sarà incluso nel processo di aggiornamento corrente. Eccezione: se durante il processo di aggiornamento non è possibile raggiungere un archivio contenente archivi sussidiari, tutti gli archivi non vengono aggiornati. A causa di criteri tra domini restrittivi, l'anteprima del modello non può essere garantita per tutti gli archivi. In questi casi, è necessario utilizzare il collegamento corrispondente al file del modello."
 }
