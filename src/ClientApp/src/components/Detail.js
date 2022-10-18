@@ -27,8 +27,13 @@ export function Detail() {
   const navigate = useNavigate();
   const { md5, name } = useParams();
 
-  const backToSearch = () => navigate(`/${location.state.searchQuery}`, { replace: true });
   const toHome = () => navigate("/");
+  const backToSearch = () => {
+    navigate(`/${location.state.searchQuery}`, {
+      replace: true,
+      state: location.state,
+    });
+  };
 
   const linkToModelOrSearch = async (modelname) => {
     var url = new URL(window.location);
@@ -41,7 +46,7 @@ export function Detail() {
       if (matchingModels.length === 1) {
         navigate("/detail/" + matchingModels[0].mD5 + "/" + matchingModels[0].name, {
           replace: true,
-          state: { searchQuery: location.state.searchQuery },
+          state: location.state,
         });
       } else {
         navigate("/" + url.search);

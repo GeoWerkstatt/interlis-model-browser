@@ -19,17 +19,28 @@ import TreeItem from "@mui/lab/TreeItem";
 import { SchemaLanguages } from "./SchemaLanguages";
 
 export function Filter(props) {
-  const { models, filteredModels, setFilteredModels, setPage, repositoryTree } = props;
+  const {
+    models,
+    filteredModels,
+    setFilteredModels,
+    setPage,
+    repositoryTree,
+    filterDefaultValues,
+    setFilterDefaultValues,
+  } = props;
   const [filterApplied, setFilterApplied] = useState(false);
   const [referencedModels, setReferencedModels] = useState([]);
   const [hideReferencedModelResults, setHideReferencedModelResults] = useState(false);
-  const [allIssuerSelected, setAllIssuerSelected] = useState(false);
+  const [allIssuerSelected, setAllIssuerSelected] = useState(true);
   const [allSchemaLanguageSelected, setAllSchemaLanguageSelected] = useState(true);
 
   const { t } = useTranslation("common");
-  const { control, getValues, register, reset, setValue, handleSubmit, watch } = useForm();
+  const { control, getValues, register, reset, setValue, handleSubmit, watch } = useForm({
+    defaultValues: filterDefaultValues,
+  });
 
   const onSubmit = (data) => {
+    setFilterDefaultValues(data);
     let filtered = models;
     if (Array.isArray(data.modelRepository)) {
       filtered = filtered.filter((m) => data.modelRepository.some((repo) => m.modelRepository.includes(repo)));
@@ -63,9 +74,14 @@ export function Filter(props) {
 
   // Set default checkboxes checked for tree
   useEffect(() => {
-    setChildrenCheckStatus(repositoryTree, true);
-    checkAllSchemaLanguage(true);
-    checkAllIssuer(true);
+    if (!filterDefaultValues) {
+      setChildrenCheckStatus(repositoryTree, true);
+      checkAllSchemaLanguage(true);
+      checkAllIssuer(true);
+    } else {
+      handleSubmit(onSubmit)();
+      setFilterApplied(true);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -98,6 +114,7 @@ export function Filter(props) {
 
   const resetFilter = () => {
     reset();
+    setFilterDefaultValues(null);
     setFilteredModels(models);
     setFilterApplied(false);
     setReferencedModels([]);
