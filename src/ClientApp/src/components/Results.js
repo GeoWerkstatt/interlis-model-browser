@@ -117,10 +117,12 @@ export function Results(props) {
                     <EditIcon sx={{ marginBottom: -0.5, marginRight: 0.5 }} />
                     {t("issuer")}: {model.issuer}
                   </Box>
-                  <Box ml={1} mt={1}>
-                    <RestoreIcon sx={{ marginBottom: -0.5, marginRight: 0.5 }} />
-                    {t("last-updated")}: {new Date(model.publishingDate).toLocaleDateString()}
-                  </Box>
+                  {model.publishingDate && (
+                    <Box ml={1} mt={1}>
+                      <RestoreIcon sx={{ marginBottom: -0.5, marginRight: 0.5 }} />
+                      {t("last-updated")}: {new Date(model.publishingDate).toLocaleDateString()}
+                    </Box>
+                  )}
                   <Box ml={1} mt={1}>
                     <InsertDriveFileIcon sx={{ marginBottom: -0.5, marginRight: 0.5 }} />
                     {t("file")}:{" "}
