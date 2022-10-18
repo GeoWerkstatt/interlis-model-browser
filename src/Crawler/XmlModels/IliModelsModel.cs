@@ -41,7 +41,7 @@ public class ModelMetadata
     public string Version { get; set; }
 
     [XmlElement(DataType = "date")]
-    public DateTime publishingDate { get; set; }
+    public DateTime? publishingDate { get; set; }
 
     public string? Title { get; set; }
 

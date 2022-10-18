@@ -152,7 +152,7 @@ public class RepositoryCrawler : IRepositoryCrawler
                     SchemaLanguage = model.SchemaLanguage,
                     File = model.File,
                     Version = model.Version,
-                    PublishingDate = model.publishingDate.ToUniversalTime(),
+                    PublishingDate = model.publishingDate?.ToUniversalTime(),
                     DependsOnModel = model.dependsOnModel.Where(s => !string.IsNullOrEmpty(s?.value)).Select(m => m.value!).ToList(),
                     ShortDescription = model.shortDescription,
                     Title = model.Title,
