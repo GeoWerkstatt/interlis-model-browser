@@ -29,7 +29,6 @@ export function Filter(props) {
     setFilterDefaultValues,
   } = props;
   const [filterApplied, setFilterApplied] = useState(false);
-  const [referencedModels, setReferencedModels] = useState([]);
   const [hideReferencedModelResults, setHideReferencedModelResults] = useState(false);
   const [allIssuerSelected, setAllIssuerSelected] = useState(true);
   const [allSchemaLanguageSelected, setAllSchemaLanguageSelected] = useState(true);
@@ -51,8 +50,8 @@ export function Filter(props) {
     if (Array.isArray(data.schemaLanguage)) {
       filtered = filtered.filter((m) => data.schemaLanguage.includes(m.schemaLanguage));
     }
-    if (referencedModels.length > 0) {
-      filtered = filtered.filter((m) => m.dependsOnModel.some((m) => referencedModels.includes(m)));
+    if (Array.isArray(data.referencedModels) && data.referencedModels.length > 0) {
+      filtered = filtered.filter((m) => m.dependsOnModel.some((m) => data.referencedModels.includes(m)));
     }
     if (hideReferencedModelResults) {
       filtered = filtered.filter((m) => m.isDependOnModelResult === false);
@@ -117,7 +116,6 @@ export function Filter(props) {
     setFilterDefaultValues(null);
     setFilteredModels(models);
     setFilterApplied(false);
-    setReferencedModels([]);
     setHideReferencedModelResults(false);
     checkAllSchemaLanguage(true);
     checkAllIssuer(true);
@@ -288,16 +286,24 @@ export function Filter(props) {
           <Typography mt={8} variant="h6">
             {t("referenced-models")}
           </Typography>
-          <Autocomplete
-            multiple
-            options={currentDependsOnModelOptions}
-            noOptionsText={t("no-depends-on-model")}
-            value={referencedModels}
-            onChange={(e, data) => {
-              setReferencedModels(data);
-            }}
-            renderInput={(params) => (
-              <TextField {...params} type="text" variant="standard" placeholder={t("model-name")} />
+          <Controller
+            name="referencedModels"
+            control={control}
+            defaultValue={[]}
+            render={({ field }) => (
+              <Autocomplete
+                {...field}
+                multiple
+                options={currentDependsOnModelOptions}
+                noOptionsText={t("no-depends-on-model")}
+                onChange={(e, data) => {
+                  field.onChange(data);
+                }}
+                value={field.value}
+                renderInput={(params) => (
+                  <TextField {...params} type="text" variant="standard" placeholder={t("model-name")} />
+                )}
+              />
             )}
           />
         </Box>
