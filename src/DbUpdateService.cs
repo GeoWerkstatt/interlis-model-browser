@@ -46,7 +46,8 @@ public class DbUpdateService : BackgroundService
 
                 var knownParentRepositories = context.Repositories
                     .Where(r => r.SubsidiarySites.Any())
-                    .Select(r => r.HostNameId).ToList();
+                    .Select(r => r.HostNameId)
+                    .ToList();
 
                 var allParentRepositoriesCrawled = knownParentRepositories.All(repositories.ContainsKey);
 
