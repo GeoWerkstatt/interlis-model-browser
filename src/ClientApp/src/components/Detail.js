@@ -29,10 +29,7 @@ export function Detail() {
 
   const toHome = () => navigate("/");
   const backToSearch = () => {
-    navigate(`/${location.state.searchQuery}`, {
-      replace: true,
-      state: location.state,
-    });
+    navigate(`/${location.state.searchQuery}`, { state: location.state });
   };
 
   const linkToModelOrSearch = async (modelname) => {
@@ -44,10 +41,7 @@ export function Detail() {
       const matchingModels = getAllModels(repositoryTree).filter((m) => m.name === modelname);
       // Link to model if only one matches the referenced model name.
       if (matchingModels.length === 1) {
-        navigate("/detail/" + matchingModels[0].mD5 + "/" + matchingModels[0].name, {
-          replace: true,
-          state: location.state,
-        });
+        navigate("/detail/" + matchingModels[0].mD5 + "/" + matchingModels[0].name, { state: location.state });
       } else {
         navigate("/" + url.search);
       }
