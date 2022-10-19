@@ -48,7 +48,9 @@ export function Filter(props) {
       filtered = filtered.filter((m) => data.modelRepository.some((repo) => m.modelRepository.includes(repo)));
     }
     if (Array.isArray(data.issuer)) {
-      filtered = filtered.filter((m) => data.issuer.includes(m.issuer));
+      filtered = filtered.filter(
+        (m) => data.issuer.includes(m.issuer) || (m.issuer == null && data.issuer.includes("-"))
+      );
     }
     if (Array.isArray(data.schemaLanguage)) {
       filtered = filtered.filter((m) => data.schemaLanguage.includes(m.schemaLanguage));
@@ -67,7 +69,7 @@ export function Filter(props) {
   const getIssuerWithoutPrefix = (issuer) => issuer.replace("https://", "").replace("http://", "").replace("www.", "");
 
   const schemaLanguageOptions = [...new Set(models.map((m) => m.schemaLanguage))].sort((a, b) => a.localeCompare(b));
-  const issuerOptions = [...new Set(models.filter((m) => m.issuer !== null).map((m) => m.issuer))].sort((a, b) =>
+  const issuerOptions = [...new Set(models.map((m) => (m.issuer == null ? "-" : m.issuer)))].sort((a, b) =>
     getIssuerWithoutPrefix(a).localeCompare(getIssuerWithoutPrefix(b))
   );
   const currentDependsOnModelOptions = [...new Set(filteredModels.flatMap((m) => m.dependsOnModel))].sort((a, b) =>
