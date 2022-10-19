@@ -42,11 +42,17 @@ public class DbUpdateService : BackgroundService
             {
                 var crawler = scope.ServiceProvider.GetRequiredService<IRepositoryCrawler>();
                 var repositories = await crawler.CrawlModelRepositories(rootUri).ConfigureAwait(false);
+                using var context = scope.ServiceProvider.GetRequiredService<RepoBrowserContext>();
 
-                if (repositories.Any())
+                var knownParentRepositories = context.Repositories
+                    .Where(r => r.SubsidiarySites.Any())
+                    .Select(r => r.HostNameId)
+                    .ToList();
+
+                var allParentRepositoriesCrawled = knownParentRepositories.All(repositories.ContainsKey);
+
+                if (repositories.Any() && allParentRepositoriesCrawled)
                 {
-                    using var context = scope.ServiceProvider.GetRequiredService<RepoBrowserContext>();
-
                     context.Database.BeginTransaction();
                     context.Catalogs.RemoveRange(context.Catalogs);
                     context.Models.RemoveRange(context.Models);
@@ -61,7 +67,7 @@ public class DbUpdateService : BackgroundService
                 }
                 else
                 {
-                    logger.LogError("Updating ModelRepoDatabase aborted. Crawler could not parse any repository.");
+                    logger.LogError("Updating ModelRepoDatabase aborted. Crawler could not parse all required repositories.");
                 }
             }
 
