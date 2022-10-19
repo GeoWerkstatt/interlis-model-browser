@@ -71,89 +71,82 @@ export function Results(props) {
       )}
       <Box sx={{ width: "100%", bgcolor: "background.paper", marginBottom: 8 }}>
         {filteredModels &&
-          filteredModels
-            .sort(
-              (a, b) =>
-                a.isDependOnModelResult - b.isDependOnModelResult ||
-                new Date(b.publishingDate) - new Date(a.publishingDate)
-            )
-            .slice((page - 1) * modelsPerPage, (page - 1) * modelsPerPage + modelsPerPage)
-            .map((model) => (
-              <Box key={model.id} mt={6} direction="column" alignItems="flex-start">
-                <Stack direction="row" flexWrap="wrap" alignItems="center">
-                  <Button sx={{ color: "text.primary", textTransform: "none" }}>
-                    <Link
-                      style={{ color: "inherit", textDecoration: "inherit", fontSize: 20, margin: -1 }}
-                      to={{ pathname: "/detail/" + model.mD5 + "/" + model.name }}
-                      state={{ searchQuery: searchUrl.search, filterDefaultValues: filterDefaultValues }}
-                    >
-                      {model.name}
-                    </Link>
-                  </Button>
-                  {model.isDependOnModelResult && (
-                    <Tooltip title={t("search-term-was-found-in-depends-on-model")}>
-                      <HubIcon sx={{ color: "text.secondary", fontSize: 16 }} />
-                    </Tooltip>
+          filteredModels.slice((page - 1) * modelsPerPage, (page - 1) * modelsPerPage + modelsPerPage).map((model) => (
+            <Box key={model.id} mt={6} direction="column" alignItems="flex-start">
+              <Stack direction="row" flexWrap="wrap" alignItems="center">
+                <Button sx={{ color: "text.primary", textTransform: "none" }}>
+                  <Link
+                    style={{ color: "inherit", textDecoration: "inherit", fontSize: 20, margin: -1 }}
+                    to={{ pathname: "/detail/" + model.mD5 + "/" + model.name }}
+                    state={{ searchQuery: searchUrl.search, filterDefaultValues: filterDefaultValues }}
+                  >
+                    {model.name}
+                  </Link>
+                </Button>
+                {model.isDependOnModelResult && (
+                  <Tooltip title={t("search-term-was-found-in-depends-on-model")}>
+                    <HubIcon sx={{ color: "text.secondary", fontSize: 16 }} />
+                  </Tooltip>
+                )}
+                {model.tags &&
+                  model.tags.map((tag) => tag.length > 0 && <Chip key={tag} sx={{ margin: 1 }} label={tag} />)}
+              </Stack>
+              <Stack
+                direction={{ xs: "column", sm: "column", md: "row" }}
+                alignItems={{ xs: "flex-start", sm: "flex-start", md: "flex-end" }}
+                flexWrap="wrap"
+                sx={{ color: "text.secondary" }}
+              >
+                {!!model.title && (
+                  <Box ml={1} mt={1}>
+                    <TitleIcon sx={{ marginBottom: -0.5, marginRight: 0.5 }} />
+                    {t("title")}: {model.title}
+                  </Box>
+                )}
+                <Box ml={1} mt={1}>
+                  <SellIcon sx={{ marginBottom: -0.5, marginRight: 0.5 }} />
+                  {t("schema-language")}: {SchemaLanguages[model.schemaLanguage]}
+                </Box>
+                <Box ml={1} mt={1}>
+                  <CloudQueueIcon sx={{ marginBottom: -0.5, marginRight: 0.5 }} />
+                  {t("model-repository")}: {model.modelRepository}
+                </Box>
+                <Box ml={1} mt={1}>
+                  <FlagIcon sx={{ marginBottom: -0.5, marginRight: 0.5 }} />
+                  {t("latest-version")}: {model.version}
+                </Box>
+                <Box ml={1} mt={1}>
+                  <EditIcon sx={{ marginBottom: -0.5, marginRight: 0.5 }} />
+                  {t("issuer")}: {model.issuer}
+                </Box>
+                {model.publishingDate && (
+                  <Box ml={1} mt={1}>
+                    <RestoreIcon sx={{ marginBottom: -0.5, marginRight: 0.5 }} />
+                    {t("last-updated")}: {new Date(model.publishingDate).toLocaleDateString()}
+                  </Box>
+                )}
+                <Box ml={1} mt={1}>
+                  <InsertDriveFileIcon sx={{ marginBottom: -0.5, marginRight: 0.5 }} />
+                  {t("file")}:{" "}
+                  {model.uri ? (
+                    <a href={model.uri} target="_blank" rel="noreferrer">
+                      {model.file}
+                    </a>
+                  ) : (
+                    model.file
                   )}
-                  {model.tags &&
-                    model.tags.map((tag) => tag.length > 0 && <Chip key={tag} sx={{ margin: 1 }} label={tag} />)}
-                </Stack>
-                <Stack
-                  direction={{ xs: "column", sm: "column", md: "row" }}
-                  alignItems={{ xs: "flex-start", sm: "flex-start", md: "flex-end" }}
-                  flexWrap="wrap"
-                  sx={{ color: "text.secondary" }}
-                >
-                  {!!model.title && (
-                    <Box ml={1} mt={1}>
-                      <TitleIcon sx={{ marginBottom: -0.5, marginRight: 0.5 }} />
-                      {t("title")}: {model.title}
-                    </Box>
-                  )}
+                </Box>
+                {model.furtherInformation && (
                   <Box ml={1} mt={1}>
-                    <SellIcon sx={{ marginBottom: -0.5, marginRight: 0.5 }} />
-                    {t("schema-language")}: {SchemaLanguages[model.schemaLanguage]}
+                    <InfoIcon sx={{ marginBottom: -0.5, marginRight: 0.5 }} />
+                    <a href={model.furtherInformation} target="_blank" rel="noreferrer">
+                      {t("more-information")}
+                    </a>
                   </Box>
-                  <Box ml={1} mt={1}>
-                    <CloudQueueIcon sx={{ marginBottom: -0.5, marginRight: 0.5 }} />
-                    {t("model-repository")}: {model.modelRepository}
-                  </Box>
-                  <Box ml={1} mt={1}>
-                    <FlagIcon sx={{ marginBottom: -0.5, marginRight: 0.5 }} />
-                    {t("latest-version")}: {model.version}
-                  </Box>
-                  <Box ml={1} mt={1}>
-                    <EditIcon sx={{ marginBottom: -0.5, marginRight: 0.5 }} />
-                    {t("issuer")}: {model.issuer}
-                  </Box>
-                  {model.publishingDate && (
-                    <Box ml={1} mt={1}>
-                      <RestoreIcon sx={{ marginBottom: -0.5, marginRight: 0.5 }} />
-                      {t("last-updated")}: {new Date(model.publishingDate).toLocaleDateString()}
-                    </Box>
-                  )}
-                  <Box ml={1} mt={1}>
-                    <InsertDriveFileIcon sx={{ marginBottom: -0.5, marginRight: 0.5 }} />
-                    {t("file")}:{" "}
-                    {model.uri ? (
-                      <a href={model.uri} target="_blank" rel="noreferrer">
-                        {model.file}
-                      </a>
-                    ) : (
-                      model.file
-                    )}
-                  </Box>
-                  {model.furtherInformation && (
-                    <Box ml={1} mt={1}>
-                      <InfoIcon sx={{ marginBottom: -0.5, marginRight: 0.5 }} />
-                      <a href={model.furtherInformation} target="_blank" rel="noreferrer">
-                        {t("more-information")}
-                      </a>
-                    </Box>
-                  )}
-                </Stack>
-              </Box>
-            ))}
+                )}
+              </Stack>
+            </Box>
+          ))}
         {filteredModels && filteredModels.length > modelsPerPage && (
           <Pagination
             sx={{ marginTop: 3 }}
