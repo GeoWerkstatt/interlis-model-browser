@@ -80,7 +80,15 @@ export function Home() {
         const repositoryTree = await response.json();
         sortRepositoryTree(repositoryTree.subsidiarySites);
         setRepositoryTree(repositoryTree);
-        setModels(getAllModels(repositoryTree));
+        const models = getAllModels(repositoryTree);
+        models.sort(
+          (a, b) =>
+            (b.name.toLowerCase() === searchString.toLowerCase()) -
+              (a.name.toLowerCase() === searchString.toLowerCase()) ||
+            a.isDependOnModelResult - b.isDependOnModelResult ||
+            new Date(b.publishingDate) - new Date(a.publishingDate)
+        );
+        setModels(models);
         setLoading(false);
       }
     } else {
