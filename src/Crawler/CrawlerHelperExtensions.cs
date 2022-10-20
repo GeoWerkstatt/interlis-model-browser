@@ -11,12 +11,25 @@ internal static class CrawlerHelperExtensions
         => dataset.categories?.Any(c => CatalogCode.Equals(c.value, StringComparison.Ordinal)) ?? false;
 
     internal static List<string> GetReferencedModels(this DatasetMetadata data)
-        => data.categories?
-        .Select(c => c.value)
-        .Where(v => v is not null && v.StartsWith(ModelCode, StringComparison.Ordinal))
-        .Select(v => v.Substring(ModelCode.Length))
-        .Distinct()
-        .ToList() ?? new List<string>();
+    {
+        var referencedModels = data.categories?
+            .Select(c => c.value)
+            .Where(v => v is not null && v.StartsWith(ModelCode, StringComparison.Ordinal))
+            .Select(v => v.Substring(ModelCode.Length))
+            .ToList()
+            ?? new List<string>();
+
+        var basketModelLinks = data.baskets?
+            .Select(b => b.model.ModelLink.name.Split('.').First())
+            .Where(s => !string.IsNullOrWhiteSpace(s))
+            .ToList<string>()
+            ?? new List<string>();
+
+        return referencedModels
+            .Concat(basketModelLinks)
+            .Distinct()
+            .ToList();
+    }
 
     internal static string GetTitle(this DatasetMetadata data)
         => data.title?.MultilingualText?.LocalisedTexts?.FirstOrDefault(lt => string.Empty.Equals(lt.Language, StringComparison.OrdinalIgnoreCase))?.Language ?? string.Empty;

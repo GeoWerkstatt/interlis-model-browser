@@ -153,7 +153,8 @@ public class RepositoryCrawlerTest
             .AssertCount(1);
         catalog.ReferencedModels
             .AssertContains("Biodiversitaetsfoerderflaechen_Qualitaetsstufe_II_und_Vernetzung_LV95_V1_3")
-            .AssertCount(22)
+            .AssertContains("Bearbeitungsstatus_V1_2")
+            .AssertCount(23)
             .AssertAllNotNull();
     }
 
