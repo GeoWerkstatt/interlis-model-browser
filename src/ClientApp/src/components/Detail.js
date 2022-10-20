@@ -181,11 +181,13 @@ export function Detail() {
                 {t("catalogue-files")}:{" "}
                 {model.catalogueFiles &&
                   model.catalogueFiles.map((f) => (
-                    <Typography variant="body" sx={{ mr: 1 }}>
-                      <a href={f} target="_blank" rel="noreferrer">
-                        {f}
-                      </a>
-                    </Typography>
+                    <Box sx={{ ml: 4 }}>
+                      <Typography variant="body" sx={{ mr: 1, fontSize: 14 }}>
+                        <a href={f} target="_blank" rel="noreferrer">
+                          {f}
+                        </a>
+                      </Typography>
+                    </Box>
                   ))}
               </Box>
             )}
