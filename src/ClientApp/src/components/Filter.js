@@ -37,7 +37,16 @@ export function Filter(props) {
   const [allSchemaLanguageSelected, setAllSchemaLanguageSelected] = useState(true);
 
   const { t } = useTranslation("common");
-  const { control, getValues, register, reset, setValue, handleSubmit, watch } = useForm({
+  const {
+    control,
+    getValues,
+    register,
+    reset,
+    setValue,
+    handleSubmit,
+    watch,
+    formState: { isDirty },
+  } = useForm({
     defaultValues: filterDefaultValues,
   });
 
@@ -118,7 +127,7 @@ export function Filter(props) {
   };
 
   const resetFilter = () => {
-    reset();
+    reset({ keepDefaultValues: true });
     setFilterDefaultValues(null);
     setFilteredModels(models);
     setFilterApplied(false);
@@ -174,7 +183,7 @@ export function Filter(props) {
     <Paper sx={{ padding: 3, marginTop: 2, bgcolor: "action.hover" }}>
       <form onSubmit={handleSubmit(onSubmit)} name="search-form">
         <Stack mb={5} direction="row" alignItems="flex-start" justifyContent="flex-start">
-          <Button type="submit" onClick={() => setFilterApplied(true)} variant="outlined">
+          <Button type="submit" onClick={() => setFilterApplied(true)} disabled={!isDirty} variant="outlined">
             {t("apply-filter")}
           </Button>
           {filterApplied && (
