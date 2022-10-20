@@ -46,9 +46,7 @@ export function Filter(props) {
     handleSubmit,
     watch,
     formState: { isDirty },
-  } = useForm({
-    defaultValues: filterDefaultValues,
-  });
+  } = useForm();
 
   const onSubmit = (data) => {
     setFilterDefaultValues(data);
@@ -93,6 +91,7 @@ export function Filter(props) {
       checkAllIssuer(true);
     } else {
       // Immediately submit filter form if filter default values were passed to component
+      reset(filterDefaultValues);
       handleSubmit(onSubmit)();
       setFilterApplied(true);
     }
