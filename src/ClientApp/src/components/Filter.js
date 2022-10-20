@@ -170,7 +170,7 @@ export function Filter(props) {
               )}
             />
           }
-          label={repositoryTree.name}
+          label={new URL(repositoryTree.uri).hostname}
         />
       </FormGroup>
       {Array.isArray(repositoryTree.subsidiarySites)
