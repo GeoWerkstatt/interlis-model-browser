@@ -162,7 +162,11 @@ export function Home() {
             inputValue={inputValue}
             value={value}
             // fired when search option is selected
-            onChange={(event, value) => search(value)}
+            onChange={(event, value) => {
+              if (value !== null) {
+                search(value);
+              }
+            }}
             onInputChange={(event, newInputValue) => {
               setInputValue(newInputValue);
               getSearchOptions(newInputValue);
