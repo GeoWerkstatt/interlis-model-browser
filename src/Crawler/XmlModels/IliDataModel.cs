@@ -49,6 +49,31 @@ public class DatasetMetadata
 
     [XmlArrayItem("DatasetIdx16.DataFile")]
     public DataFile[] files { get; set; }
+
+    [XmlArrayItem("DatasetIdx16.DataIndex.BasketMetadata")]
+    public BasketMetadata[] baskets { get; set; }
+}
+
+[Serializable]
+[XmlType(AnonymousType = true)]
+public class BasketMetadata
+{
+    public BasketModel model { get; set; }
+}
+
+[Serializable]
+[XmlType(AnonymousType = true)]
+public class BasketModel
+{
+    [XmlElement("DatasetIdx16.ModelLink")]
+    public ModelLink ModelLink { get; set; }
+}
+
+[Serializable]
+[XmlType(AnonymousType = true)]
+public class ModelLink
+{
+    public string name { get; set; }
 }
 
 [Serializable]
