@@ -26,13 +26,13 @@ export function ImpressumDialog(props) {
           <Typography variant="h5" sx={{ mt: 4 }}>
             {t("sponsoring")}
           </Typography>
-          <Typography variant="body"> KGK-CGC/swisstopo </Typography>
+          <Typography variant="body"> Strategie Geoinformation Schweiz </Typography>
           <Typography variant="h5" sx={{ mt: 4 }}>
             {t("project-team")}
           </Typography>
           <Typography variant="body">
             Pasquale Di Donato (swisstopo), Kuno Epper (Kt. SZ), Romedi Filli (Kt. SH), Frank Gottsmann (swisstopo),
-            Peter Staub (KGK)
+            Peter Staub (KGK), Rolf Zürcher (swisstopo)
           </Typography>
           <Typography variant="h5" sx={{ mt: 4 }}>
             {t("realisation")}
