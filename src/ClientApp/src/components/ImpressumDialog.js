@@ -53,7 +53,9 @@ export function ImpressumDialog(props) {
           <Typography variant="h5" sx={{ mt: 4 }}>
             {t("contact-address")}
           </Typography>
-          <Typography variant="body"> .... contact </Typography>
+          <Typography variant="body">
+            GEOWERKSTATT, Bleichemattstrasse 2, 5000 Aarau, Schweiz, office@geowerkstatt.ch{" "}
+          </Typography>
           <Typography variant="h5" sx={{ mt: 4 }}>
             {t("responsible-person")}
           </Typography>
