@@ -32,16 +32,24 @@ export function Home() {
   const getSearchUrl = () => {
     var url = new URL(window.location);
     issuers.forEach((issuer) => {
-      url.searchParams.append(FilterValues.Issuers, issuer);
+      if (!url.searchParams.getAll(FilterValues.Issuers).includes(issuer)) {
+        url.searchParams.append(FilterValues.Issuers, issuer);
+      }
     });
     repositoryNames.forEach((name) => {
-      url.searchParams.append(FilterValues.RepositoryNames, name);
+      if (!url.searchParams.getAll(FilterValues.RepositoryNames).includes(name)) {
+        url.searchParams.append(FilterValues.RepositoryNames, name);
+      }
     });
     schemaLanguages.forEach((language) => {
-      url.searchParams.append(FilterValues.SchemaLanguages, language);
+      if (!url.searchParams.getAll(FilterValues.SchemaLanguages).includes(language)) {
+        url.searchParams.append(FilterValues.SchemaLanguages, language);
+      }
     });
     dependsOnModels.forEach((model) => {
-      url.searchParams.append(FilterValues.DependsOnModels, model);
+      if (!url.searchParams.getAll(FilterValues.DependsOnModels).includes(model)) {
+        url.searchParams.append(FilterValues.DependsOnModels, model);
+      }
     });
     if (searchParams.get("hideFilter") === undefined) {
       url.searchParams.append("hideFilter", !!hideFilter);
@@ -62,12 +70,9 @@ export function Home() {
   async function search(searchString) {
     const url = getSearchUrl();
     setFilterDefaultValues(null);
-    setSearchParams(
-      {
-        query: searchString,
-      },
-      { replace: true }
-    );
+    searchParams.delete("query");
+    searchParams.append("query", searchString);
+    setSearchParams(searchParams);
     setLoading(true);
     url.searchParams.set("query", searchString);
 
