@@ -3,7 +3,7 @@
   <PropertyGroup>
     <AnalysisLevel>latest-all</AnalysisLevel>
     <NoWarn>CS1591,CS8618,CS8620</NoWarn>
-    <VersionPrefix>0.1</VersionPrefix>
+    <VersionPrefix>1.0</VersionPrefix>
     <Product>interlis-model-browser</Product>
     <Authors>GeoWerkstatt GmbH</Authors>
     <Company>GeoWerkstatt GmbH</Company>

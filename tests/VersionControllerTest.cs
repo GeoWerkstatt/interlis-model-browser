@@ -10,6 +10,6 @@ public class VersionControllerTest
     public void Get()
     {
         var controller = new VersionController();
-        Assert.AreEqual("0.1", controller.Get());
+        Assert.AreEqual("1.0", controller.Get());
     }
 }
