@@ -7,7 +7,7 @@ import ClearIcon from "@mui/icons-material/Clear";
 import { useForm } from "react-hook-form";
 import { Results } from "./Results";
 import { FilterValues } from "./FilterValues";
-import { getAllModels } from "./Utils";
+import { getAllModels, sortRepositoryTree, filterRepoTree } from "./Utils";
 
 export function Home() {
   const { register, handleSubmit, watch, reset } = useForm();
@@ -58,15 +58,6 @@ export function Home() {
     return url;
   };
 
-  const sortRepositoryTree = (nodes) => {
-    nodes.sort((a, b) => a.name.localeCompare(b.name));
-    nodes.forEach(function (node) {
-      if (node.subsidiarySites.length > 0) {
-        sortRepositoryTree(node.subsidiarySites);
-      }
-    });
-  };
-
   async function search(searchString) {
     const url = getSearchUrl();
     setFilterDefaultValues(null);
@@ -83,6 +74,8 @@ export function Home() {
         setLoading(false);
       } else {
         const repositoryTree = await response.json();
+        // Filter returned repo tree on client to mimic client filter behaviour. Should be moved to backend.
+        filterRepoTree(repositoryTree, repositoryNames);
         sortRepositoryTree(repositoryTree.subsidiarySites);
         setRepositoryTree(repositoryTree);
         const models = getAllModels(repositoryTree);
