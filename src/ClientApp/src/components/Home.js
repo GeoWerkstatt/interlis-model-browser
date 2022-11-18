@@ -75,10 +75,11 @@ export function Home() {
       } else {
         const repositoryTree = await response.json();
         // Filter returned repo tree on client to mimic client filter behaviour. Should be moved to backend.
-        filterRepoTree(repositoryTree, repositoryNames);
-        sortRepositoryTree(repositoryTree.subsidiarySites);
-        setRepositoryTree(repositoryTree);
-        const models = getAllModels(repositoryTree);
+        const filteredTree = filterRepoTree(repositoryTree, searchParams.getAll(FilterValues.RepositoryNames));
+        sortRepositoryTree(filteredTree.subsidiarySites);
+        setRepositoryTree(filteredTree);
+        const models = getAllModels(filteredTree);
+
         models.sort(
           (a, b) =>
             (b.name.toLowerCase() === searchString.toLowerCase()) -
@@ -143,7 +144,7 @@ export function Home() {
       search(inputValue);
     } else {
       // Case if user is returning to an empty search after filtering.
-      if (location.state?.filterDefaultValues) {
+      if (location.state || Array.from(searchParams.keys()).includes("query")) {
         search("");
       }
     }

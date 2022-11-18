@@ -147,31 +147,33 @@ export function Filter(props) {
 
   const renderTree = (repositoryTree) => (
     <TreeItem key={repositoryTree.name} nodeId={repositoryTree.name}>
-      <FormGroup>
-        <FormControlLabel
-          control={
-            <Controller
-              name={"modelRepository" + repositoryTree.name}
-              control={control}
-              render={({ field }) => (
-                <Checkbox
-                  {...field}
-                  // The additional register with the same name for all mapped checkboxes
-                  // allows to pass all values of this type as an array to the filter.
-                  {...register("modelRepository")}
-                  checked={!!watch("modelRepository" + repositoryTree.name)}
-                  onChange={(e) => {
-                    field.onChange(e.target.checked);
-                    setChildrenCheckStatus(repositoryTree, e.target.checked);
-                  }}
-                  value={repositoryTree.name}
-                />
-              )}
-            />
-          }
-          label={new URL(repositoryTree.uri).hostname}
-        />
-      </FormGroup>
+      {repositoryTree.models.length > 0 && (
+        <FormGroup>
+          <FormControlLabel
+            control={
+              <Controller
+                name={"modelRepository" + repositoryTree.name}
+                control={control}
+                render={({ field }) => (
+                  <Checkbox
+                    {...field}
+                    // The additional register with the same name for all mapped checkboxes
+                    // allows to pass all values of this type as an array to the filter.
+                    {...register("modelRepository")}
+                    checked={!!watch("modelRepository" + repositoryTree.name)}
+                    onChange={(e) => {
+                      field.onChange(e.target.checked);
+                      setChildrenCheckStatus(repositoryTree, e.target.checked);
+                    }}
+                    value={repositoryTree.name}
+                  />
+                )}
+              />
+            }
+            label={new URL(repositoryTree.uri).hostname}
+          />
+        </FormGroup>
+      )}
       {Array.isArray(repositoryTree.subsidiarySites)
         ? repositoryTree.subsidiarySites.map((node) => renderTree(node))
         : null}

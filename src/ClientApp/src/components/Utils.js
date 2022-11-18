@@ -10,9 +10,9 @@ export const getAllModels = (repositoryNode) => {
   ];
 };
 
-export const sortRepositoryTree = (repositoryNode) => {
-  repositoryNode.sort((a, b) => a.name.localeCompare(b.name));
-  repositoryNode.forEach((node) => {
+export const sortRepositoryTree = (sites) => {
+  sites.sort((a, b) => a.name.localeCompare(b.name));
+  sites.forEach((node) => {
     if (node.subsidiarySites.length > 0) {
       sortRepositoryTree(node.subsidiarySites);
     }
@@ -20,14 +20,18 @@ export const sortRepositoryTree = (repositoryNode) => {
 };
 
 export const filterRepoTree = (repositoryNode, repositoryNames) => {
-  if (repositoryNode) {
+  if (repositoryNames?.length > 0) {
     if (repositoryNode.subsidiarySites.length > 0) {
-      repositoryNode.subsidiarySites.forEach((node) => {
-        filterRepoTree(node);
+      repositoryNode.subsidiarySites.forEach((node, index) => {
+        repositoryNode.subsidiarySites[index] = filterRepoTree(node, repositoryNames);
       });
     }
+    let models = repositoryNode.models;
     if (repositoryNames?.length > 0 && !repositoryNames.includes(repositoryNode.name)) {
-      repositoryNode.models = [];
+      models = [];
     }
+    return { ...repositoryNode, models: models };
+  } else {
+    return repositoryNode;
   }
 };
