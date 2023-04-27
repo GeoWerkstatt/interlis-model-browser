@@ -129,6 +129,7 @@ public class RepositoryCrawler : IRepositoryCrawler
                         File = m.GetFiles().Select(f => repositoryUri.Append(f).AbsoluteUri).ToList(),
                         ReferencedModels = m.GetReferencedModels(),
                     })
+                    .RemovePrecursorCatalogVersions()
                     .ToHashSet();
             }
         }

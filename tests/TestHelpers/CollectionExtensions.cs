@@ -95,6 +95,24 @@ public static class CollectionExtensions
     }
 
     /// <summary>
+    /// Verifies that the sequence contains a single matching item.
+    /// The item itself is not verified.
+    /// </summary>
+    /// <typeparam name="T">The type of items in the collection.</typeparam>
+    /// <param name="collection">The collection to test.</param>
+    /// <param name="predicate">A function to test an element for a condition.</param>
+    /// <returns><paramref name="collection"/>.</returns>
+    /// <exception cref="AssertFailedException">
+    /// <paramref name="collection"/> is <c>null</c>,
+    /// no element satisfies the condition in <paramref name="predicate"/>,
+    /// or more than one element satisfies the condition in <paramref name="predicate"/>.
+    /// </exception>
+    public static IEnumerable<T> AssertSingleItem<T>(this IEnumerable<T> collection, Func<T, bool> predicate)
+    {
+        return AssertItems(collection, predicate, null, 1);
+    }
+
+    /// <summary>
     /// Verifies a single, specific element in a sequence.
     /// If the item cannot be found, or the predicate is not unique,
     /// the verification is considered failed.
@@ -276,6 +294,57 @@ public static class CollectionExtensions
                 MessageHelper.CombineDefaultAndCustomMessage(
                     "The collection contains {0} items which are null; their indexes are <{1}>.",
                     new object[] { errorIndexes.Count, string.Join(", ", errorIndexes.Select(n => n.ToString(CultureInfo.InvariantCulture))) },
+                    message,
+                    parameters));
+        }
+
+        return collection;
+    }
+
+    /// <summary>
+    /// Verifies that a sequence does not contain any items matching the
+    /// specified <paramref name="predicate"/>.
+    /// </summary>
+    /// <typeparam name="T">The type of items in the collection.</typeparam>
+    /// <param name="collection">The collection to test.</param>
+    /// <param name="predicate">A function to test an element for a condition.</param>
+    /// <returns><paramref name="collection"/>.</returns>
+    /// <exception cref="AssertFailedException">
+    /// One or more elements in <paramref name="collection"/> match the <paramref name="predicate"/>,
+    /// or <paramref name="collection"/> is <c>null</c>.
+    /// </exception>
+    public static IEnumerable<T> AssertContainsNot<T>(this IEnumerable<T> collection, Func<T, bool> predicate)
+    {
+        return AssertContainsNot(collection, predicate, null);
+    }
+
+    /// <summary>
+    /// Verifies that a sequence does not contain any items matching the
+    /// specified <paramref name="predicate"/>.
+    /// </summary>
+    /// <typeparam name="T">The type of items in the collection.</typeparam>
+    /// <param name="collection">The collection to test.</param>
+    /// <param name="predicate">A function to test an element for a condition.</param>
+    /// <param name="message">The message to describe the assertion in case of failure.</param>
+    /// <param name="parameters">Parameters for the <paramref name="message"/>.</param>
+    /// <returns><paramref name="collection"/>.</returns>
+    /// <exception cref="AssertFailedException">
+    /// One or more elements in <paramref name="collection"/> match the <paramref name="predicate"/>,
+    /// or <paramref name="collection"/> is <c>null</c>.
+    /// </exception>
+    public static IEnumerable<T> AssertContainsNot<T>(this IEnumerable<T> collection, Func<T, bool> predicate, string message, params object[] parameters)
+    {
+        if (predicate == null) throw new ArgumentNullException(nameof(predicate), MessageHelper.CombineDefaultAndCustomMessage("The predicate must not be null.", message, parameters));
+
+        Assert.IsNotNull(collection, MessageHelper.CombineDefaultAndCustomMessage("The collection must not be null.", message, parameters));
+
+        var n = collection.Count(predicate);
+        if (n > 0)
+        {
+            throw new AssertFailedException(
+                MessageHelper.CombineDefaultAndCustomMessage(
+                    "The collection contains {0} items that match the predicate; expected were 0.",
+                    new object[] { n },
                     message,
                     parameters));
         }
