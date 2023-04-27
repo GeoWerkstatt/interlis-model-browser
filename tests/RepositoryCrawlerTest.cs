@@ -134,7 +134,7 @@ public class RepositoryCrawlerTest
             .AssertCount(1258)
             .AssertAllNotNull();
         repository.Catalogs
-            .AssertCount(170)
+            .AssertCount(165)
             .AssertSingleItem(
             c => "ch.admin.geo.models.bearbeitungsstatus_kataloge_20140701".Equals(c.Identifier, StringComparison.Ordinal),
             AssertBearbeitungstatusCatalog);
@@ -274,6 +274,36 @@ public class RepositoryCrawlerTest
                 .AssertSingleItem(m => m.Name == "Test_Model_Without_MD5", m => Assert.AreEqual("EB137F3B28D3D06C41F20237886A8B41", m.MD5))
                 .AssertSingleItem(m => m.Name == "Test_Model_With_Empty_MD5", m => Assert.AreEqual("EB137F3B28D3D06C41F20237886A8B41", m.MD5))
                 .AssertSingleItem(m => m.Name == "Test_Model_Without_MD5_And_Invalid_File", m => Assert.AreEqual(null, m.MD5));
+        });
+    }
+
+    [TestMethod]
+    public async Task ReplacedCatalogsReferencedByPrecurserVersionAreDiscarded()
+    {
+        var result = await repositoryCrawler.CrawlModelRepositories(new Uri("https://models.geo.admin.testdata"));
+
+        result.AssertSingleItem("models.geo.admin.testdata", repository =>
+        {
+            repository.Catalogs
+                .AssertContainsNot(m => m.Identifier == "ch.admin.geo.models.UtilizzazionePrincipale_CH_V1_1" && m.Version == "2019-08-09")
+                .AssertSingleItem(m => m.Identifier == "ch.admin.geo.models.UtilizzazionePrincipale_CH_V1_1", c =>
+                {
+                    Assert.AreEqual("2021-11-01", c.Version);
+                    Assert.AreEqual("2019-08-09", c.PrecursorVersion);
+                })
+                .AssertContainsNot(m => m.Identifier == "ch.admin.geo.models.SafetyZonePlan_Catalogues_V1_3_20211125" && m.Version == "2021-11-25")
+                .AssertSingleItem(m => m.Identifier == "ch.admin.geo.models.SafetyZonePlan_Catalogues_V1_3_20211125", c =>
+                {
+                    Assert.AreEqual("2022-02-04", c.Version);
+                    Assert.AreEqual("2021-11-25", c.PrecursorVersion);
+                })
+                .AssertContainsNot(m => m.Identifier == "ch.admin.geo.models.OeREBKRM_V2_0_Texte_20220301" && m.Version == "2022-05-17")
+                .AssertContainsNot(m => m.Identifier == "ch.admin.geo.models.OeREBKRM_V2_0_Texte_20220301" && m.Version == "2022-03-01")
+                .AssertSingleItem(m => m.Identifier == "ch.admin.geo.models.OeREBKRM_V2_0_Texte_20220301", c =>
+                {
+                    Assert.AreEqual("2022-06-07", c.Version);
+                    Assert.AreEqual("2022-05-17", c.PrecursorVersion);
+                });
         });
     }
 }
