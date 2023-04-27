@@ -51,7 +51,7 @@ internal static class CrawlerHelperExtensions
     }
 
     public static IEnumerable<Catalog> RemovePrecursorCatalogVersions(this IEnumerable<Catalog> catalogs)
-    => catalogs
+        => catalogs
         .GroupBy(c => c.Identifier)
         .SelectMany(group =>
         {
