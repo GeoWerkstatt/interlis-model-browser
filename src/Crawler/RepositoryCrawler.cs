@@ -30,7 +30,7 @@ public class RepositoryCrawler : IRepositoryCrawler
     {
         rootRepositoryUri = await PreferHttpsIfAvailable(rootRepositoryUri).ConfigureAwait(false);
 
-        if (modelRepositories.TryGetValue(rootRepositoryUri.Host, out var existingRepository))
+        if (modelRepositories.TryGetValue(rootRepositoryUri.AbsoluteUri, out var existingRepository))
         {
             if (parent != null)
             {
@@ -41,7 +41,7 @@ public class RepositoryCrawler : IRepositoryCrawler
         }
 
         var (root, subsidiarys) = await AnalyseRepository(rootRepositoryUri, parent).ConfigureAwait(false);
-        if (root is not null && modelRepositories.TryAdd(rootRepositoryUri.Host, root))
+        if (root is not null && modelRepositories.TryAdd(rootRepositoryUri.AbsoluteUri, root))
         {
             var subsidiarySites = new HashSet<Repository>();
             foreach (var subsidiary in subsidiarys)
@@ -75,7 +75,7 @@ public class RepositoryCrawler : IRepositoryCrawler
 
             var repository = new Repository
             {
-                HostNameId = repositoryUri.Host,
+                HostNameId = repositoryUri.AbsoluteUri,
                 Uri = repositoryUri,
                 Name = ilisite.Name ?? repositoryUri.Host,
                 Title = ilisite.Title,
