@@ -67,8 +67,8 @@ public class RepositoryCrawlerTest
         var result = await repositoryCrawler.CrawlModelRepositories(new Uri("https://models.interlis.testdata"));
         Assert.IsNotNull(result);
         result
-            .AssertSingleItem("models.interlis.testdata", AssertModelsInterlisCh)
-            .AssertSingleItem("models.geo.admin.testdata", AssertModelsGeoAdminCh)
+            .AssertSingleItem("https://models.interlis.testdata/", AssertModelsInterlisCh)
+            .AssertSingleItem("https://models.geo.admin.testdata/", AssertModelsGeoAdminCh)
             .AssertAllNotNull()
             .AssertCount(3);
     }
@@ -88,16 +88,16 @@ public class RepositoryCrawlerTest
         var result = await repositoryCrawler.CrawlModelRepositories(new Uri("https://models.interlis.testdata"));
         Assert.IsNotNull(result);
         result.Keys
-            .AssertContains("models.interlis.testdata")
-            .AssertContains("models.multiparent.testdata")
-            .AssertContains("models.geo.admin.testdata")
+            .AssertContains("https://models.interlis.testdata/")
+            .AssertContains("https://models.multiparent.testdata/")
+            .AssertContains("https://models.geo.admin.testdata/")
             .AssertCount(3);
         loggerMock.Verify(LogLevel.Warning,  "Could not analyse https://models.interlis.testdata/ilidata.xml.", Times.Once());
     }
 
     private void AssertModelsInterlisCh(Repository repository)
     {
-        Assert.AreEqual("models.interlis.testdata", repository.HostNameId);
+        Assert.AreEqual("https://models.interlis.testdata/", repository.HostNameId);
         Assert.AreEqual(new Uri("https://models.interlis.testdata/"), repository.Uri);
         Assert.AreEqual("interlis.ch", repository.Name);
         Assert.AreEqual("Allgemeine technische INTERLIS-Modelle", repository.Title);
@@ -105,7 +105,7 @@ public class RepositoryCrawlerTest
         Assert.AreEqual("http://www.interlis.ch", repository.Owner);
         Assert.AreEqual("mailto:info@interlis.ch", repository.TechnicalContact);
         repository.SubsidiarySites
-            .AssertSingleItem(ss => "models.geo.admin.testdata".Equals(ss.HostNameId, StringComparison.OrdinalIgnoreCase), AssertModelsGeoAdminCh)
+            .AssertSingleItem(ss => "https://models.geo.admin.testdata/".Equals(ss.HostNameId, StringComparison.OrdinalIgnoreCase), AssertModelsGeoAdminCh)
             .AssertCount(2);
         repository.ParentSites.AssertCount(0);
         repository.Models
@@ -117,7 +117,7 @@ public class RepositoryCrawlerTest
 
     private void AssertModelsGeoAdminCh(Repository repository)
     {
-        Assert.AreEqual("models.geo.admin.testdata", repository.HostNameId);
+        Assert.AreEqual("https://models.geo.admin.testdata/", repository.HostNameId);
         Assert.AreEqual(new Uri("https://models.geo.admin.testdata/"), repository.Uri);
         Assert.AreEqual("models.geo.admin.ch", repository.Name);
         Assert.AreEqual("Geobasisdaten-Modell-Ablage", repository.Title);
@@ -211,14 +211,14 @@ public class RepositoryCrawlerTest
     {
         var result = await repositoryCrawler.CrawlModelRepositories(new Uri("https://models.interlis.testdata"));
         result
-            .AssertSingleItem("models.multiparent.testdata", AssertModelsMultiparentCh)
+            .AssertSingleItem("https://models.multiparent.testdata/", AssertModelsMultiparentCh)
             .AssertCount(3)
             .AssertAllNotNull();
     }
 
     private void AssertModelsMultiparentCh(Repository repository)
     {
-        Assert.AreEqual("models.multiparent.testdata", repository.HostNameId);
+        Assert.AreEqual("https://models.multiparent.testdata/", repository.HostNameId);
         Assert.AreEqual(new Uri("https://models.multiparent.testdata/"), repository.Uri);
         Assert.AreEqual("Minimal Multi Parent Repo", repository.Name);
         Assert.IsNull(repository.Title);
@@ -228,8 +228,8 @@ public class RepositoryCrawlerTest
         repository.SubsidiarySites
             .AssertCount(0);
         repository.ParentSites
-            .AssertSingleItem(ps => "models.interlis.testdata".Equals(ps.HostNameId, StringComparison.OrdinalIgnoreCase), AssertModelsInterlisCh)
-            .AssertSingleItem(ps => "models.geo.admin.testdata".Equals(ps.HostNameId, StringComparison.OrdinalIgnoreCase), AssertModelsGeoAdminCh)
+            .AssertSingleItem(ps => "https://models.interlis.testdata/".Equals(ps.HostNameId, StringComparison.OrdinalIgnoreCase), AssertModelsInterlisCh)
+            .AssertSingleItem(ps => "https://models.geo.admin.testdata/".Equals(ps.HostNameId, StringComparison.OrdinalIgnoreCase), AssertModelsGeoAdminCh)
             .AssertCount(2);
         repository.Models
             .AssertCount(3);
@@ -267,7 +267,7 @@ public class RepositoryCrawlerTest
         Assert.IsNotNull(result);
         result.AssertCount(1);
 
-        result.AssertSingleItem("models.multiparent.testdata", repository =>
+        result.AssertSingleItem("https://models.multiparent.testdata/", repository =>
         {
             repository.Models
                 .AssertCount(3)
@@ -282,7 +282,7 @@ public class RepositoryCrawlerTest
     {
         var result = await repositoryCrawler.CrawlModelRepositories(new Uri("https://models.geo.admin.testdata"));
 
-        result.AssertSingleItem("models.geo.admin.testdata", repository =>
+        result.AssertSingleItem("https://models.geo.admin.testdata/", repository =>
         {
             repository.Catalogs
                 .AssertContainsNot(m => m.Identifier == "ch.admin.geo.models.UtilizzazionePrincipale_CH_V1_1" && m.Version == "2019-08-09")
