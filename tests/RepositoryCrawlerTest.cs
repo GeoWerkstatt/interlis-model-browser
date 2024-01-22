@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ModelRepoBrowser.Crawler;
 using ModelRepoBrowser.Models;
@@ -42,6 +42,8 @@ public class RepositoryCrawlerTest
                     .Respond(HttpStatusCode.OK);
             }
         }
+
+        mockHttp.Fallback.Respond(HttpStatusCode.NotFound);
     }
 
     private void SetupRepositoryCrawlerInstance(HttpClient httpClient)

@@ -1,14 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc.Controllers;
+using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using ModelRepoBrowser;
 using ModelRepoBrowser.Crawler;
-using Npgsql.Logging;
+using Npgsql;
 using System.Reflection;
 using System.Text.Json.Serialization;
-
-NpgsqlLogManager.Provider = new ConsoleLoggingProvider(NpgsqlLogLevel.Debug, true, false);
-NpgsqlLogManager.IsParameterLoggingEnabled = true;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -51,6 +48,9 @@ builder.Services.AddHealthChecks()
 builder.Services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
 
 var app = builder.Build();
+
+var loggerFactory = app.Services.GetRequiredService<ILoggerFactory>();
+NpgsqlLoggingConfiguration.InitializeLogging(loggerFactory);
 
 if (!app.Environment.IsDevelopment())
 {
