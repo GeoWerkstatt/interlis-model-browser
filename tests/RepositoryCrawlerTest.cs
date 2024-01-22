@@ -1,4 +1,4 @@
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ModelRepoBrowser.Crawler;
 using ModelRepoBrowser.Models;
@@ -15,7 +15,7 @@ public class RepositoryCrawlerTest
 {
     private Mock<ILogger<RepositoryCrawler>> loggerMock;
     private Mock<IHttpClientFactory> httpClientFactory;
-    private IRepositoryCrawler repositoryCrawler;
+    private RepositoryCrawler repositoryCrawler;
     private MockHttpMessageHandler mockHttp;
 
     [TestInitialize]

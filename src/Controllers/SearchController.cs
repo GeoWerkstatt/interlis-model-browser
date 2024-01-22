@@ -36,9 +36,9 @@ public class SearchController : ControllerBase
     /// that matched the <paramref name="query"/>.
     /// </returns>
     [HttpGet]
-    [SwaggerResponse(StatusCodes.Status200OK, "The INTERLIS repository tree containinig all models matching the search.", typeof(Repository), new[] { "application/json" })]
+    [SwaggerResponse(StatusCodes.Status200OK, "The INTERLIS repository tree containinig all models matching the search.", typeof(Repository), ContentTypes = new[] { "application/json" })]
     [SwaggerResponse(StatusCodes.Status204NoContent, "No INTERLIS model matching the search query exists. No repository tree returned.", ContentTypes = new[] { "application/json" })]
-    [SwaggerResponse(StatusCodes.Status400BadRequest, "The server cannot process the request due to invalid or malformed request.", typeof(ProblemDetails), new[] { "application/json" })]
+    [SwaggerResponse(StatusCodes.Status400BadRequest, "The server cannot process the request due to invalid or malformed request.", typeof(ProblemDetails), ContentTypes = new[] { "application/json" })]
     public async Task<Repository?> Search([FromQuery] string? query, [FromQuery] string[]? repositoryNames = null, [FromQuery] string[]? issuers = null, [FromQuery] string[]? schemaLanguages = null, [FromQuery] string[]? dependsOnModels = null)
     {
         logger.LogInformation("Search with query <{SearchQuery}>", query);
@@ -121,9 +121,9 @@ public class SearchController : ControllerBase
     /// <param name="dependsOnModels" example='["CHAdminCodes_V1", "GeometryCHLV95_V1"]'>The dependsOnModels list to filter the found models by.</param>
     /// <returns>A sequence of <see cref="Model.Name"/> related to <paramref name="query"/>.</returns>
     [HttpGet("suggest")]
-    [SwaggerResponse(StatusCodes.Status200OK, "The names of all INTERLIS models matching the search.", typeof(IEnumerable<string>), new[] { "application/json" })]
+    [SwaggerResponse(StatusCodes.Status200OK, "The names of all INTERLIS models matching the search.", typeof(IEnumerable<string>), ContentTypes = new[] { "application/json" })]
     [SwaggerResponse(StatusCodes.Status204NoContent, "No INTERLIS model matching the search query exists. Nothing returned.", ContentTypes = new[] { "application/json" })]
-    [SwaggerResponse(StatusCodes.Status400BadRequest, "The server cannot process the request due to invalid or malformed request.", typeof(ProblemDetails), new[] { "application/json" })]
+    [SwaggerResponse(StatusCodes.Status400BadRequest, "The server cannot process the request due to invalid or malformed request.", typeof(ProblemDetails), ContentTypes = new[] { "application/json" })]
     public async Task<IEnumerable<string>> GetSearchSuggestions([FromQuery] string? query, [FromQuery] string[]? repositoryNames = null, [FromQuery] string[]? issuers = null, [FromQuery] string[]? schemaLanguages = null, [FromQuery] string[]? dependsOnModels = null)
     {
         logger.LogDebug("Get search options for <{SearchQuery}>", query);

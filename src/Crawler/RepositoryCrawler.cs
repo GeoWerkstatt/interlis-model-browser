@@ -10,7 +10,7 @@ public class RepositoryCrawler : IRepositoryCrawler
 {
     private readonly ILogger<RepositoryCrawler> logger;
     private readonly HttpClient httpClient;
-    private IDictionary<string, Repository> modelRepositories;
+    private ConcurrentDictionary<string, Repository> modelRepositories;
 
     public RepositoryCrawler(ILogger<RepositoryCrawler> logger, IHttpClientFactory httpClientFactory)
     {

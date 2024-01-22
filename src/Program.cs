@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc.Controllers;
+﻿using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using ModelRepoBrowser;
@@ -12,7 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 
 var connectionString = builder.Configuration.GetConnectionString("RepoBrowserContext");
-builder.Services.AddNpgsql<RepoBrowserContext>(connectionString, options => options.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery));
+builder.Services.AddNpgsql<RepoBrowserContext>(connectionString!, options => options.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery));
 
 builder.Services.AddControllers().AddJsonOptions(options => { options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles; });
 
@@ -28,7 +28,9 @@ builder.Services.AddSwaggerGen(options =>
     // Custom order in Swagger UI.
     options.OrderActionsBy(apiDescription =>
     {
+#pragma warning disable CA1861 // Avoid constant arrays as arguments
         var customOrder = new[] { "Search", "Model", "Version" };
+#pragma warning restore CA1861 // Avoid constant arrays as arguments
         var controllerName = (apiDescription.ActionDescriptor as ControllerActionDescriptor)?.ControllerName;
         return $"{Array.IndexOf(customOrder, controllerName)}";
     });

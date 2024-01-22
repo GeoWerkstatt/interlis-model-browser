@@ -153,8 +153,8 @@ public static class CollectionExtensions
     /// </exception>
     public static IEnumerable<T> AssertSingleItem<T>(this IEnumerable<T> collection, Func<T, bool> predicate, Action<T> asserter, string message, params object[] parameters)
     {
-        if (predicate == null) throw new ArgumentNullException(nameof(predicate));
-        if (asserter == null) throw new ArgumentNullException(nameof(asserter));
+        ArgumentNullException.ThrowIfNull(predicate);
+        ArgumentNullException.ThrowIfNull(asserter);
 
         return AssertItems(collection, predicate, asserter, 1, message, parameters);
     }

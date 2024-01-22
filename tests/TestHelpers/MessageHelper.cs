@@ -19,8 +19,8 @@ public static class MessageHelper
     /// <exception cref="ArgumentNullException"><paramref name="action"/> or <paramref name="message"/> is <c>null</c>.</exception>
     public static void Assert(Action action, string message, params object[] parameters)
     {
-        if (action == null) throw new ArgumentNullException(nameof(action));
-        if (message == null) throw new ArgumentNullException(nameof(message));
+        ArgumentNullException.ThrowIfNull(action);
+        ArgumentNullException.ThrowIfNull(message);
 
         // Wrap the action delegate in a function delegate to reuse
         // Assert(Func<TResult>, string, params object[]) method
@@ -44,8 +44,8 @@ public static class MessageHelper
     /// <exception cref="ArgumentNullException"><paramref name="f"/> or <paramref name="message"/> is <c>null</c>.</exception>
     public static TResult Assert<TResult>(Func<TResult> f, string message, params object[] parameters)
     {
-        if (f == null) throw new ArgumentNullException(nameof(f));
-        if (message == null) throw new ArgumentNullException(nameof(message));
+        ArgumentNullException.ThrowIfNull(f);
+        ArgumentNullException.ThrowIfNull(message);
 
         try
         {
@@ -86,7 +86,7 @@ public static class MessageHelper
     /// <exception cref="ArgumentNullException"><paramref name="ex"/> or <paramref name="defaultMessage"/> is <c>null</c>.</exception>
     public static string BuildMessage(Exception ex, string defaultMessage, object[] defaultParameters, string customMessage, object[] customParameters)
     {
-        if (ex == null) throw new ArgumentNullException(nameof(ex));
+        ArgumentNullException.ThrowIfNull(ex);
 
         return CombineMessages(ex.Message, CombineDefaultAndCustomMessage(defaultMessage, defaultParameters, customMessage, customParameters));
     }
@@ -115,7 +115,7 @@ public static class MessageHelper
     /// <exception cref="ArgumentNullException"><paramref name="defaultMessage"/> is <c>null</c>.</exception>
     public static string CombineDefaultAndCustomMessage(string defaultMessage, object[] defaultParameters, string customMessage, object[] customParameters)
     {
-        if (defaultMessage == null) throw new ArgumentNullException(nameof(defaultMessage));
+        ArgumentNullException.ThrowIfNull(defaultMessage);
 
         if (defaultParameters != null && defaultParameters.Length > 0)
         {
@@ -139,7 +139,7 @@ public static class MessageHelper
     /// <returns>The combined string.</returns>
     public static string CombineMessages(params string[] messages)
     {
-        if (messages == null) throw new ArgumentNullException(nameof(messages));
+        ArgumentNullException.ThrowIfNull(messages);
         if (messages.Length == 0) throw new ArgumentOutOfRangeException(nameof(messages));
 
         return string.Join(" ", messages.Select(exp => exp.Trim()));
