@@ -7,7 +7,6 @@ using Moq;
 namespace ModelRepoBrowser;
 
 [TestClass]
-[System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1861:Avoid constant arrays as arguments", Justification = "Arrays only used once in test methods")]
 public class SearchControllerTest
 {
     private Mock<ILogger<SearchController>> loggerMock;
