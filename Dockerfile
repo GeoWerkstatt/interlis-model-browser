@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 ARG VERSION
 ARG REVISION
@@ -26,7 +26,7 @@ RUN dotnet publish "ModelRepoBrowser.csproj" \
   -p:SourceRevisionId=${REVISION} \
   -o ${PUBLISH_DIR}
 
-FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS final
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
 ENV HOME=/app
 ENV TZ=Europe/Zurich
 ENV ASPNETCORE_ENVIRONMENT=Production
@@ -40,7 +40,7 @@ RUN \
   apt-get install -y curl && \
   rm -rf /var/lib/apt/lists/*
 
-EXPOSE 80
+EXPOSE 8080
 
 # Set default locale
 ENV LANG=C.UTF-8
@@ -48,6 +48,8 @@ ENV LC_ALL=C.UTF-8
 
 COPY --from=build /app/publish $HOME
 
-HEALTHCHECK CMD curl --fail http://localhost/ || exit 1
+USER $APP_UID
+
+HEALTHCHECK CMD curl --fail http://localhost:8080/ || exit 1
 
 ENTRYPOINT ["dotnet", "ModelRepoBrowser.dll"]
