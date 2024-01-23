@@ -34,7 +34,7 @@
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-react": "^7.29.4",
     "nan": "^2.15.0",
-    "start-server-and-test": "^1.14.0"
+    "start-server-and-test": "^2.0.3"
   },
   "overrides": {
     "autoprefixer": "10.4.5"
