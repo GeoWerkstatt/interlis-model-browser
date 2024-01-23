@@ -12,7 +12,7 @@ Folgende Komponenten müssen auf dem Entwicklungsrechner installiert sein:
 * Git
 * Docker
 * Visual Studio 2022 oder Visual Studio Code
-* .NET 6
+* .NET 8
 * Node.js 16 LTS
 
 ## Neue Version erstellen

@@ -25,7 +25,7 @@ public class ModelController : Controller
     /// <param name="name" example="SZ_Schutzbauten_Wasser_V1">The name of the model.</param>
     /// <returns>The <see cref="Model"/> with the specified <paramref name="md5"/> and <paramref name="name"/> or <c>null</c> if it does not exist.</returns>
     [HttpGet("{md5}/{name}")]
-    [SwaggerResponse(StatusCodes.Status200OK, "The INTERLIS model.", typeof(Model), new[] { "application/json" })]
+    [SwaggerResponse(StatusCodes.Status200OK, "The INTERLIS model.", typeof(Model), ContentTypes = new[] { "application/json" })]
     [SwaggerResponse(StatusCodes.Status204NoContent, "The INTERLIS model for the requested md5 and name combination does not exist. No content returned.", ContentTypes = new[] { "application/json" })]
     public Model? ModelDetails(string md5, string name)
     {

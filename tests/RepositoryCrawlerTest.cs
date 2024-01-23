@@ -15,7 +15,7 @@ public class RepositoryCrawlerTest
 {
     private Mock<ILogger<RepositoryCrawler>> loggerMock;
     private Mock<IHttpClientFactory> httpClientFactory;
-    private IRepositoryCrawler repositoryCrawler;
+    private RepositoryCrawler repositoryCrawler;
     private MockHttpMessageHandler mockHttp;
 
     [TestInitialize]
@@ -42,6 +42,8 @@ public class RepositoryCrawlerTest
                     .Respond(HttpStatusCode.OK);
             }
         }
+
+        mockHttp.Fallback.Respond(HttpStatusCode.NotFound);
     }
 
     private void SetupRepositoryCrawlerInstance(HttpClient httpClient)
