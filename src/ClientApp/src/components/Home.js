@@ -85,7 +85,7 @@ export function Home() {
             (b.name.toLowerCase() === searchString.toLowerCase()) -
               (a.name.toLowerCase() === searchString.toLowerCase()) ||
             a.isDependOnModelResult - b.isDependOnModelResult ||
-            new Date(b.publishingDate) - new Date(a.publishingDate)
+            new Date(b.publishingDate) - new Date(a.publishingDate),
         );
         setModels(models);
         setLoading(false);

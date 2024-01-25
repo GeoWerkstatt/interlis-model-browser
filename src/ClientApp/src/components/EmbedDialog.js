@@ -218,7 +218,7 @@ export function EmbedDialog(props) {
                 navigator.clipboard.writeText(
                   `<iframe src="https://ilimodels.ch/${url.search}"width="${width}" height="${height}" style="border: ${
                     border ? "1px solid darkgrey" : "none"
-                  } " sandbox="allow-scripts allow-same-origin allow-storage-access-by-user-activation allow-forms"></iframe>`
+                  } " sandbox="allow-scripts allow-same-origin allow-storage-access-by-user-activation allow-forms"></iframe>`,
                 );
               }}
             >
@@ -244,7 +244,7 @@ export function EmbedDialog(props) {
                     url.search
                   }"width="${width}" height="${height}" style="border: ${
                     border ? "1px solid darkgrey" : "none"
-                  }"></embed>`
+                  }"></embed>`,
                 );
               }}
             >
