@@ -16,8 +16,8 @@ import {
 import CloseIcon from "@mui/icons-material/Close";
 import { useForm, Controller } from "react-hook-form";
 import { useTranslation } from "react-i18next";
-import TreeView from "@mui/lab/TreeView";
-import TreeItem from "@mui/lab/TreeItem";
+import { TreeView } from "@mui/x-tree-view/TreeView";
+import { TreeItem } from "@mui/x-tree-view/TreeItem";
 import { SchemaLanguages } from "./SchemaLanguages";
 
 export function Filter(props) {
@@ -56,7 +56,7 @@ export function Filter(props) {
     }
     if (Array.isArray(data.issuer)) {
       filtered = filtered.filter(
-        (m) => data.issuer.includes(m.issuer) || (m.issuer == null && data.issuer.includes("-"))
+        (m) => data.issuer.includes(m.issuer) || (m.issuer == null && data.issuer.includes("-")),
       );
     }
     if (Array.isArray(data.schemaLanguage)) {
@@ -77,10 +77,10 @@ export function Filter(props) {
 
   const schemaLanguageOptions = [...new Set(models.map((m) => m.schemaLanguage))].sort((a, b) => a.localeCompare(b));
   const issuerOptions = [...new Set(models.map((m) => (m.issuer == null ? "-" : m.issuer)))].sort((a, b) =>
-    getIssuerWithoutPrefix(a).localeCompare(getIssuerWithoutPrefix(b))
+    getIssuerWithoutPrefix(a).localeCompare(getIssuerWithoutPrefix(b)),
   );
   const currentDependsOnModelOptions = [...new Set(filteredModels.flatMap((m) => m.dependsOnModel))].sort((a, b) =>
-    a.localeCompare(b)
+    a.localeCompare(b),
   );
 
   useEffect(() => {
@@ -283,7 +283,7 @@ export function Filter(props) {
                                 updateIfAllChecked(
                                   "schemaLanguage",
                                   schemaLanguageOptions,
-                                  setAllSchemaLanguageSelected
+                                  setAllSchemaLanguageSelected,
                                 );
                               }}
                               value={v}
