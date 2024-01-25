@@ -16,8 +16,8 @@ import {
 import CloseIcon from "@mui/icons-material/Close";
 import { useForm, Controller } from "react-hook-form";
 import { useTranslation } from "react-i18next";
-import TreeView from "@mui/lab/TreeView";
-import TreeItem from "@mui/lab/TreeItem";
+import { TreeView } from "@mui/x-tree-view/TreeView";
+import { TreeItem } from "@mui/x-tree-view/TreeItem";
 import { SchemaLanguages } from "./SchemaLanguages";
 
 export function Filter(props) {
