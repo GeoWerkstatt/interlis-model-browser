@@ -1,9 +1,14 @@
-﻿namespace ModelRepoBrowser;
+﻿using System.Text.RegularExpressions;
 
-public static class LogHelper
+namespace ModelRepoBrowser;
+
+public static partial class LogHelper
 {
+    [GeneratedRegex(@"\r\n|\r|\n")]
+    private static partial Regex NewLinesRegex();
+
     public static string? Escape(string? input)
     {
-        return input?.ReplaceLineEndings(" ");
+        return input == null ? null : NewLinesRegex().Replace(input, " ");
     }
 }
