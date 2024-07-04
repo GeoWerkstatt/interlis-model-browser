@@ -252,6 +252,75 @@ public class SearchControllerTest
     }
 
     [TestMethod]
+    public async Task SearchPublishedFrom()
+    {
+        var fromDate = new DateOnly(2021, 8, 2);
+
+        context.Models
+            .Where(m => m.PublishingDate.HasValue && DateOnly.FromDateTime(m.PublishingDate.Value) < fromDate)
+            .ToList()
+            .AssertCount(56, $"Precondition: the testdata contains models published before {fromDate}");
+
+        var searchResult = await controller.Search(string.Empty, publishedFrom: fromDate);
+        Assert.IsNotNull(searchResult);
+        searchResult
+            .GetAllModels()
+            .AssertCount(38)
+            .AssertSingleItem(m => m.Id == 56, m =>
+            {
+                Assert.AreEqual("reinvent_maroon_Washington_connect_clear-thinking", m.Name);
+                Assert.AreEqual(new DateTime(fromDate, new TimeOnly(1, 9, 54, 868, 377)), m.PublishingDate);
+            })
+            .AssertSingleItem(m => m.Id == 29, m =>
+            {
+                Assert.AreEqual("application_Games_hardware_input_Rufiyaa", m.Name);
+                Assert.AreEqual(new DateTime(2021, 12, 4, 21, 56, 41, 498, 344), m.PublishingDate);
+            });
+    }
+
+    [TestMethod]
+    public async Task SearchPublishedTo()
+    {
+        var toDate = new DateOnly(2021, 8, 2);
+
+        context.Models
+            .Where(m => m.PublishingDate.HasValue && DateOnly.FromDateTime(m.PublishingDate.Value) > toDate)
+            .ToList()
+            .AssertCount(43, $"Precondition: the testdata contains models published after {toDate}");
+
+        var searchResult = await controller.Search(string.Empty, publishedTo: toDate);
+        Assert.IsNotNull(searchResult);
+        searchResult
+            .GetAllModels()
+            .AssertCount(51)
+            .AssertSingleItem(m => m.Id == 56, m =>
+            {
+                Assert.AreEqual("reinvent_maroon_Washington_connect_clear-thinking", m.Name);
+                Assert.AreEqual(new DateTime(toDate, new TimeOnly(1, 9, 54, 868, 377)), m.PublishingDate);
+            })
+            .AssertSingleItem(m => m.Id == 80, m =>
+            {
+                Assert.AreEqual("Planner_Focused_Lead", m.Name);
+                Assert.AreEqual(new DateTime(2021, 1, 25, 10, 15, 47, 298, 184), m.PublishingDate);
+            });
+    }
+
+    [TestMethod]
+    public async Task SearchPublishedInRange()
+    {
+        var searchResult = await controller.Search(string.Empty, publishedFrom: new DateOnly(2021, 6, 6), publishedTo: new DateOnly(2021, 6, 27));
+        Assert.IsNotNull(searchResult);
+        searchResult.GetAllModels().AssertCount(8);
+    }
+
+    [TestMethod]
+    public async Task SearchPublishedInRangeFromAfterTo()
+    {
+        var searchResult = await controller.Search(string.Empty, publishedFrom: new DateOnly(2021, 6, 27), publishedTo: new DateOnly(2021, 6, 6));
+        Assert.AreEqual(null, searchResult);
+    }
+
+    [TestMethod]
     public async Task GetSearchSuggestions()
     {
         const string query = "and";

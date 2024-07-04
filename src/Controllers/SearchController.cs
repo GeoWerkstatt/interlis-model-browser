@@ -23,13 +23,15 @@ public class SearchController : ControllerBase
     /// with their Name, Version, File path or Tags. If the <paramref name="query"/> matches
     /// a catalog name its referenced models are also included in the search result.
     /// Search results can be limited by additionally supplying one or multiple filter parameters:
-    /// <paramref name="repositoryNames"/>, <paramref name="issuers"/>, <paramref name="schemaLanguages"/>,<paramref name="dependsOnModels"/>.
+    /// <paramref name="repositoryNames"/>, <paramref name="issuers"/>, <paramref name="schemaLanguages"/>, <paramref name="dependsOnModels"/>, <paramref name="publishedFrom"/>, <paramref name="publishedTo"/>.
     /// </summary>
     /// <param name="query" example="kgdm">The query string to search for.</param>
     /// <param name="repositoryNames" example='["models.geo.admin.ch", "models.geo.bl.ch"]'>The names of the repositories in which to search.</param>
     /// <param name="issuers" example='["http://www.interlis.ch/models","http://www.geo.admin.ch", "http://models.geo.bl.ch/AfW"]'>The issuers to filter the found models by.</param>
     /// <param name="schemaLanguages" example='["ili1","ili2_2","ili2_3" "ili2_4"]'>The schemaLanguages to filter the found models by.</param>
     /// <param name="dependsOnModels" example='["CHAdminCodes_V1", "GeometryCHLV95_V1"]'>The dependsOnModels list to filter the found models by.</param>
+    /// <param name="publishedFrom">The search result contains only models that were published after this date.</param>
+    /// <param name="publishedTo">The search result contains only models that were published before this date.</param>
     /// <returns>
     /// The root of the <see cref="Repository"/> tree or <c>null</c> if no <see cref="Model"/>
     /// matched the <paramref name="query"/>. The Repositories contain only <see cref="Model"/>s
@@ -39,7 +41,14 @@ public class SearchController : ControllerBase
     [SwaggerResponse(StatusCodes.Status200OK, "The INTERLIS repository tree containinig all models matching the search.", typeof(Repository), ContentTypes = new[] { "application/json" })]
     [SwaggerResponse(StatusCodes.Status204NoContent, "No INTERLIS model matching the search query exists. No repository tree returned.", ContentTypes = new[] { "application/json" })]
     [SwaggerResponse(StatusCodes.Status400BadRequest, "The server cannot process the request due to invalid or malformed request.", typeof(ProblemDetails), ContentTypes = new[] { "application/json" })]
-    public async Task<Repository?> Search([FromQuery] string? query, [FromQuery] string[]? repositoryNames = null, [FromQuery] string[]? issuers = null, [FromQuery] string[]? schemaLanguages = null, [FromQuery] string[]? dependsOnModels = null)
+    public async Task<Repository?> Search(
+        [FromQuery] string? query,
+        [FromQuery] string[]? repositoryNames = null,
+        [FromQuery] string[]? issuers = null,
+        [FromQuery] string[]? schemaLanguages = null,
+        [FromQuery] string[]? dependsOnModels = null,
+        [FromQuery] DateOnly? publishedFrom = null,
+        [FromQuery] DateOnly? publishedTo = null)
     {
         logger.LogInformation("Search with query <{SearchQuery}>", query.EscapeNewLines());
 
@@ -55,7 +64,7 @@ public class SearchController : ControllerBase
             logger.LogWarning(ex, "Writing query <{SearchQuery}> to the database log failed.", trimmedQuery.EscapeNewLines());
         }
 
-        var repositories = await SearchRepositories(trimmedQuery, issuers, schemaLanguages, dependsOnModels).ConfigureAwait(false);
+        var repositories = await SearchRepositories(trimmedQuery, issuers, schemaLanguages, dependsOnModels, publishedFrom, publishedTo).ConfigureAwait(false);
 
         // Flag results if querystring was found in dependsOnModels
         repositories = repositories.Values.Select(r =>
@@ -156,7 +165,7 @@ public class SearchController : ControllerBase
         }
     }
 
-    private Task<Dictionary<string, Repository>> SearchRepositories(string query, string[]? issuers = null, string[]? schemaLanguages = null, string[]? dependsOnModels = null)
+    private Task<Dictionary<string, Repository>> SearchRepositories(string query, string[]? issuers = null, string[]? schemaLanguages = null, string[]? dependsOnModels = null, DateOnly? publishedFrom = null, DateOnly? publishedTo = null)
     {
         var searchPattern = $"%{EscapeLikePattern(query)}%";
 
@@ -180,6 +189,8 @@ public class SearchController : ControllerBase
                 .Where(m => schemaLanguages == null || schemaLanguages.Any(s => m.SchemaLanguage == s))
                 .Where(m => dependsOnModels == null || dependsOnModels.Any(d => m.DependsOnModel.Contains(d)))
                 .Where(m => issuers == null || issuers.Any(i => m.Issuer == i))
+                .Where(m => m.PublishingDate == null || publishedFrom == null || DateOnly.FromDateTime(m.PublishingDate.Value) >= publishedFrom)
+                .Where(m => m.PublishingDate == null || publishedTo == null || DateOnly.FromDateTime(m.PublishingDate.Value) <= publishedTo)
                 .Where(m => !EF.Functions.ILike(m.File, "obsolete/%"))
                 .Where(m =>
                     EF.Functions.ILike(m.Name, searchPattern, @"\")
