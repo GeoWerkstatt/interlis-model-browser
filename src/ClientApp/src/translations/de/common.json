@@ -12,6 +12,7 @@
   "copy-to-clipboard": "In die Zwischenablage kopieren",
   "file": "Datei",
   "filter": "Filter",
+  "from": "Von",
   "generate-embed-tag-instructions": "Für ein optimales Ergebnis empfehlen wir eine minimale Breite von 900px und eine minimale Höhe von 750px.",
   "generate-embed-tag": "iFrame oder Embed-Tag zum Einbetten in externe Webseite generieren",
   "height": "Höhe",
@@ -44,5 +45,6 @@
   "technical-contact": "Technischer Kontakt",
   "title": "Titel",
   "to-search": "Zur Suche",
+  "to": "Bis",
   "width": "Breite"
 }

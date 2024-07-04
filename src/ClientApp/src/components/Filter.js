@@ -19,6 +19,7 @@ import { useTranslation } from "react-i18next";
 import { TreeView } from "@mui/x-tree-view/TreeView";
 import { TreeItem } from "@mui/x-tree-view/TreeItem";
 import { SchemaLanguages } from "./SchemaLanguages";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
 export function Filter(props) {
   const {
@@ -64,6 +65,12 @@ export function Filter(props) {
     }
     if (Array.isArray(data.referencedModels) && data.referencedModels.length > 0) {
       filtered = filtered.filter((m) => m.dependsOnModel.some((m) => data.referencedModels.includes(m)));
+    }
+    if (data.publishedFrom != null) {
+      filtered = filtered.filter((m) => new Date(m.publishingDate) >= data.publishedFrom);
+    }
+    if (data.publishedTo != null) {
+      filtered = filtered.filter((m) => new Date(m.publishingDate) <= data.publishedTo);
     }
     if (hideReferencedModelResults) {
       filtered = filtered.filter((m) => m.isDependOnModelResult === false);
@@ -336,6 +343,25 @@ export function Filter(props) {
               />
             )}
           />
+          <Typography mt={8} variant="h6">
+            {t("last-updated")}
+          </Typography>
+          <Stack direction="row" alignItems="baseline" spacing={2}>
+            <Typography>{t("from")}</Typography>
+            <Controller
+              name="publishedFrom"
+              control={control}
+              defaultValue={null}
+              render={({ field }) => <DatePicker {...field} />}
+            />
+            <Typography>{t("to")}</Typography>
+            <Controller
+              name="publishedTo"
+              control={control}
+              defaultValue={null}
+              render={({ field }) => <DatePicker {...field} />}
+            />
+          </Stack>
         </Box>
       </form>
     </Paper>

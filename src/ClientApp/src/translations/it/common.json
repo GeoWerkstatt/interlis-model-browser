@@ -12,6 +12,7 @@
   "copy-to-clipboard": "Copia negli appunti",
   "file": "File",
   "filter": "filtro",
+  "from": "Da",
   "generate-embed-tag-instructions": "Per ottenere i migliori risultati, consigliamo una larghezza minima di 900px e un'altezza minima di 750px.",
   "generate-embed-tag": "Genera iFrame o embed-tag  da incorporare in un sito web esterno",
   "height": "Altezza",
@@ -44,5 +45,6 @@
   "technical-contact": "Contatto tecnico",
   "title": "Titolo",
   "to-search": "Vai alla ricerca",
+  "to": "A",
   "width": "Larghezza"
 }
