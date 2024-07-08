@@ -411,7 +411,7 @@ src/ClientApp/cypress/screenshots
 src/ClientApp/coverage
 
 # Production
-src/ClientApp/build
+src/ClientApp/dist
 
 # Misc
 src/ClientApp/.DS_Store
