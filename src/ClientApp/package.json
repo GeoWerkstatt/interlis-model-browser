@@ -51,7 +51,6 @@
     "start": "vite",
     "build": "vite build",
     "test": "start-server-and-test start http-get://127.0.0.1:44416 cy:run",
-    "eject": "react-scripts eject",
     "lint": "eslint ./src/ && eslint ./cypress/",
     "cy:run": "cypress run",
     "cy": "cypress open"
