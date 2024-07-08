@@ -47,8 +47,8 @@
   },
   "scripts": {
     "prestart": "node aspnetcore-https && node aspnetcore-react",
-    "start": "rimraf ./build && react-scripts start",
-    "build": "react-scripts build",
+    "start": "vite",
+    "build": "vite build",
     "test": "start-server-and-test start http-get://127.0.0.1:44416 cy:run",
     "eject": "react-scripts eject",
     "lint": "eslint ./src/ && eslint ./cypress/",
