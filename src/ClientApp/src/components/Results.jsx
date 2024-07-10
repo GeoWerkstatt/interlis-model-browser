@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { Box, Button, ButtonGroup, Chip, Pagination, Stack, Tooltip, Typography } from "@mui/material";
 import CloudQueueIcon from "@mui/icons-material/CloudQueue";
@@ -11,11 +11,13 @@ import FlagIcon from "@mui/icons-material/Flag";
 import TitleIcon from "@mui/icons-material/Title";
 import InsertDriveFileIcon from "@mui/icons-material/InsertDriveFile";
 import HubIcon from "@mui/icons-material/Hub";
+import MailIcon from "@mui/icons-material/Mail";
 import ViewListIcon from "@mui/icons-material/ViewList";
 import GridViewIcon from "@mui/icons-material/GridView";
 import { useTranslation } from "react-i18next";
 import { Filter } from "./Filter";
 import { SchemaLanguages } from "./SchemaLanguages";
+import { DataGrid, GridToolbarColumnsButton } from "@mui/x-data-grid";
 
 export function Results({ models, repositoryTree, searchUrl, filterDefaultValues, setFilterDefaultValues }) {
   const hideFilter = searchUrl.searchParams.get("hideFilter") === "true";
@@ -46,6 +48,100 @@ export function Results({ models, repositoryTree, searchUrl, filterDefaultValues
       setFilterPanelExpanded(true);
     }
   }, [filterDefaultValues]);
+
+  const resultTableColumns = useMemo(
+    () => [
+      { field: "name", headerName: t("model-name"), hideable: false, flex: 2 },
+      {
+        field: "isDependOnModelResult",
+        headerName: t("search-term-was-found-in-depends-on-model"),
+        type: "boolean",
+        flex: 0.5,
+        initVisible: false,
+        renderHeader: () => (
+          <Tooltip title={t("search-term-was-found-in-depends-on-model")}>
+            <HubIcon sx={{ color: "text.secondary", fontSize: "inherit" }} />
+          </Tooltip>
+        ),
+      },
+      {
+        field: "tags",
+        headerName: t("model-tags"),
+        flex: 1,
+        initVisible: false,
+        renderCell: (params) =>
+          params.value.map(
+            (tag) => tag.length > 0 && <Chip key={tag} size="small" sx={{ margin: "1px" }} label={tag} />,
+          ),
+      },
+      { field: "title", headerName: t("title"), flex: 1, initVisible: false },
+      {
+        field: "schemaLanguage",
+        headerName: t("schema-language"),
+        type: "number",
+        valueGetter: (value) => ({ ili1: 1, ili2_1: 2.1, ili2_2: 2.2, ili2_3: 2.3, ili2_4: 2.4 })[value],
+        flex: 0.5,
+      },
+      { field: "modelRepository", headerName: t("model-repository"), flex: 2 },
+      { field: "version", headerName: t("latest-version"), flex: 1 },
+      { field: "issuer", headerName: t("issuer"), flex: 1.5 },
+      {
+        field: "publishingDate",
+        headerName: t("last-updated"),
+        type: "date",
+        valueGetter: (value) => (value == null ? null : new Date(value)),
+        flex: 1,
+      },
+      {
+        field: "file",
+        headerName: t("file"),
+        flex: 2,
+        initVisible: false,
+        renderCell: (params) =>
+          params.row.uri ? (
+            <a href={params.row.uri} target="_blank" rel="noreferrer">
+              {params.value}
+            </a>
+          ) : (
+            params.value
+          ),
+      },
+      {
+        field: "dependsOnModel",
+        headerName: t("referenced-models"),
+        flex: 2,
+        initVisible: false,
+        renderCell: (params) =>
+          params.value.map(
+            (tag) => tag.length > 0 && <Chip key={tag} size="small" sx={{ margin: "1px" }} label={tag} />,
+          ),
+      },
+      {
+        field: "furtherInformation",
+        headerName: t("more-information"),
+        flex: 1,
+        initVisible: false,
+        renderCell: (params) => (
+          <a href={params.value} target="_blank" rel="noreferrer">
+            {params.value}
+          </a>
+        ),
+      },
+      {
+        field: "technicalContact",
+        headerName: t("technical-contact"),
+        flex: 0.5,
+        initVisible: false,
+        renderCell: (params) =>
+          params.value && (
+            <a href={params.value} target="_blank" rel="noreferrer">
+              <MailIcon />
+            </a>
+          ),
+      },
+    ],
+    [t],
+  );
 
   return (
     <>
@@ -79,11 +175,44 @@ export function Results({ models, repositoryTree, searchUrl, filterDefaultValues
           setFilterPanelExpanded={setFilterPanelExpanded}
         ></Filter>
       )}
-      <Box sx={{ width: "100%", bgcolor: "background.paper", marginBottom: 8 }}>
-        {showResultsAsTable ? (
-          <p>table</p>
-        ) : (
-          <>
+      {showResultsAsTable ? (
+        <Box sx={{ bgcolor: "background.paper", marginBottom: 8, marginTop: 4 }}>
+          {filteredModels?.length > 0 && (
+            <DataGrid
+              rows={filteredModels}
+              columns={resultTableColumns}
+              disableColumnMenu
+              disableColumnFilter
+              disableDensitySelector
+              disableRowSelectionOnClick
+              autoHeight
+              initialState={{
+                columns: {
+                  columnVisibilityModel: Object.assign(
+                    {},
+                    ...resultTableColumns.map((c) => ({ [c.field]: c.initVisible ?? true })),
+                  ),
+                },
+              }}
+              slots={{
+                toolbar: () => (
+                  <Stack direction="row" sx={{ marginLeft: "5px" }} spacing={2}>
+                    <GridToolbarColumnsButton />
+                  </Stack>
+                ),
+              }}
+              sx={{
+                // disable cell selection style
+                ".MuiDataGrid-cell:focus": {
+                  outline: "none",
+                },
+              }}
+            />
+          )}
+        </Box>
+      ) : (
+        <>
+          <Box sx={{ width: "100%", bgcolor: "background.paper", marginBottom: 8 }}>
             {filteredModels &&
               filteredModels
                 .slice((page - 1) * modelsPerPage, (page - 1) * modelsPerPage + modelsPerPage)
@@ -171,9 +300,9 @@ export function Results({ models, repositoryTree, searchUrl, filterDefaultValues
                 onChange={handleChangePage}
               />
             )}
-          </>
-        )}
-      </Box>
+          </Box>
+        </>
+      )}
     </>
   );
 }
