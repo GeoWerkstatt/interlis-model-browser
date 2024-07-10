@@ -51,7 +51,21 @@ export function Results({ models, repositoryTree, searchUrl, filterDefaultValues
 
   const resultTableColumns = useMemo(
     () => [
-      { field: "name", headerName: t("model-name"), hideable: false, flex: 2 },
+      {
+        field: "name",
+        headerName: t("model-name"),
+        hideable: false,
+        flex: 2,
+        renderCell: (params) => (
+          <Link
+            style={{ textDecoration: "inherit", fontWeight: "bold" }}
+            to={{ pathname: "/detail/" + params.row.mD5 + "/" + params.row.name }}
+            state={{ searchQuery: searchUrl.search, filterDefaultValues: filterDefaultValues }}
+          >
+            {params.value}
+          </Link>
+        ),
+      },
       {
         field: "isDependOnModelResult",
         headerName: t("search-term-was-found-in-depends-on-model"),
