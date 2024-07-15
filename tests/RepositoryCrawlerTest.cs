@@ -66,7 +66,7 @@ public class RepositoryCrawlerTest
     [TestMethod]
     public async Task CrawlerFindsAllRepositoriesInTree()
     {
-        var result = await repositoryCrawler.CrawlModelRepositories(new Uri("https://models.interlis.testdata"));
+        var result = await repositoryCrawler.CrawlModelRepositories(new RepositoryCrawlerOptions { RootRepositoryUri = "https://models.interlis.testdata" });
         Assert.IsNotNull(result);
         result
             .AssertSingleItem("https://models.interlis.testdata/", AssertModelsInterlisCh)
@@ -78,7 +78,7 @@ public class RepositoryCrawlerTest
     [TestMethod]
     public async Task CrawlerProducesErrorLogsIfIlisiteXmlIsNotFound()
     {
-        var result = await repositoryCrawler.CrawlModelRepositories(new Uri("https://undefined.models.testdata"));
+        var result = await repositoryCrawler.CrawlModelRepositories(new RepositoryCrawlerOptions { RootRepositoryUri = "https://undefined.models.testdata" });
         Assert.IsNotNull(result);
         result.AssertCount(0);
         loggerMock.Verify(LogLevel.Error, "Analysis of https://undefined.models.testdata/ failed.", Times.Once());
@@ -87,7 +87,7 @@ public class RepositoryCrawlerTest
     [TestMethod]
     public async Task CrawlerProducesWarningLogsIfIlidataXmlIsNotFound()
     {
-        var result = await repositoryCrawler.CrawlModelRepositories(new Uri("https://models.interlis.testdata"));
+        var result = await repositoryCrawler.CrawlModelRepositories(new RepositoryCrawlerOptions { RootRepositoryUri = "https://models.interlis.testdata" });
         Assert.IsNotNull(result);
         result.Keys
             .AssertContains("https://models.interlis.testdata/")
@@ -178,7 +178,7 @@ public class RepositoryCrawlerTest
             .Respond(HttpStatusCode.NotFound);
 
         SetupRepositoryCrawlerInstance(mockHttp.ToHttpClient());
-        var result = await repositoryCrawler.CrawlModelRepositories(new Uri("http://models.interlis.testdata"));
+        var result = await repositoryCrawler.CrawlModelRepositories(new RepositoryCrawlerOptions { RootRepositoryUri = "http://models.interlis.testdata" });
 
         result.AssertCount(0);
         mockHttp.VerifyNoOutstandingExpectation();
@@ -202,7 +202,7 @@ public class RepositoryCrawlerTest
             .Respond(HttpStatusCode.NotFound);
 
         SetupRepositoryCrawlerInstance(mockHttp.ToHttpClient());
-        var result = await repositoryCrawler.CrawlModelRepositories(new Uri("http://models.interlis.testdata"));
+        var result = await repositoryCrawler.CrawlModelRepositories(new RepositoryCrawlerOptions { RootRepositoryUri = "http://models.interlis.testdata" });
 
         result.AssertCount(0);
         mockHttp.VerifyNoOutstandingExpectation();
@@ -211,7 +211,7 @@ public class RepositoryCrawlerTest
     [TestMethod]
     public async Task CrawlerSkipsMultipleOccurences()
     {
-        var result = await repositoryCrawler.CrawlModelRepositories(new Uri("https://models.interlis.testdata"));
+        var result = await repositoryCrawler.CrawlModelRepositories(new RepositoryCrawlerOptions { RootRepositoryUri = "https://models.interlis.testdata" });
         result
             .AssertSingleItem("https://models.multiparent.testdata/", AssertModelsMultiparentCh)
             .AssertCount(3)
@@ -256,7 +256,7 @@ public class RepositoryCrawlerTest
         SetupHttpMockFiles();
         SetupRepositoryCrawlerInstance(mockHttp.ToHttpClient());
 
-        var result = await repositoryCrawler.CrawlModelRepositories(new Uri("https://models.interlis.testdata"));
+        var result = await repositoryCrawler.CrawlModelRepositories(new RepositoryCrawlerOptions { RootRepositoryUri = "https://models.interlis.testdata" });
         result
             .AssertCount(2)
             .AssertAllNotNull();
@@ -265,7 +265,7 @@ public class RepositoryCrawlerTest
     [TestMethod]
     public async Task CrawlerCompletesMissingMD5()
     {
-        var result = await repositoryCrawler.CrawlModelRepositories(new Uri("https://models.multiparent.testdata"));
+        var result = await repositoryCrawler.CrawlModelRepositories(new RepositoryCrawlerOptions { RootRepositoryUri = "https://models.multiparent.testdata" });
         Assert.IsNotNull(result);
         result.AssertCount(1);
 
@@ -282,7 +282,7 @@ public class RepositoryCrawlerTest
     [TestMethod]
     public async Task ReplacedCatalogsReferencedByPrecurserVersionAreDiscarded()
     {
-        var result = await repositoryCrawler.CrawlModelRepositories(new Uri("https://models.geo.admin.testdata"));
+        var result = await repositoryCrawler.CrawlModelRepositories(new RepositoryCrawlerOptions { RootRepositoryUri = "https://models.geo.admin.testdata" });
 
         result.AssertSingleItem("https://models.geo.admin.testdata/", repository =>
         {
@@ -307,5 +307,22 @@ public class RepositoryCrawlerTest
                     Assert.AreEqual("2022-05-17", c.PrecursorVersion);
                 });
         });
+    }
+
+    [TestMethod]
+    public async Task IgnoreList()
+    {
+        var result = await repositoryCrawler.CrawlModelRepositories(new RepositoryCrawlerOptions
+        {
+            RootRepositoryUri = "https://models.interlis.testdata",
+            RepositoryIgnoreList = { "http://models.geo.admin.testdata", "http://models.multiparent.testdata/", "https://models.interlis.testdata/only/sub/path/ignored" },
+        });
+
+        Assert.IsNotNull(result);
+        result
+            .AssertSingleItem(kvp => kvp.Key.Equals("https://models.interlis.testdata/", StringComparison.OrdinalIgnoreCase))
+            .AssertContainsNot(kvp => kvp.Key.Equals("https://models.geo.admin.testdata/", StringComparison.OrdinalIgnoreCase))
+            .AssertAllNotNull()
+            .AssertCount(1);
     }
 }

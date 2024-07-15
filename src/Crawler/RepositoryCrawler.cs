@@ -19,15 +19,41 @@ public class RepositoryCrawler : IRepositoryCrawler
     }
 
     /// <inheritdoc />
-    public async Task<IDictionary<string, Repository>> CrawlModelRepositories(Uri rootRepositoryUri)
+    public async Task<IDictionary<string, Repository>> CrawlModelRepositories(RepositoryCrawlerOptions options)
     {
         modelRepositories = new ConcurrentDictionary<string, Repository>();
-        await CrawlRepositories(rootRepositoryUri, null).ConfigureAwait(false);
+
+        if (!Uri.TryCreate(options.RootRepositoryUri, UriKind.Absolute, out var rootRepositoryUri))
+        {
+            logger.LogError($"Unable to parse configuration {RepositoryCrawlerOptions.SectionName}:{nameof(RepositoryCrawlerOptions.RootRepositoryUri)}.");
+            return modelRepositories;
+        }
+
+        var ignoreList = new List<Uri>();
+        foreach (var ignoredUrlString in options.RepositoryIgnoreList)
+        {
+            if (Uri.TryCreate(ignoredUrlString, UriKind.Absolute, out var ignoredUrl))
+            {
+                ignoreList.Add(ignoredUrl);
+            }
+            else
+            {
+                logger.LogWarning($"Unable to parse URL <{ignoredUrlString}> from {RepositoryCrawlerOptions.SectionName}:{nameof(RepositoryCrawlerOptions.RepositoryIgnoreList)}.");
+            }
+        }
+
+        await CrawlRepositories(rootRepositoryUri, ignoreList, null).ConfigureAwait(false);
         return modelRepositories;
     }
 
-    private async Task<Repository?> CrawlRepositories(Uri rootRepositoryUri, Repository? parent)
+    private async Task<Repository?> CrawlRepositories(Uri rootRepositoryUri, List<Uri> ignoreList, Repository? parent)
     {
+        if (IsIgnored(rootRepositoryUri, ignoreList))
+        {
+            logger.LogDebug($"Repository <{rootRepositoryUri}> is ignored");
+            return null;
+        }
+
         rootRepositoryUri = await PreferHttpsIfAvailable(rootRepositoryUri).ConfigureAwait(false);
 
         if (modelRepositories.TryGetValue(rootRepositoryUri.AbsoluteUri, out var existingRepository))
@@ -46,7 +72,7 @@ public class RepositoryCrawler : IRepositoryCrawler
             var subsidiarySites = new HashSet<Repository>();
             foreach (var subsidiary in subsidiarys)
             {
-                var subsidiaryRepository = await CrawlRepositories(subsidiary, root).ConfigureAwait(false);
+                var subsidiaryRepository = await CrawlRepositories(subsidiary, ignoreList, root).ConfigureAwait(false);
                 if (subsidiaryRepository != null)
                 {
                     subsidiarySites.Add(subsidiaryRepository);
@@ -234,6 +260,17 @@ public class RepositoryCrawler : IRepositoryCrawler
             return uri;
         }
     }
+
+    /// <summary>
+    /// Check if the specified <paramref name="url"/> matches any of the URLs in the <paramref name="ignoreList"/>.
+    /// </summary>
+    private bool IsIgnored(Uri url, List<Uri> ignoreList)
+        => ignoreList.Any(ignoredUri =>
+            string.Equals(ignoredUri.Host, url.Host, StringComparison.OrdinalIgnoreCase)
+            && AddUrlPathSeparator(url.AbsolutePath).StartsWith(AddUrlPathSeparator(ignoredUri.AbsolutePath), StringComparison.OrdinalIgnoreCase));
+
+    private string AddUrlPathSeparator(string urlPath)
+        => urlPath.EndsWith('/') ? urlPath : urlPath + '/';
 
     private static Uri GetIlisiteUrl(Uri baseUri) => baseUri.Append("/ilisite.xml");
 

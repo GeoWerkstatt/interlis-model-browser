@@ -11,7 +11,7 @@ public interface IRepositoryCrawler
     /// <summary>
     /// Parse the repository tree from the root repository following subsidiary-Sites links only.
     /// </summary>
-    /// <param name="rootRepositoryUri">The <see cref="Uri"/> of the repository at the root of the model repository tree.</param>
+    /// <param name="options">The <see cref="RepositoryCrawlerOptions"/> that contain the repository at the root of the model repository tree and other configurations.</param>
     /// <returns>Dictionary containing all repositories found in tree. Repository host is used as key. Repositories contain all found information. Root repository contains full tree. </returns>
-    Task<IDictionary<string, Repository>> CrawlModelRepositories(Uri rootRepositoryUri);
+    Task<IDictionary<string, Repository>> CrawlModelRepositories(RepositoryCrawlerOptions options);
 }

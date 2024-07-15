@@ -30,9 +30,10 @@ public class DbUpdateService : BackgroundService
     {
         logger.LogInformation("Updating ModelRepoDatabase...");
 
-        if (!Uri.TryCreate(configuration["Crawler:RootRepositoryUri"], UriKind.RelativeOrAbsolute, out var rootUri))
+        var crawlerOptions = configuration.GetSection(RepositoryCrawlerOptions.SectionName).Get<RepositoryCrawlerOptions>();
+        if (crawlerOptions == null)
         {
-            logger.LogError("Unable to parse configuration Crawler:RootRepositoryUri. Database update skipped.");
+            logger.LogError($"Unable to parse configuration {RepositoryCrawlerOptions.SectionName}. Database update skipped.");
             return;
         }
 
@@ -41,7 +42,7 @@ public class DbUpdateService : BackgroundService
             using (var scope = scopeFactory.CreateScope())
             {
                 var crawler = scope.ServiceProvider.GetRequiredService<IRepositoryCrawler>();
-                var repositories = await crawler.CrawlModelRepositories(rootUri).ConfigureAwait(false);
+                var repositories = await crawler.CrawlModelRepositories(crawlerOptions).ConfigureAwait(false);
                 using var context = scope.ServiceProvider.GetRequiredService<RepoBrowserContext>();
 
                 var knownParentRepositories = context.Repositories
