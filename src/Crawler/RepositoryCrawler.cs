@@ -129,7 +129,7 @@ public class RepositoryCrawler : IRepositoryCrawler
 
             return (repository, subsidiaryRepositories);
         }
-        catch (Exception ex) when (ex is HttpRequestException || ex is InvalidOperationException)
+        catch (Exception ex) when (ex is HttpRequestException || ex is InvalidOperationException || ex is OperationCanceledException)
         {
             logger.LogError(ex, "Analysis of {Repository} failed.", repositoryUri);
             return (null, Enumerable.Empty<Uri>());
@@ -159,7 +159,7 @@ public class RepositoryCrawler : IRepositoryCrawler
                     .ToHashSet();
             }
         }
-        catch (HttpRequestException ex)
+        catch (Exception ex) when (ex is HttpRequestException || ex is OperationCanceledException)
         {
             logger.LogWarning(ex, "Could not analyse {IliDataUri}.", ilidataUri);
         }
@@ -204,7 +204,7 @@ public class RepositoryCrawler : IRepositoryCrawler
                         var md5 = await GetMD5FromStream(stream).ConfigureAwait(false);
                         model.MD5 = md5;
                     }
-                    catch (HttpRequestException ex)
+                    catch (Exception ex) when (ex is HttpRequestException || ex is OperationCanceledException)
                     {
                         logger.LogError(ex, "Failed to calculate missing MD5 for Model <{Model}> in File <{URL}>", model.Name, modelFileUrl);
                     }
@@ -255,7 +255,7 @@ public class RepositoryCrawler : IRepositoryCrawler
                 return response.IsSuccessStatusCode ? httpsUri : uri;
             }
         }
-        catch (HttpRequestException)
+        catch (Exception ex) when (ex is HttpRequestException || ex is OperationCanceledException)
         {
             return uri;
         }
