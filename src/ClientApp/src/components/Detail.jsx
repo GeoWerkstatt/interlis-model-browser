@@ -180,15 +180,20 @@ export function Detail() {
                 <AutoStoriesIcon sx={{ mb: -0.5, mr: 0.5 }} />
                 {t("catalogue-files")}:{" "}
                 {model.catalogueFiles &&
-                  model.catalogueFiles.map((f) => (
-                    <Box sx={{ ml: 4 }}>
-                      <Typography variant="body" sx={{ mr: 1, fontSize: 14 }}>
-                        <a href={f} target="_blank" rel="noreferrer">
-                          {f}
-                        </a>
-                      </Typography>
-                    </Box>
-                  ))}
+                  model.catalogueFiles
+                    .sort((a, b) => {
+                      const result = (a.match(/\//g) || []).length - (b.match(/\//g) || []).length;
+                      return result === 0 ? a.localeCompare(b, undefined, { sensitivity: "base" }) : result;
+                    })
+                    .map((f) => (
+                      <Box sx={{ ml: 4 }}>
+                        <Typography variant="body" sx={{ mr: 1, fontSize: 14 }}>
+                          <a href={f} target="_blank" rel="noreferrer">
+                            {f}
+                          </a>
+                        </Typography>
+                      </Box>
+                    ))}
               </Box>
             )}
             {model.technicalContact && (
