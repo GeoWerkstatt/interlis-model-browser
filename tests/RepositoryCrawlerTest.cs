@@ -325,4 +325,32 @@ public class RepositoryCrawlerTest
             .AssertAllNotNull()
             .AssertCount(1);
     }
+
+    [TestMethod]
+    public async Task CrawlerHandlesTimeouts()
+    {
+        mockHttp = new MockHttpMessageHandler();
+        mockHttp
+            .When("https://models.interlis.testdata/ilidata.xml")
+            .Throw(new OperationCanceledException());
+        mockHttp
+            .When("https://models.geo.admin.testdata/ilimodels.xml")
+            .Throw(new OperationCanceledException());
+        mockHttp
+            .When("https://models.multiparent.testdata/ilisite.xml")
+            .Throw(new OperationCanceledException());
+
+        SetupHttpMockFiles();
+        SetupRepositoryCrawlerInstance(mockHttp.ToHttpClient());
+
+        var result = await repositoryCrawler.CrawlModelRepositories(new RepositoryCrawlerOptions { RootRepositoryUri = "https://models.interlis.testdata" });
+        Assert.IsNotNull(result);
+        result.Keys
+            .AssertContains("https://models.interlis.testdata/")
+            .AssertCount(1);
+
+        loggerMock.Verify(LogLevel.Warning, "Could not analyse https://models.interlis.testdata/ilidata.xml.", Times.Once());
+        loggerMock.Verify(LogLevel.Error, "Analysis of https://models.geo.admin.testdata/ failed.", Times.Once());
+        loggerMock.Verify(LogLevel.Error, "Analysis of https://models.multiparent.testdata/ failed.", Times.Once());
+    }
 }
