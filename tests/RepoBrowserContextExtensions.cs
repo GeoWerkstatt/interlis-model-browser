@@ -1,11 +1,6 @@
 ﻿using Bogus;
 using ModelRepoBrowser.Models;
-using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ModelRepoBrowser;
 
@@ -68,7 +63,8 @@ public static class RepoBrowserContextExtensions
             .RuleFor(m => m.ModelRepository, f => f.PickRandom(repositories))
             .RuleFor(m => m.IsDependOnModelResult, _ => false)
             .RuleFor(m => m.Title, f => f.Random.Words(5))
-            .RuleFor(m => m.CatalogueFiles, _ => new List<string>());
+            .RuleFor(m => m.CatalogueFiles, _ => new List<string>())
+            .RuleFor(m => m.FileContent, _ => default);
         Model SeededModel(int seed) => fakeModels.UseSeed(seed).Generate();
         var models = modelRange.Select(SeededModel);
         context.Models.AddRange(models);

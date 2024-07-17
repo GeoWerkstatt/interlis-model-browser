@@ -19,4 +19,6 @@ public class Catalog
     public string? Title { get; set; }
 
     public List<string> ReferencedModels { get; set; }
+
+    public Repository ModelRepository { get; set; }
 }

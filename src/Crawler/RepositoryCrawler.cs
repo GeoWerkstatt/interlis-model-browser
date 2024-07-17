@@ -19,6 +19,44 @@ public class RepositoryCrawler : IRepositoryCrawler
     }
 
     /// <inheritdoc />
+    public async Task FetchInterlisFiles(IEnumerable<InterlisFile> existingFiles, IEnumerable<Repository> repositories)
+    {
+        var allFiles = existingFiles.ToDictionary(f => f.MD5, StringComparer.OrdinalIgnoreCase);
+        foreach (var repository in repositories)
+        {
+            foreach (var model in repository.Models)
+            {
+                InterlisFile? file;
+                if (!string.IsNullOrEmpty(model.MD5) && allFiles.TryGetValue(model.MD5, out file))
+                {
+                    model.FileContent = file;
+                    continue;
+                }
+
+                var modelFileUrl = model.ModelRepository.Uri.Append(model.File);
+                file = await FetchInterlisFile(modelFileUrl).ConfigureAwait(false);
+                if (file != null)
+                {
+                    if (!allFiles.TryAdd(file.MD5, file))
+                    {
+                        file = allFiles[file.MD5];
+                    }
+
+                    model.FileContent = file;
+                    if (string.IsNullOrEmpty(model.MD5))
+                    {
+                        model.MD5 = file.MD5;
+                    }
+                    else if (!model.MD5.Equals(file.MD5, StringComparison.OrdinalIgnoreCase))
+                    {
+                        logger.LogWarning("The MD5 Hash of Model <{Model}> ({MD5Model}) does not match that of the file <{URL}> ({MD5File}).", model.Name, model.MD5, modelFileUrl, file.MD5);
+                    }
+                }
+            }
+        }
+    }
+
+    /// <inheritdoc />
     public async Task<IDictionary<string, Repository>> CrawlModelRepositories(RepositoryCrawlerOptions options)
     {
         modelRepositories = new ConcurrentDictionary<string, Repository>();
@@ -191,26 +229,6 @@ public class RepositoryCrawler : IRepositoryCrawler
                 })
                 .ToHashSet();
 
-            foreach (var model in models)
-            {
-                if (string.IsNullOrEmpty(model.MD5))
-                {
-                    var modelFileUrl = repositoryUri.Append(model.File);
-                    logger.LogInformation("Calculate missing MD5 for Model <{Model}> in File <{URL}>.", model.Name, modelFileUrl);
-
-                    try
-                    {
-                        var stream = await GetStreamFromUrl(modelFileUrl).ConfigureAwait(false);
-                        var md5 = await GetMD5FromStream(stream).ConfigureAwait(false);
-                        model.MD5 = md5;
-                    }
-                    catch (Exception ex) when (ex is HttpRequestException || ex is OperationCanceledException)
-                    {
-                        logger.LogError(ex, "Failed to calculate missing MD5 for Model <{Model}> in File <{URL}>", model.Name, modelFileUrl);
-                    }
-                }
-            }
-
             return models;
         }
     }
@@ -221,6 +239,29 @@ public class RepositoryCrawler : IRepositoryCrawler
         using (var ilisiteStream = await GetStreamFromUrl(ilisiteUri).ConfigureAwait(false))
         {
             return RepositoryFilesDeserializer.ParseIliSite(ilisiteStream);
+        }
+    }
+
+    private async Task<InterlisFile?> FetchInterlisFile(Uri fileUri)
+    {
+        logger.LogDebug("Download INTERLIS file <{URL}>", fileUri);
+        try
+        {
+            var stream = await GetStreamFromUrl(fileUri).ConfigureAwait(false);
+            var md5 = await GetMD5FromStream(stream).ConfigureAwait(false);
+            stream.Seek(0, SeekOrigin.Begin);
+            using var reader = new StreamReader(stream);
+            var content = reader.ReadToEnd();
+            return new InterlisFile
+            {
+                MD5 = md5,
+                Content = content,
+            };
+        }
+        catch (Exception ex) when (ex is HttpRequestException || ex is OperationCanceledException)
+        {
+            logger.LogError(ex, "Failed to download INTERLIS file <{URL}>", fileUri);
+            return null;
         }
     }
 

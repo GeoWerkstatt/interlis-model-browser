@@ -1,5 +1,6 @@
 ﻿using ModelRepoBrowser.Crawler;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace ModelRepoBrowser.Models;
 
@@ -7,6 +8,9 @@ public class Model
 {
     public int Id { get; set; }
 
+    /// <summary>
+    /// The MD5 Hash of the INTERLIS file that contains this model.
+    /// </summary>
     public string? MD5 { get; set; }
 
     public string Name { get; set; }
@@ -32,6 +36,12 @@ public class Model
     public string? TechnicalContact { get; set; }
 
     public string? FurtherInformation { get; set; }
+
+    /// <summary>
+    /// The actual content of the INTERLIS file.
+    /// </summary>
+    [JsonIgnore]
+    public InterlisFile FileContent { get; set; }
 
     [NotMapped]
     public bool? IsDependOnModelResult { get; set; } = false;
