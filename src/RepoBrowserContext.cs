@@ -17,4 +17,5 @@ public class RepoBrowserContext : DbContext
     public DbSet<Model> Models { get; set; }
     public DbSet<Catalog> Catalogs { get; set; }
     public DbSet<SearchQuery> SearchQueries { get; set; }
+    public DbSet<InterlisFile> InterlisFiles { get; set; }
 }

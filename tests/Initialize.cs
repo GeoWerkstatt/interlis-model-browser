@@ -1,9 +1,5 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace ModelRepoBrowser;
 
@@ -20,10 +16,11 @@ public sealed class Initialize
         context.Database.EnsureCreated();
 
         // Clear database and fill it with test data
-        context.SearchQueries.RemoveRange(context.SearchQueries);
-        context.Catalogs.RemoveRange(context.Catalogs);
-        context.Models.RemoveRange(context.Models);
-        context.Repositories.RemoveRange(context.Repositories);
+        context.SearchQueries.ExecuteDelete();
+        context.Catalogs.ExecuteDelete();
+        context.Models.ExecuteDelete();
+        context.Repositories.ExecuteDelete();
+        context.InterlisFiles.ExecuteDelete();
         context.SaveChanges();
 
         context.SeedData();

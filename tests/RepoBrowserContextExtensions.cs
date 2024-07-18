@@ -1,11 +1,6 @@
 ﻿using Bogus;
 using ModelRepoBrowser.Models;
-using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ModelRepoBrowser;
 
@@ -48,6 +43,16 @@ public static class RepoBrowserContextExtensions
             child.ParentSites.Add(repositories[9]);
         }
 
+        var fakeInterlisFile = new Faker<InterlisFile>()
+            .StrictMode(true)
+            .RuleFor(f => f.MD5, f => f.Random.Hash(32))
+            .RuleFor(f => f.Content, f => f.Lorem.Lines(f.Random.Int(10, 50)))
+            .RuleFor(f => f.Models, _ => new List<Model>());
+        InterlisFile SeededinterlisFile(int seed) => fakeInterlisFile.UseSeed(seed).Generate();
+        var interlisFiles = Enumerable.Range(1, 100).Select(SeededinterlisFile).ToList();
+        context.InterlisFiles.AddRange(interlisFiles);
+        context.SaveChanges();
+
         var modelIds = 1;
         var modelRange = Enumerable.Range(modelIds, 100);
         var fakeModels = new Faker<Model>()
@@ -68,7 +73,8 @@ public static class RepoBrowserContextExtensions
             .RuleFor(m => m.ModelRepository, f => f.PickRandom(repositories))
             .RuleFor(m => m.IsDependOnModelResult, _ => false)
             .RuleFor(m => m.Title, f => f.Random.Words(5))
-            .RuleFor(m => m.CatalogueFiles, _ => new List<string>());
+            .RuleFor(m => m.CatalogueFiles, _ => new List<string>())
+            .RuleFor(m => m.FileContent, f => f.PickRandom(interlisFiles));
         Model SeededModel(int seed) => fakeModels.UseSeed(seed).Generate();
         var models = modelRange.Select(SeededModel);
         context.Models.AddRange(models);
@@ -86,7 +92,8 @@ public static class RepoBrowserContextExtensions
             .RuleFor(c => c.Owner, f => f.Name.FullName())
             .RuleFor(c => c.File, f => new List<string> { f.Random.AlphaNumeric(28) })
             .RuleFor(c => c.Title, f => f.Random.Word())
-            .RuleFor(c => c.ReferencedModels, f => f.PickRandom(models, 2).Select(m => m.Name).ToList().OrDefault(f, defaultValue: new List<string>()));
+            .RuleFor(c => c.ReferencedModels, f => f.PickRandom(models, 2).Select(m => m.Name).ToList().OrDefault(f, defaultValue: new List<string>()))
+            .RuleFor(c => c.ModelRepository, f => f.PickRandom(repositories));
         Catalog SeededCatalog(int seed) => fakeCatalogs.UseSeed(seed).Generate();
         var catalogs = catalogRange.Select(SeededCatalog);
         context.Catalogs.AddRange(catalogs);

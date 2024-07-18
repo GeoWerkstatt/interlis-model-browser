@@ -20,7 +20,6 @@ import { getAllModels } from "./Utils";
 export function Detail() {
   const [model, setModel] = useState();
   const [loading, setLoading] = useState();
-  const [modelText, setModelText] = useState("");
   const { t } = useTranslation("common");
 
   const location = useLocation();
@@ -51,39 +50,16 @@ export function Detail() {
   useEffect(() => {
     setLoading(true);
 
-    async function getModelPreview(model) {
-      // Use try catch block to avoid error when CORS prevents successful fetch.
-      try {
-        const response = await fetch(model.uri);
-        if (response?.ok) {
-          setModelText(await response.text());
-          setLoading(false);
-        } else {
-          setModelText(t("no-model-preview"));
-          setLoading(false);
-        }
-      } catch {
-        setModelText(t("no-model-preview"));
-        setLoading(false);
-      }
-    }
-
     async function getModel(md5, name) {
       const response = await fetch("/model/" + md5 + "/" + name);
 
-      if (response.ok) {
-        if (response.status === 204 /* No Content */) {
-          setModel();
-          setLoading(false);
-        } else {
-          const model = await response.json();
-          setModel(model);
-          getModelPreview(model);
-        }
+      if (response.ok && response.status !== 204 /* No Content */) {
+        const model = await response.json();
+        setModel(model);
       } else {
         setModel();
-        setLoading(false);
       }
+      setLoading(false);
     }
     getModel(md5, name);
   }, [md5, name, t]);
@@ -99,7 +75,7 @@ export function Detail() {
           {t("to-search")}
         </Button>
       )}
-      {(!model || !modelText) && loading && (
+      {!model && loading && (
         <Box mt={10}>
           <CircularProgress />
         </Box>
@@ -109,7 +85,7 @@ export function Detail() {
           {t("invalid-model-url")}
         </Typography>
       )}
-      {model && modelText && (
+      {model && (
         <>
           <Stack direction="row" alignItems="flex-end" flexWrap="wrap" sx={{ color: "text.secondary" }}>
             <Typography mt={5} variant="h4">
@@ -169,9 +145,7 @@ export function Detail() {
                       key={m}
                       label={m}
                       variant="outlined"
-                    >
-                      {m}
-                    </Chip>
+                    />
                   ))}
               </Box>
             )}
@@ -181,12 +155,13 @@ export function Detail() {
                 {t("catalogue-files")}:{" "}
                 {model.catalogueFiles &&
                   model.catalogueFiles
-                    .sort((a, b) => {
-                      const result = (a.match(/\//g) || []).length - (b.match(/\//g) || []).length;
-                      return result === 0 ? a.localeCompare(b, undefined, { sensitivity: "base" }) : result;
-                    })
+                    .sort(
+                      (a, b) =>
+                        (a.match(/\//g) || []).length - (b.match(/\//g) || []).length ||
+                        a.localeCompare(b, undefined, { sensitivity: "base" }),
+                    )
                     .map((f) => (
-                      <Box sx={{ ml: 4 }}>
+                      <Box key={f} sx={{ ml: 4 }}>
                         <Typography variant="body" sx={{ mr: 1, fontSize: 14 }}>
                           <a href={f} target="_blank" rel="noreferrer">
                             {f}
@@ -222,7 +197,7 @@ export function Detail() {
               inputProps={{ style: { fontSize: 12, fontFamily: "'Courier New', monospace" } }}
               InputLabelProps={{ style: { fontSize: 22 } }}
               InputProps={{ readOnly: true, style: { fontSize: 22 } }}
-              value={modelText}
+              value={model.fileContent?.content ?? t("no-model-preview")}
               focused={false}
             />
           </Stack>

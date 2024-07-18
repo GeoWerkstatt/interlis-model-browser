@@ -33,6 +33,7 @@ public class ModelController : Controller
 
         var model = context.Models
             .Include(m => m.ModelRepository)
+            .Include(m => m.FileContent)
             .Where(m => m.MD5 == md5 && m.Name == name)
             .AsNoTracking()
             .SingleOrDefault();

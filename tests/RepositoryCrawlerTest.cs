@@ -17,33 +17,37 @@ public class RepositoryCrawlerTest
     private Mock<IHttpClientFactory> httpClientFactory;
     private RepositoryCrawler repositoryCrawler;
     private MockHttpMessageHandler mockHttp;
+    private Dictionary<string, MockedRequest> mockRequests;
 
     [TestInitialize]
     public void Initialize()
     {
         mockHttp = new MockHttpMessageHandler();
-        SetupHttpMockFiles();
+        mockRequests = SetupHttpMockFiles();
 
         SetupRepositoryCrawlerInstance(mockHttp.ToHttpClient());
     }
 
-    private void SetupHttpMockFiles()
+    private Dictionary<string, MockedRequest> SetupHttpMockFiles()
     {
+        var mockRequests = new Dictionary<string, MockedRequest>();
         foreach (var dir in Directory.GetDirectories("./Testdata"))
         {
             foreach (var file in Directory.GetFiles(dir))
             {
-                mockHttp
-                    .When($"https://{Path.GetFileName(dir)}/{Path.GetFileName(file)}")
-                    .Respond("application/xml", new FileStream(file, FileMode.Open, FileAccess.Read));
-
-                mockHttp
-                    .When(HttpMethod.Head, $"https://{Path.GetFileName(dir)}/")
-                    .Respond(HttpStatusCode.OK);
+                var url = $"https://{Path.GetFileName(dir)}/{Path.GetFileName(file)}";
+                mockRequests.Add(url, mockHttp
+                    .When(url)
+                    .Respond("application/xml", new FileStream(file, FileMode.Open, FileAccess.Read)));
             }
+
+            mockHttp
+                .When(HttpMethod.Head, $"https://{Path.GetFileName(dir)}/")
+                .Respond(HttpStatusCode.OK);
         }
 
         mockHttp.Fallback.Respond(HttpStatusCode.NotFound);
+        return mockRequests;
     }
 
     private void SetupRepositoryCrawlerInstance(HttpClient httpClient)
@@ -94,7 +98,7 @@ public class RepositoryCrawlerTest
             .AssertContains("https://models.multiparent.testdata/")
             .AssertContains("https://models.geo.admin.testdata/")
             .AssertCount(3);
-        loggerMock.Verify(LogLevel.Warning,  "Could not analyse https://models.interlis.testdata/ilidata.xml.", Times.Once());
+        loggerMock.Verify(LogLevel.Warning, "Could not analyse https://models.interlis.testdata/ilidata.xml.", Times.Once());
     }
 
     private void AssertModelsInterlisCh(Repository repository)
@@ -234,7 +238,7 @@ public class RepositoryCrawlerTest
             .AssertSingleItem(ps => "https://models.geo.admin.testdata/".Equals(ps.HostNameId, StringComparison.OrdinalIgnoreCase), AssertModelsGeoAdminCh)
             .AssertCount(2);
         repository.Models
-            .AssertCount(3);
+            .AssertCount(7);
         repository.Catalogs
             .AssertCount(0);
     }
@@ -267,16 +271,57 @@ public class RepositoryCrawlerTest
     {
         var result = await repositoryCrawler.CrawlModelRepositories(new RepositoryCrawlerOptions { RootRepositoryUri = "https://models.multiparent.testdata" });
         Assert.IsNotNull(result);
+        result.AssertCount(1).Single().Value.Models.AssertCount(7);
+
+        await repositoryCrawler.FetchInterlisFiles(Enumerable.Empty<InterlisFile>(), result.Values);
+        Assert.IsNotNull(result);
         result.AssertCount(1);
 
         result.AssertSingleItem("https://models.multiparent.testdata/", repository =>
         {
             repository.Models
-                .AssertCount(3)
+                .AssertCount(7)
                 .AssertSingleItem(m => m.Name == "Test_Model_Without_MD5", m => Assert.AreEqual("EB137F3B28D3D06C41F20237886A8B41", m.MD5))
                 .AssertSingleItem(m => m.Name == "Test_Model_With_Empty_MD5", m => Assert.AreEqual("EB137F3B28D3D06C41F20237886A8B41", m.MD5))
-                .AssertSingleItem(m => m.Name == "Test_Model_Without_MD5_And_Invalid_File", m => Assert.AreEqual(null, m.MD5));
+                .AssertSingleItem(m => m.Name == "Test_Model_Without_MD5_And_Invalid_File", m => Assert.AreEqual(null, m.MD5))
+                .AssertSingleItem(m => m.Name == "Test_Model_With_Correct_MD5", m => Assert.AreEqual("eb137f3b28d3d06c41f20237886a8b41", m.MD5))
+                .AssertSingleItem(m => m.Name == "Test_Model_With_Wrong_MD5", m => Assert.AreEqual("85d9577a5d8d9115484cdf2c0917c802", m.MD5))
+                .AssertSingleItem(m => m.Name == "TwoModelsInOneFile_Model1", m => Assert.AreEqual("17dd3681a880848baef146904991c36b", m.MD5))
+                .AssertSingleItem(m => m.Name == "TwoModelsInOneFile_Model2", m => Assert.AreEqual("17dd3681a880848baef146904991c36b", m.MD5));
         });
+    }
+
+    [TestMethod]
+    public async Task CrawlerFetchesFileOnce()
+    {
+        var result = await repositoryCrawler.CrawlModelRepositories(new RepositoryCrawlerOptions { RootRepositoryUri = "https://models.multiparent.testdata" });
+        Assert.IsNotNull(result);
+        result.AssertCount(1).Single().Value.Models.AssertCount(7);
+
+        await repositoryCrawler.FetchInterlisFiles(Enumerable.Empty<InterlisFile>(), result.Values);
+        Assert.IsNotNull(result);
+        result.AssertCount(1);
+
+        Assert.AreEqual(1, mockHttp.GetMatchCount(mockRequests["https://models.multiparent.testdata/TwoModelsInOneFile.ili"]));
+        Assert.AreEqual(3, mockHttp.GetMatchCount(mockRequests["https://models.multiparent.testdata/TestModel.ili"]), "Missing or wrong MD5 hashes in ilimodels.xml lead to refetches.");
+    }
+
+    [TestMethod]
+    public async Task CrawlerUsesExistingFile()
+    {
+        var result = await repositoryCrawler.CrawlModelRepositories(new RepositoryCrawlerOptions { RootRepositoryUri = "https://models.multiparent.testdata" });
+        Assert.IsNotNull(result);
+        result.AssertCount(1).Single().Value.Models.AssertCount(7);
+
+        var expectedContent = "Expected Content NISECTIOUSIS";
+        await repositoryCrawler.FetchInterlisFiles([new InterlisFile { MD5 = "17DD3681A880848BAEF146904991C36B", Content = expectedContent }], result.Values);
+        Assert.IsNotNull(result);
+        result.AssertCount(1);
+
+        Assert.AreEqual(0, mockHttp.GetMatchCount(mockRequests["https://models.multiparent.testdata/TwoModelsInOneFile.ili"]));
+        result.Single().Value.Models
+            .AssertSingleItem(m => m.Name == "TwoModelsInOneFile_Model1", m => Assert.AreEqual(expectedContent, m.FileContent.Content))
+            .AssertSingleItem(m => m.Name == "TwoModelsInOneFile_Model2", m => Assert.AreEqual(expectedContent, m.FileContent.Content));
     }
 
     [TestMethod]
