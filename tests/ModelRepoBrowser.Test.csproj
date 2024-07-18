@@ -58,6 +58,9 @@
     <None Update="Testdata\models.multiparent.testdata\TestModel.ili">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="Testdata\models.multiparent.testdata\TwoModelsInOneFile.ili">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>
