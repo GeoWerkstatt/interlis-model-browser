@@ -1,6 +1,5 @@
 ﻿using ModelRepoBrowser.Crawler;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Text.Json.Serialization;
 
 namespace ModelRepoBrowser.Models;
 
@@ -40,7 +39,6 @@ public class Model
     /// <summary>
     /// The actual content of the INTERLIS file.
     /// </summary>
-    [JsonIgnore]
     public InterlisFile FileContent { get; set; }
 
     [NotMapped]
