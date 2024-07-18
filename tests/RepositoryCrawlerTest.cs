@@ -286,8 +286,8 @@ public class RepositoryCrawlerTest
                 .AssertSingleItem(m => m.Name == "Test_Model_Without_MD5_And_Invalid_File", m => Assert.AreEqual(null, m.MD5))
                 .AssertSingleItem(m => m.Name == "Test_Model_With_Correct_MD5", m => Assert.AreEqual("eb137f3b28d3d06c41f20237886a8b41", m.MD5))
                 .AssertSingleItem(m => m.Name == "Test_Model_With_Wrong_MD5", m => Assert.AreEqual("85d9577a5d8d9115484cdf2c0917c802", m.MD5))
-                .AssertSingleItem(m => m.Name == "TwoModelsInOneFile_Model1", m => Assert.AreEqual("3e2885ffd8ff860628de353d14fcfac6", m.MD5))
-                .AssertSingleItem(m => m.Name == "TwoModelsInOneFile_Model2", m => Assert.AreEqual("3e2885ffd8ff860628de353d14fcfac6", m.MD5));
+                .AssertSingleItem(m => m.Name == "TwoModelsInOneFile_Model1", m => Assert.AreEqual("17dd3681a880848baef146904991c36b", m.MD5))
+                .AssertSingleItem(m => m.Name == "TwoModelsInOneFile_Model2", m => Assert.AreEqual("17dd3681a880848baef146904991c36b", m.MD5));
         });
     }
 
@@ -314,7 +314,7 @@ public class RepositoryCrawlerTest
         result.AssertCount(1).Single().Value.Models.AssertCount(7);
 
         var expectedContent = "Expected Content NISECTIOUSIS";
-        await repositoryCrawler.FetchInterlisFiles([new InterlisFile { MD5 = "3E2885FFD8FF860628DE353D14FCFAC6", Content = expectedContent }], result.Values);
+        await repositoryCrawler.FetchInterlisFiles([new InterlisFile { MD5 = "17DD3681A880848BAEF146904991C36B", Content = expectedContent }], result.Values);
         Assert.IsNotNull(result);
         result.AssertCount(1);
 
