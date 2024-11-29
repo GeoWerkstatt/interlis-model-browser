@@ -1,5 +1,5 @@
 // This script sets up HTTPS for the application using the ASP.NET Core HTTPS certificate
-import { existsSync } from "fs";
+import { existsSync, mkdirSync } from "fs";
 import { spawn } from "child_process";
 import { join } from "path";
 
@@ -15,6 +15,8 @@ if (!certificateName) {
   console.error('Invalid certificate name. Run this script in the context of an npm/yarn script or pass --name=<<app>> explicitly.')
   process.exit(-1);
 }
+
+mkdirSync(baseFolder, { recursive: true });
 
 const certFilePath = join(baseFolder, `${certificateName}.pem`);
 const keyFilePath = join(baseFolder, `${certificateName}.key`);
